@@ -13,6 +13,7 @@ import Checkout from "./pages/Checkout";
 import Admin from "./pages/Admin";
 import AdminProducts from "./pages/AdminProducts";
 import AdminOrders from "./pages/AdminOrders";
+import AdminCategories from "./pages/AdminCategories";
 
 function Router() {
   return (
@@ -23,6 +24,7 @@ function Router() {
       <Route path="/cart" component={Cart} />
       <Route path="/checkout" component={Checkout} />
       <Route path="/admin" component={Admin} />
+      <Route path="/admin/categories" component={AdminCategories} />
       <Route path="/admin/products" component={AdminProducts} />
       <Route path="/admin/orders" component={AdminOrders} />
       <Route path="/404" component={NotFound} />
