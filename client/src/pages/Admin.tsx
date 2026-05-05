@@ -107,9 +107,16 @@ export default function Admin() {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <Link href="/admin/setup">
+            <Card className="p-6 cursor-pointer hover:shadow-lg transition-shadow bg-gradient-to-br from-green-50 to-blue-50">
+              <h3 className="text-xl font-bold text-green-600 mb-2">إعداد البيانات</h3>
+              <p className="text-gray-600">إضافة البيانات الافتراضية والأقسام</p>
+            </Card>
+          </Link>
+
           <Link href="/admin/categories">
             <Card className="p-6 cursor-pointer hover:shadow-lg transition-shadow">
-              <h3 className="text-xl font-bold text-gray-800 mb-2">الأقسام</h3>
+              <h3 className="text-xl font-bold text-blue-600 mb-2">الأقسام</h3>
               <p className="text-gray-600">إدارة أقسام المنتجات</p>
             </Card>
           </Link>

@@ -2,6 +2,7 @@ import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
+import { seedDatabase } from "./seed";
 import { z } from "zod";
 import { getCategories, getCategoryById, getProducts, getProductById, getOrders, getOrderById, getOrderItems, getDb } from "./db";
 import { categories, products, orders, orderItems, type InsertCategory, type InsertProduct, type InsertOrder, type InsertOrderItem } from "../drizzle/schema";
@@ -10,6 +11,16 @@ import { eq } from "drizzle-orm";
 export const appRouter = router({
   // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
   system: systemRouter,
+  admin: router({
+    seed: publicProcedure.mutation(async () => {
+      try {
+        await seedDatabase();
+        return { success: true, message: "تم إضافة البيانات الافتراضية بنجاح" };
+      } catch (error: any) {
+        return { success: false, message: error.message };
+      }
+    }),
+  }),
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
     logout: publicProcedure.mutation(({ ctx }) => {
@@ -138,3 +149,8 @@ export const appRouter = router({
 });
 
 export type AppRouter = typeof appRouter;
+
+// تشغيل seed عند بدء التطبيق (اختياري)
+if (process.env.NODE_ENV === "development") {
+  // يمكن تشغيل seed هنا إذا أردت
+}
