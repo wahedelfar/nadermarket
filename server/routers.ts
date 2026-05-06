@@ -9,7 +9,6 @@ import { categories, products, orders, orderItems, type InsertCategory, type Ins
 import { eq } from "drizzle-orm";
 
 export const appRouter = router({
-  // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
   system: systemRouter,
   admin: router({
     seed: publicProcedure.mutation(async () => {
@@ -32,7 +31,6 @@ export const appRouter = router({
     }),
   }),
 
-  // الأقسام
   categories: router({
     list: publicProcedure.query(() => getCategories()),
     getById: publicProcedure.input(z.number()).query(({ input }) => getCategoryById(input)),
@@ -61,7 +59,6 @@ export const appRouter = router({
     }),
   }),
 
-  // المنتجات
   products: router({
     list: publicProcedure.input(z.number().optional()).query(({ input }) => getProducts(input)),
     getById: publicProcedure.input(z.number()).query(({ input }) => getProductById(input)),
@@ -106,7 +103,6 @@ export const appRouter = router({
     }),
   }),
 
-  // الطلبات
   orders: router({
     list: protectedProcedure.query(() => getOrders()),
     getById: protectedProcedure.input(z.number()).query(({ input }) => getOrderById(input)),
@@ -124,10 +120,24 @@ export const appRouter = router({
         const db = await getDb();
         if (!db) throw new Error("Database not available");
         const { items, ...orderData } = input;
-        const result = await db.insert(orders).values(orderData as InsertOrder);
+        
+        // تحويل totalAmount إلى رقم عشري
+        const orderToInsert = {
+          ...orderData,
+          totalAmount: parseFloat(orderData.totalAmount).toFixed(2),
+        };
+        
+        const result = await db.insert(orders).values(orderToInsert as InsertOrder);
         const orderId = (result as any).insertId;
+        
+        // إدراج عناصر الطلب مع تحويل السعر إلى رقم عشري
         for (const item of items) {
-          await db.insert(orderItems).values({ ...item, orderId } as InsertOrderItem);
+          await db.insert(orderItems).values({
+            orderId,
+            productId: item.productId,
+            quantity: item.quantity,
+            price: parseFloat(item.price).toFixed(2),
+          } as InsertOrderItem);
         }
         return { id: orderId, ...orderData };
       }),
@@ -150,7 +160,6 @@ export const appRouter = router({
 
 export type AppRouter = typeof appRouter;
 
-// تشغيل seed عند بدء التطبيق (اختياري)
 if (process.env.NODE_ENV === "development") {
   // يمكن تشغيل seed هنا إذا أردت
 }
