@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { ArrowRight, Phone, MapPin } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Link } from "wouter";
 import { useCart } from "@/contexts/CartContext";
 import { trpc } from "@/lib/trpc";
@@ -87,22 +87,34 @@ export default function Checkout() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmitOrder = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleWhatsAppSubmit = async () => {
     if (!formData.customerName || !formData.customerPhone || !formData.customerAddress) {
       toast.error("يرجى ملء جميع البيانات المطلوبة");
-      return;
-    }
-
-    if (!formData.vodafoneWalletNumber) {
-      toast.error("يرجى إدخال رقم محفظة فودافون كاش");
       return;
     }
 
     setLoading(true);
 
     try {
+      // بناء رسالة الطلب
+      let message = "طلب جديد من نادر ماركت\n\n";
+      message += "بيانات العميل:\n";
+      message += `الاسم: ${formData.customerName}\n`;
+      message += `الهاتف: ${formData.customerPhone}\n`;
+      message += `العنوان: ${formData.customerAddress}\n\n`;
+      message += "المنتجات:\n";
+      
+      items.forEach((item) => {
+        const price = typeof item.price === 'string' ? parseFloat(item.price) : item.price;
+        message += `- ${item.name}: ${item.quantity} x ${price} ج.م = ${(item.quantity * price).toFixed(2)} ج.م\n`;
+      });
+      
+      message += `\nالإجمالي: ${total.toFixed(2)} ج.م\n`;
+      if (formData.vodafoneWalletNumber) {
+        message += `رقم محفظة فودافون كاش: ${formData.vodafoneWalletNumber}`;
+      }
+
+      // إنشاء الطلب في قاعدة البيانات
       const orderItems = items.map((item) => ({
         productId: item.id,
         quantity: item.quantity,
@@ -119,6 +131,13 @@ export default function Checkout() {
       });
 
       toast.success(`تم إنشاء الطلب بنجاح! رقم الطلب: ${result.id}`);
+      
+      // فتح الواتساب برقم المحل
+      const shopPhone = "201004520056";
+      const encodedMessage = encodeURIComponent(message);
+      const whatsappUrl = `https://wa.me/${shopPhone}?text=${encodedMessage}`;
+      window.open(whatsappUrl, "_blank");
+      
       setOrderId(result.id);
       setOrderCreated(true);
       clearCart();
@@ -149,14 +168,15 @@ export default function Checkout() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8 text-gray-800">إتمام الطلب</h1>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Checkout Form */}
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Form */}
           <div className="lg:col-span-2">
             <Card className="p-8">
-              <form onSubmit={handleSubmitOrder} className="space-y-6">
+              <form onSubmit={(e) => { e.preventDefault(); }}>
                 {/* Customer Information */}
-                <div>
+                <div className="mb-6">
                   <h2 className="text-xl font-bold mb-4 text-gray-800">بيانات العميل</h2>
+                  
                   <div className="space-y-4">
                     <div>
                       <label className="block text-gray-700 font-semibold mb-2">
@@ -181,7 +201,7 @@ export default function Checkout() {
                         name="customerPhone"
                         value={formData.customerPhone}
                         onChange={handleInputChange}
-                        placeholder="أدخل رقم الهاتف"
+                        placeholder="أدخل رقم هاتفك"
                         required
                       />
                     </div>
@@ -190,13 +210,12 @@ export default function Checkout() {
                       <label className="block text-gray-700 font-semibold mb-2">
                         العنوان *
                       </label>
-                      <textarea
+                      <Input
+                        type="text"
                         name="customerAddress"
                         value={formData.customerAddress}
                         onChange={handleInputChange}
-                        placeholder="أدخل عنوانك بالتفصيل"
-                        rows={3}
-                        className="w-full border border-gray-300 rounded-lg px-3 py-2"
+                        placeholder="أدخل عنوانك"
                         required
                       />
                     </div>
@@ -215,7 +234,7 @@ export default function Checkout() {
 
                   <div>
                     <label className="block text-gray-700 font-semibold mb-2">
-                      رقم محفظة فودافون كاش *
+                      رقم محفظة فودافون كاش (اختياري)
                     </label>
                     <Input
                       type="tel"
@@ -223,7 +242,6 @@ export default function Checkout() {
                       value={formData.vodafoneWalletNumber}
                       onChange={handleInputChange}
                       placeholder="أدخل رقم محفظتك"
-                      required
                     />
                     <p className="text-sm text-gray-600 mt-2">
                       هذا الرقم سيُستخدم لتأكيد الدفع
@@ -231,15 +249,22 @@ export default function Checkout() {
                   </div>
                 </div>
 
-                {/* Submit Button */}
-                <div className="border-t pt-6">
+                {/* Submit Button - WhatsApp */}
+                <div className="border-t pt-6 space-y-3">
                   <Button
-                    type="submit"
+                    type="button"
+                    onClick={handleWhatsAppSubmit}
                     disabled={loading}
-                    className="w-full bg-blue-600 hover:bg-blue-700 py-3 text-lg"
+                    className="w-full bg-green-600 hover:bg-green-700 py-3 text-lg flex items-center justify-center gap-2"
                   >
-                    {loading ? "جاري المعالجة..." : "تأكيد الطلب"}
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-4.255.949c-1.238.503-2.335 1.236-3.356 2.258-1.688 1.694-2.637 3.957-2.637 6.383 0 1.564.311 3.081.902 4.555l-1.38 5.116 5.319-1.384c1.279.855 2.807 1.279 4.152 1.279h.004c5.079 0 9.237-4.155 9.237-9.237 0-2.469-.967-4.787-2.724-6.528-1.757-1.74-4.09-2.697-6.549-2.697z"/>
+                    </svg>
+                    {loading ? "جاري المعالجة..." : "إرسال الطلب عبر واتساب"}
                   </Button>
+                  <p className="text-xs text-gray-500 text-center">
+                    سيتم فتح واتساب برقم المحل مع تفاصيل طلبك
+                  </p>
                 </div>
               </form>
             </Card>
@@ -248,41 +273,27 @@ export default function Checkout() {
           {/* Order Summary */}
           <div className="lg:col-span-1">
             <Card className="p-6 sticky top-24">
-              <h2 className="text-xl font-bold mb-6 text-gray-800">ملخص الطلب</h2>
-
-              <div className="space-y-3 mb-6 pb-6 border-b border-gray-200">
+              <h3 className="text-lg font-bold mb-4 text-gray-800">ملخص الطلب</h3>
+              
+              <div className="space-y-3 mb-4 max-h-64 overflow-y-auto">
                 {items.map((item) => (
                   <div key={item.id} className="flex justify-between text-sm">
                     <span className="text-gray-600">
-                      {item.name} × {item.quantity}
+                      {item.name} x {item.quantity}
                     </span>
                     <span className="font-semibold">
-                      {(parseFloat(item.price) * item.quantity).toFixed(2)} ج.م
+                      {(item.quantity * (typeof item.price === 'string' ? parseFloat(item.price) : item.price)).toFixed(2)} ج.م
                     </span>
                   </div>
                 ))}
               </div>
 
-              <div className="space-y-2">
-                <div className="flex justify-between">
+              <div className="border-t pt-4">
+                <div className="flex justify-between mb-2">
                   <span className="text-gray-600">الإجمالي:</span>
                   <span className="text-2xl font-bold text-blue-600">
                     {total.toFixed(2)} ج.م
                   </span>
-                </div>
-              </div>
-
-              {/* Contact Info */}
-              <div className="mt-6 pt-6 border-t border-gray-200">
-                <div className="bg-gray-50 rounded-lg p-4 space-y-2">
-                  <div className="flex items-center gap-2 text-sm">
-                    <Phone className="w-4 h-4 text-blue-600" />
-                    <span className="text-gray-700">01004520056</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm">
-                    <MapPin className="w-4 h-4 text-blue-600" />
-                    <span className="text-gray-700">رأس البر - سوق 89</span>
-                  </div>
                 </div>
               </div>
             </Card>
