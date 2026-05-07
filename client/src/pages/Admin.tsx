@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -15,9 +15,17 @@ export default function Admin() {
 
   // Default admin credentials
   const ADMIN_PASSWORD = "admin123";
+  
+  // التحقق من أن المستخدم هو العضو رقم 1 (المالك)
+  const isOwner = user?.id === 1;
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isOwner) {
+      toast.error("لا تملك صلاحية الوصول إلى لوحة التحكم. هذه اللوحة متاحة للمالك فقط");
+      setPassword("");
+      return;
+    }
     if (password === ADMIN_PASSWORD) {
       setIsAuthenticated(true);
       setShowPasswordForm(false);

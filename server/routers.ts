@@ -127,19 +127,37 @@ export const appRouter = router({
           totalAmount: parseFloat(orderData.totalAmount).toFixed(2),
         };
         
-        const result = await db.insert(orders).values(orderToInsert as InsertOrder);
-        const orderId = (result as any).insertId;
-        
-        // إدراج عناصر الطلب مع تحويل السعر إلى رقم عشري
-        for (const item of items) {
-          await db.insert(orderItems).values({
-            orderId,
-            productId: item.productId,
-            quantity: item.quantity,
-            price: parseFloat(item.price).toFixed(2),
-          } as InsertOrderItem);
+        try {
+          const totalAmountDecimal = parseFloat(orderData.totalAmount).toString();
+          
+          const orderToInsert = {
+            customerName: orderData.customerName,
+            customerPhone: orderData.customerPhone,
+            customerAddress: orderData.customerAddress,
+            totalAmount: totalAmountDecimal,
+            vodafoneWalletNumber: orderData.vodafoneWalletNumber || null,
+            paymentMethod: 'vodafone_cash',
+            paymentStatus: 'pending' as const,
+            status: 'pending' as const,
+          } as InsertOrder
+          
+          const result = await db.insert(orders).values(orderToInsert);
+          const orderId = (result as any).insertId;
+          
+          // إدراج عناصر الطلب
+          for (const item of items) {
+            const priceDecimal = parseFloat(item.price).toString();
+            await db.insert(orderItems).values({
+              orderId,
+              productId: item.productId,
+              quantity: item.quantity,
+              price: priceDecimal,
+            });
+          }
+          return { id: orderId, ...orderData };
+        } catch (error: any) {
+          throw new Error(`فشل إنشاء الطلب: ${error.message}`);
         }
-        return { id: orderId, ...orderData };
       }),
     updateStatus: protectedProcedure
       .input(z.object({ id: z.number(), status: z.enum(["pending", "confirmed", "processing", "shipped", "completed", "cancelled"]) }))
