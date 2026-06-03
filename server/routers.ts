@@ -121,12 +121,6 @@ export const appRouter = router({
         if (!db) throw new Error("Database not available");
         const { items, ...orderData } = input;
         
-        // تحويل totalAmount إلى رقم عشري
-        const orderToInsert = {
-          ...orderData,
-          totalAmount: parseFloat(orderData.totalAmount).toFixed(2),
-        };
-        
         try {
           const totalAmountDecimal = parseFloat(orderData.totalAmount).toString();
           
@@ -141,18 +135,32 @@ export const appRouter = router({
             status: 'pending' as const,
           } as InsertOrder
           
-          const result = await db.insert(orders).values(orderToInsert);
-          const orderId = (result as any).insertId;
+          // إدراج الطلب والحصول على ID
+          const insertResult = await db.insert(orders).values(orderToInsert);
+          
+          // استخراج orderId من النتيجة
+          let orderId: number;
+          if (typeof insertResult === 'object' && insertResult !== null && 'insertId' in insertResult) {
+            orderId = (insertResult as any).insertId as number;
+          } else if (typeof insertResult === 'object' && insertResult !== null && 'lastInsertRowid' in insertResult) {
+            orderId = (insertResult as any).lastInsertRowid as number;
+          } else {
+            // إذا فشل استخراج ID، نحاول الحصول على آخر طلب
+            const lastOrder = await db.select().from(orders).orderBy(orders.id).limit(1);
+            if (lastOrder.length === 0) throw new Error('فشل في الحصول على رقم الطلب');
+            orderId = lastOrder[0].id;
+          }
           
           // إدراج عناصر الطلب
           for (const item of items) {
             const priceDecimal = parseFloat(item.price).toString();
-            await db.insert(orderItems).values({
-              orderId,
+            const itemToInsert: InsertOrderItem = {
+              orderId: orderId,
               productId: item.productId,
               quantity: item.quantity,
               price: priceDecimal,
-            });
+            };
+            await db.insert(orderItems).values(itemToInsert);
           }
           return { id: orderId, ...orderData };
         } catch (error: any) {

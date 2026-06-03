@@ -133,7 +133,7 @@ export default function Checkout() {
       toast.success(`تم إنشاء الطلب بنجاح! رقم الطلب: ${result.id}`);
       
       // فتح الواتساب برقم المحل
-      const shopPhone = "201004520056";
+      const shopPhone = "201002934519";
       const encodedMessage = encodeURIComponent(message);
       const whatsappUrl = `https://wa.me/${shopPhone}?text=${encodedMessage}`;
       window.open(whatsappUrl, "_blank");
