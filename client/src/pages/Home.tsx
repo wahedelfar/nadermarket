@@ -82,25 +82,24 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Features Section */}
-      <section className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-          <Card className="p-6 text-center hover:shadow-lg transition-shadow">
-            <Truck className="w-12 h-12 text-blue-600 mx-auto mb-4" />
-            <h3 className="text-xl font-bold mb-2">توصيل سريع</h3>
-            <p className="text-gray-600">نوصل طلبك بسرعة وأمان إلى باب منزلك</p>
-          </Card>
-          <Card className="p-6 text-center hover:shadow-lg transition-shadow">
-            <ShoppingCart className="w-12 h-12 text-green-600 mx-auto mb-4" />
-            <h3 className="text-xl font-bold mb-2">منتجات متنوعة</h3>
-            <p className="text-gray-600">تشكيلة واسعة من أفضل المنتجات الطازة</p>
-          </Card>
-          <Card className="p-6 text-center hover:shadow-lg transition-shadow">
-            <Phone className="w-12 h-12 text-orange-600 mx-auto mb-4" />
-            <h3 className="text-xl font-bold mb-2">خدمة العملاء</h3>
-            <p className="text-gray-600">فريق متخصص جاهز للإجابة على استفساراتك</p>
-          </Card>
-        </div>
+      {/* Features Section - Compact */}
+      <section className="max-w-7xl mx-auto px-4 py-4">
+        <Card className="p-4 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200">
+          <div className="grid grid-cols-3 gap-4 text-center">
+            <div className="flex flex-col items-center">
+              <Truck className="w-6 h-6 text-blue-600 mb-1" />
+              <p className="text-xs font-semibold text-gray-800">توصيل سريع</p>
+            </div>
+            <div className="flex flex-col items-center border-l border-r border-blue-300">
+              <ShoppingCart className="w-6 h-6 text-green-600 mb-1" />
+              <p className="text-xs font-semibold text-gray-800">منتجات متنوعة</p>
+            </div>
+            <div className="flex flex-col items-center">
+              <Phone className="w-6 h-6 text-orange-600 mb-1" />
+              <p className="text-xs font-semibold text-gray-800">خدمة العملاء</p>
+            </div>
+          </div>
+        </Card>
       </section>
 
       {/* Categories Section */}
