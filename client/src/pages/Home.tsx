@@ -1,13 +1,36 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ShoppingCart, MapPin, Phone, Truck } from "lucide-react";
+import { ChevronLeft, ChevronRight, MapPin, Phone, ShoppingCart, Sparkles, Truck } from "lucide-react";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
+import { useCart } from "@/contexts/CartContext";
+import { getNextSlideIndex, getPreviousSlideIndex, selectFeaturedProducts } from "@/lib/featuredProducts";
 
 export default function Home() {
   const [categories, setCategories] = useState<any[]>([]);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const { addToCart } = useCart();
   const { data: categoriesData, isLoading } = trpc.categories.list.useQuery();
+  const { data: productsData, isLoading: productsLoading } = trpc.products.list.useQuery();
+
+  const featuredProducts = selectFeaturedProducts(productsData ?? []);
+
+  const activeProduct = featuredProducts[activeSlide];
+
+  useEffect(() => {
+    setActiveSlide((current) => featuredProducts.length ? current % featuredProducts.length : 0);
+  }, [featuredProducts.length]);
+
+  useEffect(() => {
+    if (featuredProducts.length < 2) return;
+
+    const intervalId = window.setInterval(() => {
+      setActiveSlide((current) => getNextSlideIndex(current, featuredProducts.length));
+    }, 5000);
+
+    return () => window.clearInterval(intervalId);
+  }, [featuredProducts.length]);
 
   useEffect(() => {
     if (categoriesData) {
@@ -72,7 +95,7 @@ export default function Home() {
                 تصفح المنتجات
               </Button>
             </Link>
-            <a href="tel:01004520056">
+            <a href="tel:01002934519">
               <Button variant="outline" className="text-white border-white hover:bg-blue-700">
                 <Phone className="w-4 h-4 ml-2" />
                 اتصل بنا
@@ -100,6 +123,97 @@ export default function Home() {
             </div>
           </div>
         </Card>
+      </section>
+
+      {/* Latest Products Slider */}
+      <section className="max-w-7xl mx-auto px-4 pb-8" aria-labelledby="latest-products-title">
+        <div className="mb-3 flex items-center justify-between gap-3">
+          <div>
+            <p className="text-xs font-bold tracking-wide text-blue-600">اختيارات نادر ماركت</p>
+            <h2 id="latest-products-title" className="text-2xl font-bold text-gray-800">أحدث المنتجات الطازة</h2>
+          </div>
+          <Link href="/products" className="text-sm font-semibold text-blue-600 hover:text-blue-800">
+            عرض الكل
+          </Link>
+        </div>
+
+        {productsLoading ? (
+          <div className="h-56 animate-pulse rounded-2xl bg-blue-100" aria-label="جاري تحميل المنتجات" />
+        ) : activeProduct ? (
+          <Card className="relative overflow-hidden border-blue-100 bg-gradient-to-l from-blue-700 via-blue-600 to-cyan-500 text-white shadow-lg">
+            <div className="grid min-h-56 md:grid-cols-[0.9fr_1.1fr]">
+              <div className="order-2 flex flex-col justify-center p-5 text-right md:order-1 md:p-7">
+                <div className="mb-3 flex items-center gap-2 text-blue-100">
+                  <Sparkles className="h-4 w-4" aria-hidden="true" />
+                  <span className="text-sm font-semibold">طازة ومختارة بعناية</span>
+                </div>
+                <h3 className="mb-2 text-2xl font-bold">{activeProduct.name}</h3>
+                <p className="mb-4 line-clamp-2 min-h-10 text-sm text-blue-50">
+                  {activeProduct.description || "جودة ممتازة وسعر مناسب من نادر ماركت"}
+                </p>
+                <div className="mb-5 text-2xl font-extrabold">
+                  {Number(activeProduct.price).toFixed(2)} <span className="text-base font-medium">ج.م</span>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => addToCart(activeProduct)}
+                    className="rounded-lg bg-white px-4 py-2 text-sm font-bold text-blue-700 shadow-sm transition hover:bg-blue-50 active:scale-[0.97]"
+                  >
+                    أضف للسلة
+                  </button>
+                  <Link href={`/product/${activeProduct.id}`}>
+                    <Button variant="outline" className="border-white bg-transparent text-white hover:bg-white/15 hover:text-white">
+                      عرض المنتج
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+              <div className="order-1 min-h-48 bg-white/10 md:order-2">
+                <img
+                  src={activeProduct.image || "https://via.placeholder.com/600x400?text=Nader+Market"}
+                  alt={activeProduct.name}
+                  className="h-full min-h-48 w-full object-cover md:min-h-56"
+                />
+              </div>
+            </div>
+
+            {featuredProducts.length > 1 && (
+              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between md:left-auto md:right-5 md:w-52">
+                <button
+                  type="button"
+                  onClick={() => setActiveSlide((current) => getPreviousSlideIndex(current, featuredProducts.length))}
+                  className="rounded-full bg-white/20 p-2 text-white backdrop-blur transition hover:bg-white/35 focus:outline-none focus:ring-2 focus:ring-white active:scale-[0.97]"
+                  aria-label="المنتج السابق"
+                >
+                  <ChevronRight className="h-5 w-5" aria-hidden="true" />
+                </button>
+                <div className="flex items-center gap-1.5" aria-label={`المنتج ${activeSlide + 1} من ${featuredProducts.length}`}>
+                  {featuredProducts.map((product, index) => (
+                    <button
+                      key={product.id}
+                      type="button"
+                      onClick={() => setActiveSlide(index)}
+                      className={`h-2 rounded-full transition-all ${index === activeSlide ? "w-6 bg-white" : "w-2 bg-white/50 hover:bg-white/80"}`}
+                      aria-label={`عرض ${product.name}`}
+                      aria-current={index === activeSlide ? "true" : undefined}
+                    />
+                  ))}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setActiveSlide((current) => (current + 1) % featuredProducts.length)}
+                  className="rounded-full bg-white/20 p-2 text-white backdrop-blur transition hover:bg-white/35 focus:outline-none focus:ring-2 focus:ring-white active:scale-[0.97]"
+                  aria-label="المنتج التالي"
+                >
+                  <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+                </button>
+              </div>
+            )}
+          </Card>
+        ) : (
+          <Card className="p-6 text-center text-gray-600">سيتم عرض أحدث المنتجات هنا قريباً.</Card>
+        )}
       </section>
 
       {/* Categories Section */}
@@ -145,7 +259,7 @@ export default function Home() {
               <h3 className="text-xl font-bold mb-4">تواصل معنا</h3>
               <p className="text-gray-400 flex items-center gap-2">
                 <Phone className="w-4 h-4" />
-                01004520056
+                01002934519
               </p>
               <p className="text-gray-400 flex items-center gap-2 mt-2">
                 <MapPin className="w-4 h-4" />
