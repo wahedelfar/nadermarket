@@ -1,3 +1,5 @@
+export const SLIDER_INTERVAL_MS = 5000;
+
 export type FeaturedProductCandidate = {
   isActive: boolean;
   stock: number;

@@ -3,9 +3,13 @@ import {
   getNextSlideIndex,
   getPreviousSlideIndex,
   selectFeaturedProducts,
+  SLIDER_INTERVAL_MS,
 } from "./featuredProducts";
 
 describe("featured products slider helpers", () => {
+  it("uses a five-second auto-advance interval", () => {
+    expect(SLIDER_INTERVAL_MS).toBe(5000);
+  });
   it("selects active in-stock products in newest-first order", () => {
     const products = [
       { id: 1, name: "قديم", isActive: true, stock: 4, createdAt: "2026-01-01" },

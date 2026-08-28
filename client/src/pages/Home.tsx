@@ -5,11 +5,12 @@ import { ChevronLeft, ChevronRight, MapPin, Phone, ShoppingCart, Sparkles, Truck
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { useCart } from "@/contexts/CartContext";
-import { getNextSlideIndex, getPreviousSlideIndex, selectFeaturedProducts } from "@/lib/featuredProducts";
+import { getNextSlideIndex, getPreviousSlideIndex, selectFeaturedProducts, SLIDER_INTERVAL_MS } from "@/lib/featuredProducts";
 
 export default function Home() {
   const [categories, setCategories] = useState<any[]>([]);
   const [activeSlide, setActiveSlide] = useState(0);
+  const [isSliderPaused, setIsSliderPaused] = useState(false);
   const { addToCart } = useCart();
   const { data: categoriesData, isLoading } = trpc.categories.list.useQuery();
   const { data: productsData, isLoading: productsLoading } = trpc.products.list.useQuery();
@@ -23,14 +24,14 @@ export default function Home() {
   }, [featuredProducts.length]);
 
   useEffect(() => {
-    if (featuredProducts.length < 2) return;
+    if (featuredProducts.length < 2 || isSliderPaused) return;
 
     const intervalId = window.setInterval(() => {
       setActiveSlide((current) => getNextSlideIndex(current, featuredProducts.length));
-    }, 5000);
+    }, SLIDER_INTERVAL_MS);
 
     return () => window.clearInterval(intervalId);
-  }, [featuredProducts.length]);
+  }, [featuredProducts.length, isSliderPaused]);
 
   useEffect(() => {
     if (categoriesData) {
@@ -140,7 +141,14 @@ export default function Home() {
         {productsLoading ? (
           <div className="h-56 animate-pulse rounded-2xl bg-blue-100" aria-label="جاري تحميل المنتجات" />
         ) : activeProduct ? (
-          <Card className="group relative overflow-hidden border-blue-100 bg-gradient-to-l from-blue-700 via-blue-600 to-cyan-500 text-white shadow-lg motion-safe:transition-[transform,box-shadow] motion-safe:duration-300 motion-safe:ease-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-blue-900/25">
+          <Card
+              className="group relative overflow-hidden border-blue-100 bg-gradient-to-l from-blue-700 via-blue-600 to-cyan-500 text-white shadow-lg motion-safe:transition-[transform,box-shadow] motion-safe:duration-300 motion-safe:ease-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-blue-900/25"
+              onMouseEnter={() => setIsSliderPaused(true)}
+              onMouseLeave={() => setIsSliderPaused(false)}
+              onFocus={() => setIsSliderPaused(true)}
+              onBlur={() => setIsSliderPaused(false)}
+              aria-label={isSliderPaused ? "السلايدر متوقف مؤقتاً" : "سلايدر أحدث المنتجات"}
+            >
             <div className="grid min-h-56 md:grid-cols-[0.9fr_1.1fr]">
               <div className="order-2 flex flex-col justify-center p-5 text-right md:order-1 md:p-7">
                 <div className="mb-3 flex items-center gap-2 text-blue-100">
