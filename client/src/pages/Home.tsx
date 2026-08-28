@@ -140,7 +140,7 @@ export default function Home() {
         {productsLoading ? (
           <div className="h-56 animate-pulse rounded-2xl bg-blue-100" aria-label="جاري تحميل المنتجات" />
         ) : activeProduct ? (
-          <Card className="relative overflow-hidden border-blue-100 bg-gradient-to-l from-blue-700 via-blue-600 to-cyan-500 text-white shadow-lg">
+          <Card className="group relative overflow-hidden border-blue-100 bg-gradient-to-l from-blue-700 via-blue-600 to-cyan-500 text-white shadow-lg motion-safe:transition-[transform,box-shadow] motion-safe:duration-300 motion-safe:ease-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-blue-900/25">
             <div className="grid min-h-56 md:grid-cols-[0.9fr_1.1fr]">
               <div className="order-2 flex flex-col justify-center p-5 text-right md:order-1 md:p-7">
                 <div className="mb-3 flex items-center gap-2 text-blue-100">
@@ -158,23 +158,26 @@ export default function Home() {
                   <button
                     type="button"
                     onClick={() => addToCart(activeProduct)}
-                    className="rounded-lg bg-white px-4 py-2 text-sm font-bold text-blue-700 shadow-sm transition hover:bg-blue-50 active:scale-[0.97]"
+                    className="rounded-lg bg-white px-4 py-2 text-sm font-bold text-blue-700 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-blue-50 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-blue-600 active:scale-[0.97]"
                   >
                     أضف للسلة
                   </button>
                   <Link href={`/product/${activeProduct.id}`}>
-                    <Button variant="outline" className="border-white bg-transparent text-white hover:bg-white/15 hover:text-white">
+                    <Button variant="outline" className="border-white bg-transparent text-white transition duration-200 hover:-translate-y-0.5 hover:bg-white/15 hover:text-white hover:shadow-md focus-visible:ring-2 focus-visible:ring-white active:scale-[0.97]">
                       عرض المنتج
                     </Button>
                   </Link>
                 </div>
               </div>
-              <div className="order-1 min-h-48 bg-white/10 md:order-2">
-                <img
-                  src={activeProduct.image || "https://via.placeholder.com/600x400?text=Nader+Market"}
-                  alt={activeProduct.name}
-                  className="h-full min-h-48 w-full object-cover md:min-h-56"
-                />
+              <div className="order-1 min-h-48 overflow-hidden bg-white/10 md:order-2">
+                <div className="relative h-full min-h-48 md:min-h-56">
+                  <img
+                    src={activeProduct.image || "https://via.placeholder.com/600x400?text=Nader+Market"}
+                    alt={activeProduct.name}
+                    className="h-full min-h-48 w-full object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-out group-hover:scale-105 md:min-h-56"
+                  />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-blue-950/45 via-transparent to-white/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                </div>
               </div>
             </div>
 
@@ -183,7 +186,7 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={() => setActiveSlide((current) => getPreviousSlideIndex(current, featuredProducts.length))}
-                  className="rounded-full bg-white/20 p-2 text-white backdrop-blur transition hover:bg-white/35 focus:outline-none focus:ring-2 focus:ring-white active:scale-[0.97]"
+                  className="rounded-full bg-white/20 p-2 text-white backdrop-blur transition duration-200 hover:scale-110 hover:bg-white/35 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-white active:scale-[0.97]"
                   aria-label="المنتج السابق"
                 >
                   <ChevronRight className="h-5 w-5" aria-hidden="true" />
@@ -194,7 +197,7 @@ export default function Home() {
                       key={product.id}
                       type="button"
                       onClick={() => setActiveSlide(index)}
-                      className={`h-2 rounded-full transition-all ${index === activeSlide ? "w-6 bg-white" : "w-2 bg-white/50 hover:bg-white/80"}`}
+                      className={`h-2 rounded-full transition-all duration-200 ${index === activeSlide ? "w-6 bg-white" : "w-2 bg-white/50 hover:w-4 hover:bg-white/80"}`}
                       aria-label={`عرض ${product.name}`}
                       aria-current={index === activeSlide ? "true" : undefined}
                     />
@@ -203,7 +206,7 @@ export default function Home() {
                 <button
                   type="button"
                   onClick={() => setActiveSlide((current) => (current + 1) % featuredProducts.length)}
-                  className="rounded-full bg-white/20 p-2 text-white backdrop-blur transition hover:bg-white/35 focus:outline-none focus:ring-2 focus:ring-white active:scale-[0.97]"
+                  className="rounded-full bg-white/20 p-2 text-white backdrop-blur transition duration-200 hover:scale-110 hover:bg-white/35 hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-white active:scale-[0.97]"
                   aria-label="المنتج التالي"
                 >
                   <ChevronLeft className="h-5 w-5" aria-hidden="true" />
