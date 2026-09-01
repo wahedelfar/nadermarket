@@ -68,7 +68,7 @@
 
 ```bash
 # استنساخ المستودع
-git clone https://github.com/nadermarket/nadermarket.git
+git clone https://github.com/wahedelfar/nadermarket.git
 cd nadermarket
 
 # تثبيت المكتبات
@@ -157,8 +157,8 @@ pnpm build
 # تشغيل الاختبارات
 pnpm test
 
-# فحص الأخطاء
-pnpm lint
+# فحص TypeScript
+pnpm check
 
 # إدارة قاعدة البيانات
 pnpm db:push      # دفع التغييرات إلى قاعدة البيانات
@@ -166,6 +166,12 @@ pnpm db:studio    # فتح واجهة إدارة قاعدة البيانات
 ```
 
 ---
+
+## 📱 تطبيق Nader Market والأرشفة
+
+يدعم المتجر التثبيت كتطبيق PWA من الهاتف والكمبيوتر عبر زر «ثبّت التطبيق»، مع أيقونات قياسية وقابلة للقناع بمقاسات متعددة، وService Worker خفيف لا يخزن واجهات API. عند فتح التطبيق المثبت لأول مرة تظهر رسالة ترحيبية عربية فاخرة.
+
+تم تجهيز `manifest.webmanifest` و`robots.txt` و`sitemap.xml`، بالإضافة إلى وصف الصفحة وCanonical URL وOpen Graph وTwitter Cards وStructured Data من نوع `GroceryStore` لتحسين ظهور المتجر في نتائج البحث ومشاركته على شبكات التواصل.
 
 ## 🔐 الأمان والخصوصية
 
@@ -179,7 +185,7 @@ pnpm db:studio    # فتح واجهة إدارة قاعدة البيانات
 
 ## 📊 الإحصائيات
 
-- **عدد المنتجات:** 19+ منتج
+- **عدد المنتجات:** 20+ منتج
 - **عدد الأقسام:** 8 أقسام رئيسية
 - **أوقات التحميل:** < 2 ثانية
 - **معدل الاستجابة:** 99.9%

@@ -15,6 +15,7 @@ import AdminProducts from "./pages/AdminProducts";
 import AdminOrders from "./pages/AdminOrders";
 import AdminCategories from "./pages/AdminCategories";
 import AdminSetup from "./pages/AdminSetup";
+import PwaInstallPrompt from "./components/PwaInstallPrompt";
 
 function Router() {
   return (
@@ -43,6 +44,7 @@ function App() {
           <TooltipProvider>
             <Toaster />
             <Router />
+            <PwaInstallPrompt />
           </TooltipProvider>
         </CartProvider>
       </ThemeProvider>
