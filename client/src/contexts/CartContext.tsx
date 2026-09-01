@@ -1,13 +1,7 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { CART_STORAGE_KEY, parseStoredCart, type CartItem } from "@/lib/cartStorage";
 
-export interface CartItem {
-  id: number;
-  categoryId: number;
-  name: string;
-  price: string;
-  image?: string;
-  quantity: number;
-}
+export type { CartItem } from "@/lib/cartStorage";
 
 interface CartContextType {
   items: CartItem[];
@@ -21,7 +15,29 @@ interface CartContextType {
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
-  const [items, setItems] = useState<CartItem[]>([]);
+  const [items, setItems] = useState<CartItem[]>(() => {
+    if (typeof window === "undefined") return [];
+    return parseStoredCart(window.localStorage.getItem(CART_STORAGE_KEY));
+  });
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(CART_STORAGE_KEY, JSON.stringify(items));
+    } catch {
+      // Storage can be unavailable in private browsing or restricted environments.
+    }
+  }, [items]);
+
+  useEffect(() => {
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === CART_STORAGE_KEY) {
+        setItems(parseStoredCart(event.newValue));
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
 
   const addToCart = (product: any) => {
     setItems((prevItems) => {
@@ -30,17 +46,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
         return prevItems.map((item) =>
           item.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
-            : item
+            : item,
         );
       }
       return [
         ...prevItems,
         {
-          id: product.id,
-          categoryId: product.categoryId,
-          name: product.name,
-          price: product.price,
-          image: product.image,
+          id: Number(product.id),
+          categoryId: Number(product.categoryId),
+          name: String(product.name),
+          price: String(product.price),
+          image: product.image ? String(product.image) : undefined,
           quantity: 1,
         },
       ];
@@ -58,8 +74,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     }
     setItems((prevItems) =>
       prevItems.map((item) =>
-        item.id === productId ? { ...item, quantity } : item
-      )
+        item.id === productId ? { ...item, quantity } : item,
+      ),
     );
   };
 
@@ -69,7 +85,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const total = items.reduce(
     (sum, item) => sum + parseFloat(item.price) * item.quantity,
-    0
+    0,
   );
 
   return (
