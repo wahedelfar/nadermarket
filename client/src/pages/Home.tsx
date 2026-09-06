@@ -286,7 +286,7 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; <Link href="/admin" aria-label="الدخول إلى لوحة الإدارة" className="rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-400">2026</Link> نادر ماركت. جميع الحقوق محفوظة.</p>
+            <p>&copy; <Link href="/admin" aria-label="الدخول إلى لوحة الإدارة" data-admin-entry="footer-year" className="rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-400">2026</Link> نادر ماركت. جميع الحقوق محفوظة.</p>
           </div>
         </div>
       </footer>
