@@ -182,5 +182,5 @@
 - [x] فتح نموذج تعديل المنتج الحديث الظاهر في السلايدر مثل Test Product وتوثيق نجاحه
 - [x] التحقق من عينة ممثلة من صفوف `/admin/products` أو اختبار أن كل صف يملك إجراء تعديل فعال
 
-- [ ] حفظ نقطة تفتيش جديدة بعد تحديثات تأمين لوحة الإدارة وحارس المسارات ورفع commit 9a5caff
-- [ ] التأكد أن نقطة التفتيش الجديدة تتضمن App.tsx وAdminRouteGuard.tsx وAdmin.tsx وAdminProducts.tsx وserver/adminAuth.ts وserver/routers.ts وSETUP.md
+- [x] حفظ نقطة تفتيش جديدة بعد تحديثات تأمين لوحة الإدارة وحارس المسارات ورفع commit 9a5caff - تم حفظ النسخة 3e2d2183
+- [x] التأكد أن نقطة التفتيش الجديدة تتضمن App.tsx وAdminRouteGuard.tsx وAdmin.tsx وAdminProducts.tsx وserver/adminAuth.ts وserver/routers.ts وSETUP.md
