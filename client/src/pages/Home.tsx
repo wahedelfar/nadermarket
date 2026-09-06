@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, LockKeyhole, MapPin, Phone, ShoppingCart, Sparkles, Truck } from "lucide-react";
+import { ChevronLeft, ChevronRight, MapPin, Phone, ShoppingCart, Sparkles, Truck } from "lucide-react";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { useCart } from "@/contexts/CartContext";
@@ -59,12 +59,6 @@ export default function Home() {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <Link href="/admin">
-              <Button variant="outline" className="border-blue-200 text-blue-700 hover:bg-blue-50">
-                <LockKeyhole className="w-4 h-4 ml-2" />
-                دخول الإدارة
-              </Button>
-            </Link>
             <Link href="/cart">
               <Button className="bg-blue-600 hover:bg-blue-700">
                 <ShoppingCart className="w-4 h-4 ml-2" />
@@ -292,7 +286,7 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; 2026 نادر ماركت. جميع الحقوق محفوظة.</p>
+            <p>&copy; <Link href="/admin" aria-label="الدخول إلى لوحة الإدارة" className="rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-400">2026</Link> نادر ماركت. جميع الحقوق محفوظة.</p>
           </div>
         </div>
       </footer>
