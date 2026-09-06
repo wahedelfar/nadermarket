@@ -1,7 +1,9 @@
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
-import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
+import { adminProcedure, publicProcedure, router } from "./_core/trpc";
+import { TRPCError } from "@trpc/server";
+import { ADMIN_COOKIE_NAME, createAdminSession, getAdminCookieOptions, isAdminSession, validateAdminCredentials } from "./adminAuth";
 import { seedDatabase } from "./seed";
 import { z } from "zod";
 import { getCategories, getCategoryById, getProducts, getProductById, getOrders, getOrderById, getOrderItems, getDb } from "./db";
@@ -11,7 +13,26 @@ import { eq } from "drizzle-orm";
 export const appRouter = router({
   system: systemRouter,
   admin: router({
-    seed: publicProcedure.mutation(async () => {
+    login: publicProcedure
+      .input(z.object({ email: z.string().email(), username: z.string().min(1), password: z.string().min(1) }))
+      .mutation(({ input, ctx }) => {
+        if (!validateAdminCredentials(input)) {
+          throw new TRPCError({ code: "UNAUTHORIZED", message: "بيانات الدخول غير صحيحة" });
+        }
+        ctx.res.cookie(ADMIN_COOKIE_NAME, createAdminSession(), getAdminCookieOptions(ctx.req));
+        return { success: true } as const;
+      }),
+    logout: publicProcedure.mutation(({ ctx }) => {
+      ctx.res.clearCookie(ADMIN_COOKIE_NAME, { ...getAdminCookieOptions(ctx.req), maxAge: -1 });
+      return { success: true } as const;
+    }),
+    me: publicProcedure.query(({ ctx }) => {
+      if (!isAdminSession(ctx.req)) {
+        throw new TRPCError({ code: "UNAUTHORIZED", message: "يلزم تسجيل دخول المدير" });
+      }
+      return { authenticated: true } as const;
+    }),
+    seed: adminProcedure.mutation(async () => {
       try {
         await seedDatabase();
         return { success: true, message: "تم إضافة البيانات الافتراضية بنجاح" };
@@ -34,7 +55,7 @@ export const appRouter = router({
   categories: router({
     list: publicProcedure.query(() => getCategories()),
     getById: publicProcedure.input(z.number()).query(({ input }) => getCategoryById(input)),
-    create: protectedProcedure
+    create: adminProcedure
       .input(z.object({ name: z.string(), description: z.string().optional(), image: z.string().optional() }))
       .mutation(async ({ input }) => {
         const db = await getDb();
@@ -42,7 +63,7 @@ export const appRouter = router({
         const result = await db.insert(categories).values(input as InsertCategory);
         return result;
       }),
-    update: protectedProcedure
+    update: adminProcedure
       .input(z.object({ id: z.number(), name: z.string().optional(), description: z.string().optional(), image: z.string().optional() }))
       .mutation(async ({ input }) => {
         const db = await getDb();
@@ -51,7 +72,7 @@ export const appRouter = router({
         const result = await db.update(categories).set(data).where(eq(categories.id, id));
         return result;
       }),
-    delete: protectedProcedure.input(z.number()).mutation(async ({ input }) => {
+    delete: adminProcedure.input(z.number()).mutation(async ({ input }) => {
       const db = await getDb();
       if (!db) throw new Error("Database not available");
       const result = await db.delete(categories).where(eq(categories.id, input));
@@ -62,7 +83,7 @@ export const appRouter = router({
   products: router({
     list: publicProcedure.input(z.number().optional()).query(({ input }) => getProducts(input)),
     getById: publicProcedure.input(z.number()).query(({ input }) => getProductById(input)),
-    create: protectedProcedure
+    create: adminProcedure
       .input(z.object({
         categoryId: z.number(),
         name: z.string(),
@@ -77,7 +98,7 @@ export const appRouter = router({
         const result = await db.insert(products).values(input as InsertProduct);
         return result;
       }),
-    update: protectedProcedure
+    update: adminProcedure
       .input(z.object({
         id: z.number(),
         categoryId: z.number().optional(),
@@ -95,7 +116,7 @@ export const appRouter = router({
         const result = await db.update(products).set(data).where(eq(products.id, id));
         return result;
       }),
-    delete: protectedProcedure.input(z.number()).mutation(async ({ input }) => {
+    delete: adminProcedure.input(z.number()).mutation(async ({ input }) => {
       const db = await getDb();
       if (!db) throw new Error("Database not available");
       const result = await db.delete(products).where(eq(products.id, input));
@@ -104,9 +125,9 @@ export const appRouter = router({
   }),
 
   orders: router({
-    list: protectedProcedure.query(() => getOrders()),
-    getById: protectedProcedure.input(z.number()).query(({ input }) => getOrderById(input)),
-    getItems: protectedProcedure.input(z.number()).query(({ input }) => getOrderItems(input)),
+    list: adminProcedure.query(() => getOrders()),
+    getById: adminProcedure.input(z.number()).query(({ input }) => getOrderById(input)),
+    getItems: adminProcedure.input(z.number()).query(({ input }) => getOrderItems(input)),
     create: publicProcedure
       .input(z.object({
         customerName: z.string(),
@@ -167,7 +188,7 @@ export const appRouter = router({
           throw new Error(`فشل إنشاء الطلب: ${error.message}`);
         }
       }),
-    updateStatus: protectedProcedure
+    updateStatus: adminProcedure
       .input(z.object({ id: z.number(), status: z.enum(["pending", "confirmed", "processing", "shipped", "completed", "cancelled"]) }))
       .mutation(async ({ input }) => {
         const db = await getDb();
@@ -175,7 +196,7 @@ export const appRouter = router({
         const result = await db.update(orders).set({ status: input.status }).where(eq(orders.id, input.id));
         return result;
       }),
-    delete: protectedProcedure.input(z.number()).mutation(async ({ input }) => {
+    delete: adminProcedure.input(z.number()).mutation(async ({ input }) => {
       const db = await getDb();
       if (!db) throw new Error("Database not available");
       const result = await db.delete(orders).where(eq(orders.id, input));

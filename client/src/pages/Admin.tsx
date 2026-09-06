@@ -4,38 +4,56 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Lock, LogOut } from "lucide-react";
 import { Link } from "wouter";
-import { useAuth } from "@/_core/hooks/useAuth";
+import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 
 export default function Admin() {
-  const { user, logout } = useAuth();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [localAuthenticated, setLocalAuthenticated] = useState(false);
+  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [showPasswordForm, setShowPasswordForm] = useState(true);
+  const adminSession = trpc.admin.me.useQuery(undefined, {
+    retry: false,
+    refetchOnWindowFocus: false,
+  });
+  const loginMutation = trpc.admin.login.useMutation();
+  const logoutMutation = trpc.admin.logout.useMutation();
+  const utils = trpc.useUtils();
+  const isAuthenticated = localAuthenticated || adminSession.data?.authenticated === true;
 
-  // Default admin credentials
-  const ADMIN_PASSWORD = "admin123";
-  
-  const handlePasswordSubmit = (e: React.FormEvent) => {
+  const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
-      setIsAuthenticated(true);
-      setShowPasswordForm(false);
-      toast.success("تم تسجيل الدخول بنجاح");
-    } else {
-      toast.error("كلمة المرور غير صحيحة");
-      setPassword("");
-    }
+    loginMutation.mutate(
+      { email: email.trim(), username: username.trim(), password },
+      {
+        onSuccess: async () => {
+          setLocalAuthenticated(true);
+          setPassword("");
+          await utils.admin.me.invalidate();
+          toast.success("تم تسجيل الدخول بنجاح");
+        },
+        onError: (error) => {
+          toast.error(error.message || "بيانات الدخول غير صحيحة");
+          setPassword("");
+        },
+      },
+    );
   };
 
   const handleLogout = () => {
-    setIsAuthenticated(false);
-    setPassword("");
-    setShowPasswordForm(true);
-    toast.success("تم تسجيل الخروج");
+    logoutMutation.mutate(undefined, {
+      onSuccess: async () => {
+        setLocalAuthenticated(false);
+        await utils.admin.me.reset();
+        setEmail("");
+        setUsername("");
+        setPassword("");
+        toast.success("تم تسجيل الخروج");
+      },
+    });
   };
 
-  if (showPasswordForm) {
+  if (!isAuthenticated) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center p-4">
         <Card className="w-full max-w-md p-8">
@@ -45,25 +63,52 @@ export default function Admin() {
             <p className="text-gray-600 mt-2">نادر ماركت - الإدارة</p>
           </div>
 
-          <form onSubmit={handlePasswordSubmit} className="space-y-6">
+          <form onSubmit={handleLoginSubmit} className="space-y-5">
             <div>
-              <label className="block text-gray-700 font-semibold mb-2">
-                كلمة المرور
-              </label>
+              <label className="block text-gray-700 font-semibold mb-2">البريد الإلكتروني</label>
+              <Input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="البريد الإلكتروني المصرح به"
+                autoComplete="username"
+                required
+                className="w-full"
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-semibold mb-2">اسم المستخدم</label>
+              <Input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="اسم المستخدم"
+                autoComplete="username"
+                required
+                className="w-full"
+              />
+            </div>
+
+            <div>
+              <label className="block text-gray-700 font-semibold mb-2">كلمة المرور</label>
               <Input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="أدخل كلمة المرور"
+                autoComplete="current-password"
+                required
                 className="w-full"
               />
             </div>
 
             <Button
               type="submit"
+              disabled={loginMutation.isPending}
               className="w-full bg-blue-600 hover:bg-blue-700 py-3"
             >
-              دخول
+              {loginMutation.isPending ? "جارٍ التحقق..." : "دخول آمن"}
             </Button>
           </form>
 

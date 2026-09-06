@@ -26,6 +26,7 @@ export default function AdminProducts() {
   const createMutation = trpc.products.create.useMutation();
   const updateMutation = trpc.products.update.useMutation();
   const deleteMutation = trpc.products.delete.useMutation();
+  const utils = trpc.useUtils();
 
   useEffect(() => {
     if (productsData) setProducts(productsData);
@@ -53,6 +54,7 @@ export default function AdminProducts() {
         await createMutation.mutateAsync(formData);
         toast.success("تم إضافة المنتج بنجاح");
       }
+      await utils.products.list.invalidate();
       resetForm();
     } catch (error: any) {
       toast.error(error.message || "حدث خطأ");
@@ -63,6 +65,7 @@ export default function AdminProducts() {
     if (!confirm("هل أنت متأكد من حذف هذا المنتج؟")) return;
     try {
       await deleteMutation.mutateAsync(id);
+      await utils.products.list.invalidate();
       toast.success("تم حذف المنتج بنجاح");
     } catch (error: any) {
       toast.error(error.message || "حدث خطأ");

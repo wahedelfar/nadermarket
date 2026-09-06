@@ -6,11 +6,16 @@
 - **رقم واتساب:** 01002934519
 - **وسيلة الدفع:** فودافون كاش
 
-## بيانات الدخول الافتراضية
+## بيانات دخول لوحة التحكم
 
 ### لوحة التحكم الإدارية
 - **رابط الوصول:** `/admin`
-- **كلمة المرور:** `admin123`
+- **البريد المصرح به:** `akardomiat@gmail.com`
+- **اسم المستخدم:** `nader`
+- **كلمة المرور:** تُحفظ في متغير الخادم `ADMIN_LOGIN_PASSWORD` ولا تُخزّن في GitHub أو الواجهة العامة.
+- **المتغيرات المطلوبة:** `ADMIN_LOGIN_EMAIL` و`ADMIN_LOGIN_USERNAME` و`ADMIN_LOGIN_PASSWORD`.
+
+> لا تعتمد لوحة الإدارة على OAuth العام؛ كل مسارات الإدارة الداخلية محمية بجلسة مدير موقعة.
 
 ## المتطلبات
 - Node.js 18+
@@ -37,6 +42,9 @@ DATABASE_URL=your_database_url
 JWT_SECRET=your_secret_key
 VITE_APP_ID=your_app_id
 OAUTH_SERVER_URL=your_oauth_url
+ADMIN_LOGIN_EMAIL=akardomiat@gmail.com
+ADMIN_LOGIN_USERNAME=nader
+ADMIN_LOGIN_PASSWORD=ضع_القيمة_في_أداة_الأسرار_ولا_تضعها_في_GitHub
 ```
 
 ### 4. إعداد قاعدة البيانات
@@ -85,10 +93,11 @@ pnpm start
 - `/checkout` - إتمام الطلب
 
 ### لوحة التحكم
-- `/admin` - الصفحة الرئيسية للإدارة
-- `/admin/categories` - إدارة الأقسام
-- `/admin/products` - إدارة المنتجات
-- `/admin/orders` - إدارة الطلبات
+- `/admin` - تسجيل الدخول ولوحة الإدارة
+- `/admin/categories` - إدارة الأقسام (محمية)
+- `/admin/products` - إدارة المنتجات (محمية)
+- `/admin/orders` - إدارة الطلبات (محمية)
+- `/admin/setup` - إعداد البيانات (محمية)
 
 ## الاختبارات
 ```bash

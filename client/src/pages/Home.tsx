@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, MapPin, Phone, ShoppingCart, Sparkles, Truck } from "lucide-react";
+import { ChevronLeft, ChevronRight, LockKeyhole, MapPin, Phone, ShoppingCart, Sparkles, Truck } from "lucide-react";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { useCart } from "@/contexts/CartContext";
@@ -58,12 +58,20 @@ export default function Home() {
               </p>
             </div>
           </div>
-          <Link href="/cart">
-            <Button className="bg-blue-600 hover:bg-blue-700">
-              <ShoppingCart className="w-4 h-4 ml-2" />
-              السلة
-            </Button>
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link href="/admin">
+              <Button variant="outline" className="border-blue-200 text-blue-700 hover:bg-blue-50">
+                <LockKeyhole className="w-4 h-4 ml-2" />
+                دخول الإدارة
+              </Button>
+            </Link>
+            <Link href="/cart">
+              <Button className="bg-blue-600 hover:bg-blue-700">
+                <ShoppingCart className="w-4 h-4 ml-2" />
+                السلة
+              </Button>
+            </Link>
+          </div>
         </div>
       </header>
 

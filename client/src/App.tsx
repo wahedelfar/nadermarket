@@ -16,6 +16,23 @@ import AdminOrders from "./pages/AdminOrders";
 import AdminCategories from "./pages/AdminCategories";
 import AdminSetup from "./pages/AdminSetup";
 import PwaInstallPrompt from "./components/PwaInstallPrompt";
+import AdminRouteGuard from "./components/AdminRouteGuard";
+
+function AdminProductsRoute() {
+  return <AdminRouteGuard><AdminProducts /></AdminRouteGuard>;
+}
+
+function AdminOrdersRoute() {
+  return <AdminRouteGuard><AdminOrders /></AdminRouteGuard>;
+}
+
+function AdminCategoriesRoute() {
+  return <AdminRouteGuard><AdminCategories /></AdminRouteGuard>;
+}
+
+function AdminSetupRoute() {
+  return <AdminRouteGuard><AdminSetup /></AdminRouteGuard>;
+}
 
 function Router() {
   return (
@@ -26,10 +43,10 @@ function Router() {
       <Route path="/cart" component={Cart} />
       <Route path="/checkout" component={Checkout} />
       <Route path="/admin" component={Admin} />
-      <Route path="/admin/setup" component={AdminSetup} />
-      <Route path="/admin/categories" component={AdminCategories} />
-      <Route path="/admin/products" component={AdminProducts} />
-      <Route path="/admin/orders" component={AdminOrders} />
+      <Route path="/admin/setup" component={AdminSetupRoute} />
+      <Route path="/admin/categories" component={AdminCategoriesRoute} />
+      <Route path="/admin/products" component={AdminProductsRoute} />
+      <Route path="/admin/orders" component={AdminOrdersRoute} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>

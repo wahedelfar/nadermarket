@@ -1,5 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from "vitest";
 import { appRouter } from "./routers";
+import { ADMIN_COOKIE_NAME, createAdminSession } from "./adminAuth";
 import type { TrpcContext } from "./_core/context";
 
 function createTestContext(): TrpcContext {
@@ -19,7 +20,7 @@ function createTestContext(): TrpcContext {
     user,
     req: {
       protocol: "https",
-      headers: {},
+      headers: { cookie: `${ADMIN_COOKIE_NAME}=${createAdminSession()}` },
     } as TrpcContext["req"],
     res: {} as TrpcContext["res"],
   };
@@ -91,7 +92,7 @@ describe("Orders Router", () => {
     try {
       await caller.orders.create({
         customerName: "Test Customer",
-        customerPhone: "01004520056",
+        customerPhone: "01002934519",
         customerAddress: "Test Address",
         totalAmount: "100.00",
         items: [
