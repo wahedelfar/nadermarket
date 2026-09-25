@@ -56,8 +56,25 @@ export default function AdminProducts() {
     if (!file.type.startsWith("image/")) throw new Error("اختر ملف صورة فقط");
     if (file.size > 10 * 1024 * 1024) throw new Error("حجم الصورة الأصلية يجب ألا يتجاوز 10MB");
 
-    const base64 = await fileToBase64(file);
-    return { base64, contentType: file.type };
+    const bitmap = await createImageBitmap(file);
+    const maxSide = 1600;
+    const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
+    const canvas = document.createElement("canvas");
+    canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+    canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("تعذر تجهيز الصورة");
+    ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+    bitmap.close();
+
+    const blob = await new Promise<Blob | null>((resolve) =>
+      canvas.toBlob(resolve, "image/webp", 0.82)
+    );
+    if (!blob) throw new Error("تعذر ضغط الصورة");
+    if (blob.size > 3 * 1024 * 1024) throw new Error("الصورة بعد الضغط ما زالت كبيرة. اختر صورة أصغر.");
+
+    const optimized = new File([blob], "product.webp", { type: "image/webp" });
+    return { base64: await fileToBase64(optimized), contentType: "image/webp" };
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
