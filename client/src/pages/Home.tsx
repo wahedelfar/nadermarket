@@ -75,7 +75,24 @@ export default function Home() {
           </div>
 
           <div className="ml-auto flex shrink-0 items-center gap-2">
-            <Link href="/products" className="hidden rounded-xl px-3 py-2 text-sm font-bold text-blue-900/75 transition hover:bg-white/55 hover:text-blue-700 lg:block">المنتجات</Link>
+            <div className="hidden lg:block" aria-label="واجهة الوحيد ماركت">
+              <div className="relative h-12 w-40 overflow-hidden rounded-lg border border-white/80 bg-gradient-to-b from-[#f7fdff] via-[#d9f2ff] to-[#8ccfff] shadow-[0_8px_18px_-10px_rgba(7,59,122,0.65)]">
+                <div className="absolute inset-x-2 top-1 h-6 -skew-x-6 rounded-sm border border-blue-900/10 bg-gradient-to-r from-[#073b7a] via-[#0d62bd] to-[#5dbbff] shadow-md">
+                  <div className="flex h-full items-center justify-center gap-1.5">
+                    <span className="text-[11px] font-black tracking-tight text-white">الوحيد</span>
+                    <span className="text-[8px] font-bold text-sky-100">MARKET</span>
+                  </div>
+                </div>
+                <div className="absolute bottom-0 left-2 right-2 h-5 rounded-t-sm border border-blue-300/50 bg-white/80">
+                  <div className="grid h-full grid-cols-3 gap-px bg-blue-200/60 p-px">
+                    <span className="rounded-[2px] bg-gradient-to-t from-blue-100 to-white" />
+                    <span className="rounded-[2px] bg-gradient-to-t from-sky-100 to-white" />
+                    <span className="rounded-[2px] bg-gradient-to-t from-blue-100 to-white" />
+                  </div>
+                </div>
+                <span className="absolute -bottom-1 left-1 h-2 w-14 rounded-full bg-blue-900/20 blur-sm" />
+              </div>
+            </div>
             <Link href="/cart">
               <Button className="h-11 rounded-xl bg-blue-600 px-3.5 font-bold text-white shadow-lg shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-blue-700/25 md:px-4">
                 <ShoppingCart className="ml-2 h-4 w-4" />
