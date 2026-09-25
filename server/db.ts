@@ -111,6 +111,10 @@ export async function getProductById(id: number) {
 export async function uploadProductImage(input: { base64: string; contentType: string }) {
   return await api({ action: "admin.product-images.upload", body: input, admin: true });
 }
+export async function uploadPaymentProof(input: { base64: string; contentType: string }) {
+  return await api({ action: "payment-proof.upload", body: input });
+}
+
 
 export async function createProduct(input: {
   categoryId: number; name: string; description?: string; price: string; image?: string; stock?: number; isActive?: boolean;
