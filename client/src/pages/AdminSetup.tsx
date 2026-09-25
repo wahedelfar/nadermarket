@@ -42,7 +42,7 @@ export default function AdminSetup() {
           <div className="text-center mb-8">
             <AlertCircle className="w-16 h-16 text-blue-600 mx-auto mb-4" />
             <h2 className="text-2xl font-bold text-gray-800 mb-2">
-              مرحباً بك في نادر ماركت
+              مرحباً بك في الوحيد ماركت
             </h2>
             <p className="text-gray-600">
               يبدو أن هذه أول مرة تستخدم المتجر. دعنا نضيف البيانات الافتراضية.
