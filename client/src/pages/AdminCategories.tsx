@@ -161,7 +161,7 @@ export default function AdminCategories() {
                       <div className="flex gap-2">
                         <Button
                           onClick={() => {
-                            setFormData(category);
+                            setFormData({ name: category.name ?? "", description: category.description ?? "" });
                             setEditingId(category.id);
                             setShowForm(true);
                           }}
