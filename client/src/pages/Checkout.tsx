@@ -61,11 +61,11 @@ export default function Checkout() {
 
   if (orderCreated) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#e8f6ff]">
         <header className="bg-white shadow-md">
           <div className="max-w-7xl mx-auto px-4 py-4">
             <Link href="/">
-              <h1 className="text-2xl font-bold text-blue-600 cursor-pointer">الوحيد ماركت</h1>
+              <h1 className="text-2xl font-black text-blue-800 cursor-pointer">الوحيد ماركت</h1>
             </Link>
           </div>
         </header>
@@ -91,10 +91,10 @@ export default function Checkout() {
 
   if (items.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50">
+      <div className="min-h-screen bg-[#e8f6ff]">
         <header className="bg-white shadow-md">
           <div className="max-w-7xl mx-auto px-4 py-4">
-            <Link href="/"><h1 className="text-2xl font-bold text-blue-600 cursor-pointer">الوحيد ماركت</h1></Link>
+            <Link href="/"><h1 className="text-2xl font-black text-blue-800 cursor-pointer">الوحيد ماركت</h1></Link>
           </div>
         </header>
         <div className="max-w-7xl mx-auto px-4 py-12 text-center">
@@ -158,10 +158,10 @@ export default function Checkout() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-md sticky top-0 z-50">
+    <div className="min-h-screen bg-[#e8f6ff]">
+      <header className="bg-gradient-to-l from-[#9fd8ff] via-[#bfe7ff] to-[#dff3ff] shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/"><h1 className="text-2xl font-bold text-blue-600 cursor-pointer">الوحيد ماركت</h1></Link>
+          <Link href="/"><h1 className="text-2xl font-black text-blue-800 cursor-pointer">الوحيد ماركت</h1></Link>
           <Link href="/cart"><Button variant="outline"><ArrowRight className="w-4 h-4 ml-2" />العودة للسلة</Button></Link>
         </div>
       </header>
@@ -253,7 +253,7 @@ export default function Checkout() {
               <div className="border-t pt-4">
                 <div className="flex justify-between items-center">
                   <span className="text-gray-600">الإجمالي:</span>
-                  <span className="text-2xl font-bold text-blue-600">{total.toFixed(2)} ج.م</span>
+                  <span className="text-2xl font-black text-blue-800">{total.toFixed(2)} ج.م</span>
                 </div>
               </div>
             </Card>
