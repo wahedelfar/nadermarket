@@ -1,4 +1,4 @@
-const CACHE_NAME = 'nader-market-v1';
+const CACHE_NAME = 'al-waheed-market-v2';
 const APP_SHELL = ['/', '/manifest.webmanifest'];
 
 self.addEventListener('install', (event) => {
