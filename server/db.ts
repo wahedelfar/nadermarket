@@ -74,7 +74,18 @@ function orderFromDb(row: any) {
   } : row;
 }
 
-export async function getStoreSettings() {\n  const rows = await api({ action: "store.settings" });\n  const row = Array.isArray(rows) ? rows[0] : rows;\n  return { storeName: row?.store_name ?? "الوحيد ماركت", vodafoneCashNumber: row?.vodafone_cash_number ?? "01012345678" };\n}\n\nexport async function updateStoreSettings(input: { vodafoneCashNumber: string }) {\n  const row = await api({ action: "admin.store-settings.update", body: input, admin: true });\n  return { storeName: row?.store_name ?? "الوحيد ماركت", vodafoneCashNumber: row?.vodafone_cash_number ?? input.vodafoneCashNumber };\n}\n\nexport async function getCategories() {
+export async function getStoreSettings() {
+  const rows = await api({ action: "store.settings" });
+  const row = Array.isArray(rows) ? rows[0] : rows;
+  return { storeName: row?.store_name ?? "الوحيد ماركت", vodafoneCashNumber: row?.vodafone_cash_number ?? "01012345678" };
+}
+
+export async function updateStoreSettings(input: { vodafoneCashNumber: string }) {
+  const row = await api({ action: "admin.store-settings.update", body: input, admin: true });
+  return { storeName: row?.store_name ?? "الوحيد ماركت", vodafoneCashNumber: row?.vodafone_cash_number ?? input.vodafoneCashNumber };
+}
+
+export async function getCategories() {
   const rows = await api({ action: "categories" });
   return Array.isArray(rows) ? rows.map(categoryFromDb) : [];
 }
