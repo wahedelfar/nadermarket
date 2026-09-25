@@ -7,4 +7,8 @@ export const ENV = {
   isProduction: process.env.NODE_ENV === "production",
   forgeApiUrl: process.env.BUILT_IN_FORGE_API_URL ?? "",
   forgeApiKey: process.env.BUILT_IN_FORGE_API_KEY ?? "",
+  supabaseUrl: process.env.SUPABASE_URL ?? "https://wvtmaqintxtnxorxwupl.supabase.co",
+  adminLoginEmail: process.env.ADMIN_LOGIN_EMAIL ?? "akardomiat@gmail.com",
+  adminLoginUsername: process.env.ADMIN_LOGIN_USERNAME ?? "nader",
+  adminLoginPassword: process.env.ADMIN_LOGIN_PASSWORD ?? "nadermarket",
 };
