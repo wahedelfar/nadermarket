@@ -15,6 +15,7 @@ import AdminProducts from "./pages/AdminProducts";
 import AdminOrders from "./pages/AdminOrders";
 import AdminCategories from "./pages/AdminCategories";
 import AdminSetup from "./pages/AdminSetup";
+import AdminSettings from "./pages/AdminSettings";
 import PwaInstallPrompt from "./components/PwaInstallPrompt";
 import AdminRouteGuard from "./components/AdminRouteGuard";
 
@@ -43,7 +44,7 @@ function Router() {
       <Route path="/cart" component={Cart} />
       <Route path="/checkout" component={Checkout} />
       <Route path="/admin" component={Admin} />
-      <Route path="/admin/setup" component={AdminSetupRoute} />
+      <Route path="/admin/setup" component={AdminSetupRoute} />\n      <Route path="/admin/settings" component={AdminSettingsRoute} />
       <Route path="/admin/categories" component={AdminCategoriesRoute} />
       <Route path="/admin/products" component={AdminProductsRoute} />
       <Route path="/admin/orders" component={AdminOrdersRoute} />
