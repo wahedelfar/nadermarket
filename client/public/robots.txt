@@ -4,4 +4,4 @@ Disallow: /admin
 Disallow: /api/
 Disallow: /404
 
-Sitemap: https://nadermarket-fdwgbli8.manus.space/sitemap.xml
+Sitemap: https://nader-market.vercel.app/sitemap.xml
