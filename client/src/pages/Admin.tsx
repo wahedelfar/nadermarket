@@ -9,7 +9,6 @@ import { toast } from "sonner";
 
 export default function Admin() {
   const [localAuthenticated, setLocalAuthenticated] = useState(false);
-  const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const adminSession = trpc.admin.me.useQuery(undefined, {
@@ -24,7 +23,7 @@ export default function Admin() {
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     loginMutation.mutate(
-      { email: email.trim(), username: username.trim(), password },
+      { username: username.trim(), password },
       {
         onSuccess: async () => {
           setLocalAuthenticated(true);
@@ -45,7 +44,6 @@ export default function Admin() {
       onSuccess: async () => {
         setLocalAuthenticated(false);
         await utils.admin.me.reset();
-        setEmail("");
         setUsername("");
         setPassword("");
         toast.success("تم تسجيل الخروج");
@@ -64,19 +62,6 @@ export default function Admin() {
           </div>
 
           <form onSubmit={handleLoginSubmit} className="space-y-5">
-            <div>
-              <label className="block text-gray-700 font-semibold mb-2">البريد الإلكتروني</label>
-              <Input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="البريد الإلكتروني المصرح به"
-                autoComplete="username"
-                required
-                className="w-full"
-              />
-            </div>
-
             <div>
               <label className="block text-gray-700 font-semibold mb-2">اسم المستخدم</label>
               <Input
