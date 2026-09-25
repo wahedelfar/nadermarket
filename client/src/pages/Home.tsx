@@ -41,16 +41,14 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#c7e9ff] via-[#e8f6ff] to-[#f8fcff]">
-      {/* Full-width storefront header artwork */}
+      {/* Full-width storefront header artwork — full image, slightly shorter, no crop */}
       <header className="relative w-full overflow-hidden bg-[#063b78]">
-        <div className="relative w-full aspect-[3/1] min-h-[170px] max-h-[430px]">
-          <img
-            src="/header-storefront.webp"
-            alt="الوحيد ماركت"
-            className="absolute inset-0 h-full w-full object-cover"
-            fetchPriority="high"
-          />
-        </div>
+        <img
+          src="/header-storefront.svg"
+          alt="الوحيد ماركت"
+          className="block h-auto w-full"
+          fetchPriority="high"
+        />
       </header>
 
       {/* Floating cart */}
