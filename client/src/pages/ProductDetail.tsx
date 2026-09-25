@@ -26,7 +26,7 @@ export default function ProductDetail() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-[#e8f6ff] flex items-center justify-center">
         <div className="animate-spin">جاري التحميل...</div>
       </div>
     );
@@ -34,8 +34,8 @@ export default function ProductDetail() {
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-gray-50">
-        <header className="bg-white shadow-md">
+      <div className="min-h-screen bg-[#e8f6ff]">
+        <header className="bg-gradient-to-l from-[#9fd8ff] via-[#bfe7ff] to-[#dff3ff] shadow-md">
           <div className="max-w-7xl mx-auto px-4 py-4">
             <Link href="/products">
               <Button variant="ghost" className="mb-4">
@@ -60,12 +60,12 @@ export default function ProductDetail() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#e8f6ff]">
       {/* Header */}
       <header className="bg-white shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/">
-            <h1 className="text-2xl font-bold text-blue-600 cursor-pointer">الوحيد ماركت</h1>
+            <h1 className="text-2xl font-black text-blue-800 cursor-pointer">الوحيد ماركت</h1>
           </Link>
           <Link href="/cart">
             <Button className="bg-blue-600 hover:bg-blue-700">
