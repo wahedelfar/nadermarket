@@ -43,7 +43,7 @@ export default function Products() {
       <header className="bg-white shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/">
-            <h1 className="text-2xl font-bold text-blue-600 cursor-pointer">نادر ماركت</h1>
+            <h1 className="text-2xl font-bold text-blue-600 cursor-pointer">الوحيد ماركت</h1>
           </Link>
           <Link href="/cart">
             <Button className="bg-blue-600 hover:bg-blue-700">
