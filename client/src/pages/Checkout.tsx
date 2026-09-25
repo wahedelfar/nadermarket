@@ -63,14 +63,14 @@ export default function Checkout() {
         <header className="bg-white shadow-md">
           <div className="max-w-7xl mx-auto px-4 py-4">
             <Link href="/">
-              <h1 className="text-2xl font-bold text-blue-600 cursor-pointer">نادر ماركت</h1>
+              <h1 className="text-2xl font-bold text-blue-600 cursor-pointer">الوحيد ماركت</h1>
             </Link>
           </div>
         </header>
         <div className="max-w-2xl mx-auto px-4 py-12">
           <Card className="p-8 text-center">
             <CheckCircle2 className="mx-auto mb-4 h-16 w-16 text-green-600" />
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">شكراً لاختيارك نادر ماركت</h2>
+            <h2 className="text-3xl font-bold text-gray-800 mb-2">شكراً لاختيارك الوحيد ماركت</h2>
             <p className="text-xl text-gray-600 mb-2">تم استلام طلبك بنجاح. نرجوا انتظار اتصال المندوب. رقم الطلب: <span className="font-bold text-blue-600">#{orderId}</span></p>
             {paymentMethod === "vodafone_cash" ? (
               <p className="text-gray-600 mb-8">تم حفظ بيانات الطلب وصورة التحويل. نرجوا انتظار اتصال المندوب لتأكيد الطلب وموعد التسليم.</p>
@@ -92,7 +92,7 @@ export default function Checkout() {
       <div className="min-h-screen bg-gray-50">
         <header className="bg-white shadow-md">
           <div className="max-w-7xl mx-auto px-4 py-4">
-            <Link href="/"><h1 className="text-2xl font-bold text-blue-600 cursor-pointer">نادر ماركت</h1></Link>
+            <Link href="/"><h1 className="text-2xl font-bold text-blue-600 cursor-pointer">الوحيد ماركت</h1></Link>
           </div>
         </header>
         <div className="max-w-7xl mx-auto px-4 py-12 text-center">
@@ -159,7 +159,7 @@ export default function Checkout() {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/"><h1 className="text-2xl font-bold text-blue-600 cursor-pointer">نادر ماركت</h1></Link>
+          <Link href="/"><h1 className="text-2xl font-bold text-blue-600 cursor-pointer">الوحيد ماركت</h1></Link>
           <Link href="/cart"><Button variant="outline"><ArrowRight className="w-4 h-4 ml-2" />العودة للسلة</Button></Link>
         </div>
       </header>
