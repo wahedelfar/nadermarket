@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Plus, Edit2, Trash2, ArrowRight } from "lucide-react";
+import { Plus, Edit2, Trash2, ArrowRight, Upload, Image as ImageIcon, X } from "lucide-react";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
@@ -11,7 +11,7 @@ export default function AdminProducts() {
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);\n  const [imageFile, setImageFile] = useState<File | null>(null);\n  const [uploadingImage, setUploadingImage] = useState(false);
   const [formData, setFormData] = useState({
     categoryId: 0,
     name: "",
@@ -23,7 +23,7 @@ export default function AdminProducts() {
 
   const { data: productsData } = trpc.products.list.useQuery(undefined);
   const { data: categoriesData } = trpc.categories.list.useQuery();
-  const createMutation = trpc.products.create.useMutation();
+  const createMutation = trpc.products.create.useMutation();\n  const uploadImageMutation = trpc.products.uploadImage.useMutation();
   const updateMutation = trpc.products.update.useMutation();
   const deleteMutation = trpc.products.delete.useMutation();
   const utils = trpc.useUtils();
@@ -44,20 +44,50 @@ export default function AdminProducts() {
     }));
   };
 
+  const fileToBase64 = (file: File) =>
+    new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result).split(",")[1] || "");
+      reader.onerror = () => reject(new Error("تعذر قراءة الصورة"));
+      reader.readAsDataURL(file);
+    });
+
+  const prepareImage = async (file: File) => {
+    if (!file.type.startsWith("image/")) throw new Error("اختر ملف صورة فقط");
+    if (file.size > 10 * 1024 * 1024) throw new Error("حجم الصورة الأصلية يجب ألا يتجاوز 10MB");
+
+    const base64 = await fileToBase64(file);
+    return { base64, contentType: file.type };
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      let image = formData.image;
+      if (imageFile) {
+        setUploadingImage(true);
+        const prepared = await prepareImage(imageFile);
+        const uploaded = await uploadImageMutation.mutateAsync(prepared);
+        image = uploaded.url;
+      }
+
+      if (!editingId && !image) {
+        throw new Error("ارفع صورة المنتج أولًا");
+      }
+
       if (editingId) {
-        await updateMutation.mutateAsync({ id: editingId, ...formData });
+        await updateMutation.mutateAsync({ id: editingId, ...formData, image });
         toast.success("تم تحديث المنتج بنجاح");
       } else {
-        await createMutation.mutateAsync(formData);
+        await createMutation.mutateAsync({ ...formData, image });
         toast.success("تم إضافة المنتج بنجاح");
       }
       await utils.products.list.invalidate();
       resetForm();
     } catch (error: any) {
       toast.error(error.message || "حدث خطأ");
+    } finally {
+      setUploadingImage(false);
     }
   };
 
@@ -82,6 +112,7 @@ export default function AdminProducts() {
       stock: 0,
     });
     setEditingId(null);
+    setImageFile(null);
     setShowForm(false);
   };
 
@@ -197,15 +228,40 @@ export default function AdminProducts() {
 
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">
-                  رابط الصورة
+                  صورة المنتج
                 </label>
-                <Input
-                  type="url"
-                  name="image"
-                  value={formData.image}
-                  onChange={handleInputChange}
-                  placeholder="رابط الصورة"
-                />
+                <div className="rounded-2xl border-2 border-dashed border-blue-200 bg-blue-50/40 p-5">
+                  <div className="flex flex-col sm:flex-row gap-4 items-center">
+                    <div className="w-28 h-28 rounded-xl overflow-hidden bg-white border flex items-center justify-center shrink-0">
+                      {formData.image ? (
+                        <img src={formData.image} alt={formData.name || "معاينة المنتج"} className="w-full h-full object-cover" />
+                      ) : (
+                        <ImageIcon className="w-9 h-9 text-gray-300" />
+                      )}
+                    </div>
+                    <div className="flex-1 text-center sm:text-right">
+                      <label className="inline-flex items-center gap-2 cursor-pointer rounded-xl bg-blue-600 text-white px-5 py-3 font-semibold hover:bg-blue-700 transition">
+                        <Upload className="w-4 h-4" />
+                        {imageFile ? "تغيير الصورة" : "رفع صورة من الجهاز"}
+                        <input
+                          type="file"
+                          accept="image/jpeg,image/png,image/webp,image/avif"
+                          className="hidden"
+                          onChange={(e) => setImageFile(e.target.files?.[0] || null)}
+                        />
+                      </label>
+                      <p className="text-xs text-gray-500 mt-2">JPG / PNG / WebP / AVIF — حتى 10MB قبل الرفع</p>
+                      {imageFile && (
+                        <div className="mt-2 flex items-center justify-center sm:justify-start gap-2 text-sm text-gray-700">
+                          <span className="truncate max-w-[220px]">{imageFile.name}</span>
+                          <button type="button" onClick={() => setImageFile(null)} className="text-red-500 hover:text-red-700" aria-label="إزالة الصورة">
+                            <X className="w-4 h-4" />
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className="flex gap-2">
@@ -213,7 +269,7 @@ export default function AdminProducts() {
                   type="submit"
                   className="bg-green-600 hover:bg-green-700"
                 >
-                  {editingId ? "تحديث" : "إضافة"}
+                  {uploadingImage ? "جارٍ رفع الصورة..." : editingId ? "تحديث" : "إضافة"}
                 </Button>
                 <Button
                   type="button"
@@ -273,7 +329,15 @@ export default function AdminProducts() {
                         <div className="flex gap-2">
                           <Button
                             onClick={() => {
-                              setFormData(product);
+                              setFormData({
+                                categoryId: product.categoryId,
+                                name: product.name,
+                                description: product.description || "",
+                                price: product.price,
+                                image: product.image || "",
+                                stock: product.stock,
+                              });
+                              setImageFile(null);
                               setEditingId(product.id);
                               setShowForm(true);
                             }}
