@@ -1,243 +1,57 @@
-import { getDb } from "./db";
-import { categories, products } from "../drizzle/schema";
+import { createCategory, createProduct, getCategories, getProducts } from "./db";
 
 export async function seedDatabase() {
-  const db = await getDb();
-  if (!db) {
-    throw new Error("Database connection failed");
-  }
-
-  console.log("🌱 بدء إضافة البيانات الافتراضية...");
-
-  // إضافة الأقسام
+  const existingCategories = await getCategories();
   const categoryData = [
-    {
-      name: "اللحوم",
-      description: "لحوم طازة وعالية الجودة",
-    },
-    {
-      name: "البقوليات",
-      description: "عدس وفاصوليا وحمص طازة",
-    },
-    {
-      name: "الألبان",
-      description: "جبن وزبادي وألبان طازة",
-    },
-    {
-      name: "الخضروات",
-      description: "خضروات طازة يومية",
-    },
-    {
-      name: "الفواكه",
-      description: "فواكه طازة وموسمية",
-    },
-    {
-      name: "الحبوب",
-      description: "أرز وقمح ودقيق",
-    },
-    {
-      name: "المعلبات",
-      description: "معلبات وحفظيات",
-    },
-    {
-      name: "الزيوت والتوابل",
-      description: "زيوت وتوابل وبهارات",
-    },
-  ];
+    ["اللحوم", "لحوم طازة وعالية الجودة"],
+    ["البقوليات", "عدس وفاصوليا وحمص طازة"],
+    ["الألبان", "جبن وزبادي وألبان طازة"],
+    ["الخضروات", "خضروات طازة يومية"],
+    ["الفواكه", "فواكه طازة وموسمية"],
+    ["الحبوب", "أرز وقمح ودقيق"],
+    ["المعلبات", "معلبات وحفظيات"],
+    ["الزيوت والتوابل", "زيوت وتوابل وبهارات"],
+  ] as const;
 
-  try {
-    for (const cat of categoryData) {
-      await db.insert(categories).values(cat);
-      console.log(`✅ تم إضافة قسم: ${cat.name}`);
+  const categories = [...existingCategories];
+  for (const [name, description] of categoryData) {
+    if (!categories.some((c) => c.name === name)) {
+      categories.push(await createCategory({ name, description }));
     }
-  } catch (error) {
-    console.log("ℹ️ الأقسام موجودة بالفعل أو حدث خطأ");
   }
 
-  // الحصول على الأقسام المضافة
-  const allCategories = await db.select().from(categories);
-  console.log(`\n📊 عدد الأقسام: ${allCategories.length}`);
+  const categoryId = (name: string) => categories.find((c) => c.name === name)?.id;
+  const existingProducts = await getProducts(undefined, true);
 
-  // إضافة المنتجات
-  const productsData = [
-    // اللحوم
-    {
-      name: "لحم بقري طازة",
-      description: "لحم بقري عالي الجودة، طازة يومياً",
-      price: "120.00",
-      categoryId: allCategories.find((c) => c.name === "اللحوم")?.id || 1,
-      image: "https://via.placeholder.com/300x300?text=لحم+بقري",
-      stock: 50,
-    },
-    {
-      name: "دجاج طازة",
-      description: "دجاج طازة، منتقى بعناية",
-      price: "45.00",
-      categoryId: allCategories.find((c) => c.name === "اللحوم")?.id || 1,
-      image: "https://via.placeholder.com/300x300?text=دجاج",
-      stock: 100,
-    },
-    {
-      name: "لحم ضأن",
-      description: "لحم ضأن طازة وطيب",
-      price: "150.00",
-      categoryId: allCategories.find((c) => c.name === "اللحوم")?.id || 1,
-      image: "https://via.placeholder.com/300x300?text=لحم+ضأن",
-      stock: 30,
-    },
+  const products = [
+    ["اللحوم","لحم بقري طازة","لحم بقري عالي الجودة، طازة يومياً","120.00",50],
+    ["اللحوم","دجاج طازة","دجاج طازة، منتقى بعناية","45.00",100],
+    ["اللحوم","لحم ضأن","لحم ضأن طازة وطيب","150.00",30],
+    ["البقوليات","عدس أحمر","عدس أحمر طازة وصحي","25.00",200],
+    ["البقوليات","فاصوليا بيضاء","فاصوليا بيضاء مختارة","30.00",150],
+    ["البقوليات","حمص","حمص طازة وجودة عالية","28.00",180],
+    ["الألبان","جبن أبيض","جبن أبيض طازة","60.00",80],
+    ["الألبان","زبادي","زبادي طازة وصحي","15.00",120],
+    ["الألبان","حليب طازة","حليب طازة يومياً","12.00",200],
+    ["الخضروات","طماطم طازة","طماطم حمراء طازة","8.00",300],
+    ["الخضروات","خيار طازة","خيار أخضر طازة","6.00",250],
+    ["الخضروات","بصل","بصل طازة وجودة عالية","5.00",400],
+    ["الفواكه","برتقال طازة","برتقال حلو وطازة","15.00",200],
+    ["الفواكه","موز","موز أصفر وناضج","10.00",180],
+    ["الفواكه","تفاح أحمر","تفاح أحمر طازة","18.00",150],
+    ["الحبوب","أرز أبيض","أرز أبيض فاخر","35.00",300],
+    ["الحبوب","دقيق أبيض","دقيق أبيض عالي الجودة","20.00",250],
+    ["الزيوت والتوابل","زيت زيتون","زيت زيتون بكر ممتاز","80.00",100],
+    ["الزيوت والتوابل","ملح","ملح ناعم وجودة عالية","5.00",500],
+  ] as const;
 
-    // البقوليات
-    {
-      name: "عدس أحمر",
-      description: "عدس أحمر طازة وصحي",
-      price: "25.00",
-      categoryId: allCategories.find((c) => c.name === "البقوليات")?.id || 2,
-      image: "https://via.placeholder.com/300x300?text=عدس",
-      stock: 200,
-    },
-    {
-      name: "فاصوليا بيضاء",
-      description: "فاصوليا بيضاء مختارة",
-      price: "30.00",
-      categoryId: allCategories.find((c) => c.name === "البقوليات")?.id || 2,
-      image: "https://via.placeholder.com/300x300?text=فاصوليا",
-      stock: 150,
-    },
-    {
-      name: "حمص",
-      description: "حمص طازة وجودة عالية",
-      price: "28.00",
-      categoryId: allCategories.find((c) => c.name === "البقوليات")?.id || 2,
-      image: "https://via.placeholder.com/300x300?text=حمص",
-      stock: 180,
-    },
-
-    // الألبان
-    {
-      name: "جبن أبيض",
-      description: "جبن أبيض طازة",
-      price: "60.00",
-      categoryId: allCategories.find((c) => c.name === "الألبان")?.id || 3,
-      image: "https://via.placeholder.com/300x300?text=جبن",
-      stock: 80,
-    },
-    {
-      name: "زبادي",
-      description: "زبادي طازة وصحي",
-      price: "15.00",
-      categoryId: allCategories.find((c) => c.name === "الألبان")?.id || 3,
-      image: "https://via.placeholder.com/300x300?text=زبادي",
-      stock: 120,
-    },
-    {
-      name: "حليب طازة",
-      description: "حليب طازة يومياً",
-      price: "12.00",
-      categoryId: allCategories.find((c) => c.name === "الألبان")?.id || 3,
-      image: "https://via.placeholder.com/300x300?text=حليب",
-      stock: 200,
-    },
-
-    // الخضروات
-    {
-      name: "طماطم طازة",
-      description: "طماطم حمراء طازة",
-      price: "8.00",
-      categoryId: allCategories.find((c) => c.name === "الخضروات")?.id || 4,
-      image: "https://via.placeholder.com/300x300?text=طماطم",
-      stock: 300,
-    },
-    {
-      name: "خيار طازة",
-      description: "خيار أخضر طازة",
-      price: "6.00",
-      categoryId: allCategories.find((c) => c.name === "الخضروات")?.id || 4,
-      image: "https://via.placeholder.com/300x300?text=خيار",
-      stock: 250,
-    },
-    {
-      name: "بصل",
-      description: "بصل طازة وجودة عالية",
-      price: "5.00",
-      categoryId: allCategories.find((c) => c.name === "الخضروات")?.id || 4,
-      image: "https://via.placeholder.com/300x300?text=بصل",
-      stock: 400,
-    },
-
-    // الفواكه
-    {
-      name: "برتقال طازة",
-      description: "برتقال حلو وطازة",
-      price: "15.00",
-      categoryId: allCategories.find((c) => c.name === "الفواكه")?.id || 5,
-      image: "https://via.placeholder.com/300x300?text=برتقال",
-      stock: 200,
-    },
-    {
-      name: "موز",
-      description: "موز أصفر وناضج",
-      price: "10.00",
-      categoryId: allCategories.find((c) => c.name === "الفواكه")?.id || 5,
-      image: "https://via.placeholder.com/300x300?text=موز",
-      stock: 180,
-    },
-    {
-      name: "تفاح أحمر",
-      description: "تفاح أحمر طازة",
-      price: "18.00",
-      categoryId: allCategories.find((c) => c.name === "الفواكه")?.id || 5,
-      image: "https://via.placeholder.com/300x300?text=تفاح",
-      stock: 150,
-    },
-
-    // الحبوب
-    {
-      name: "أرز أبيض",
-      description: "أرز أبيض فاخر",
-      price: "35.00",
-      categoryId: allCategories.find((c) => c.name === "الحبوب")?.id || 6,
-      image: "https://via.placeholder.com/300x300?text=أرز",
-      stock: 300,
-    },
-    {
-      name: "دقيق أبيض",
-      description: "دقيق أبيض عالي الجودة",
-      price: "20.00",
-      categoryId: allCategories.find((c) => c.name === "الحبوب")?.id || 6,
-      image: "https://via.placeholder.com/300x300?text=دقيق",
-      stock: 250,
-    },
-
-    // الزيوت والتوابل
-    {
-      name: "زيت زيتون",
-      description: "زيت زيتون بكر ممتاز",
-      price: "80.00",
-      categoryId: allCategories.find((c) => c.name === "الزيوت والتوابل")?.id || 8,
-      image: "https://via.placeholder.com/300x300?text=زيت+زيتون",
-      stock: 100,
-    },
-    {
-      name: "ملح",
-      description: "ملح ناعم وجودة عالية",
-      price: "5.00",
-      categoryId: allCategories.find((c) => c.name === "الزيوت والتوابل")?.id || 8,
-      image: "https://via.placeholder.com/300x300?text=ملح",
-      stock: 500,
-    },
-  ];
-
-  try {
-    for (const prod of productsData) {
-      await db.insert(products).values(prod);
-      console.log(`✅ تم إضافة منتج: ${prod.name}`);
+  for (const [cat, name, description, price, stock] of products) {
+    if (!existingProducts.some((p) => p.name === name)) {
+      const id = categoryId(cat);
+      if (!id) throw new Error(`القسم غير موجود: ${cat}`);
+      await createProduct({ categoryId: id, name, description, price, stock, isActive: true });
     }
-  } catch (error) {
-    console.log("ℹ️ المنتجات موجودة بالفعل أو حدث خطأ");
   }
 
-  const allProducts = await db.select().from(products);
-  console.log(`\n📊 عدد المنتجات: ${allProducts.length}`);
-
-  console.log("\n✨ تم إضافة البيانات الافتراضية بنجاح!");
+  return { categories: await getCategories(), products: await getProducts() };
 }
