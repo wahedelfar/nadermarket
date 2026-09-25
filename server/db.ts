@@ -64,7 +64,6 @@ function orderFromDb(row: any) {
     customerAddress: row.customer_address,
     totalAmount: String(row.total_amount),
     status: row.status,
-    paymentMethod: row.payment_method,
     paymentStatus: row.payment_status,
     paymentMethod: row.payment_method ?? null,
     vodafoneWalletNumber: row.vodafone_wallet_number ?? null,
