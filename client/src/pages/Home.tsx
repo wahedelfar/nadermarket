@@ -257,7 +257,7 @@ export default function Home() {
       </section>
 
       {/* Simple Footer */}
-      <footer className="mt-12 border-t border-blue-900/15 bg-gradient-to-l from-[#073b7a] via-[#0b4f9e] to-[#1266b8] text-white">
+      <footer id="contact" className="mt-12 border-t border-blue-900/15 bg-gradient-to-l from-[#073b7a] via-[#0b4f9e] to-[#1266b8] text-white">
         <div className="mx-auto max-w-7xl px-4 py-7">
           <div className="flex flex-col items-center justify-between gap-5 text-center md:flex-row md:text-right">
             <div className="flex items-center gap-3">
