@@ -40,9 +40,9 @@ export default function Home() {
   }, [categoriesData]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-[#c7e9ff] via-[#e8f6ff] to-[#f8fcff]">
       {/* Header with Logo */}
-      <header className="bg-white shadow-md sticky top-0 z-50">
+      <header className="bg-gradient-to-l from-[#9fd8ff] via-[#bfe7ff] to-[#dff3ff] shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img 
@@ -51,7 +51,7 @@ export default function Home() {
               className="w-12 h-12"
             />
             <div>
-              <h1 className="text-2xl font-bold text-blue-600">الوحيد ماركت</h1>
+              <h1 className="text-2xl font-black text-blue-800">الوحيد ماركت</h1>
               <p className="text-sm text-gray-600 flex items-center gap-1">
                 <MapPin className="w-4 h-4" />
                 رأس البر - سوق 89
@@ -94,29 +94,10 @@ export default function Home() {
       </section>
 
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-12">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-4">مرحباً بك في الوحيد ماركت</h2>
-          <p className="text-xl mb-8 opacity-90">أفضل المنتجات بأسعار منافسة</p>
-          <div className="flex justify-center gap-4">
-            <Link href="/products">
-              <Button className="bg-white text-blue-600 hover:bg-gray-100">
-                تصفح المنتجات
-              </Button>
-            </Link>
-            <a href="tel:01002934519">
-              <Button variant="outline" className="text-white border-white hover:bg-blue-700">
-                <Phone className="w-4 h-4 ml-2" />
-                اتصل بنا
-              </Button>
-            </a>
-          </div>
-        </div>
-      </section>
-
+      
       {/* Features Section - Compact */}
       <section className="max-w-7xl mx-auto px-4 py-4">
-        <Card className="p-4 bg-gradient-to-r from-blue-50 to-blue-100 border border-blue-200">
+        <Card className="p-4 bg-white/90 border border-blue-100 shadow-sm">
           <div className="grid grid-cols-3 gap-4 text-center">
             <div className="flex flex-col items-center">
               <Truck className="w-6 h-6 text-blue-600 mb-1" />
@@ -150,7 +131,7 @@ export default function Home() {
           <div className="h-56 animate-pulse rounded-2xl bg-blue-100" aria-label="جاري تحميل المنتجات" />
         ) : activeProduct ? (
           <Card
-              className="group relative overflow-hidden border-blue-100 bg-gradient-to-l from-blue-700 via-blue-600 to-cyan-500 text-white shadow-lg motion-safe:transition-[transform,box-shadow] motion-safe:duration-300 motion-safe:ease-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-blue-900/25"
+              className="group relative overflow-hidden border-blue-100 bg-white text-gray-800 shadow-lg motion-safe:transition-[transform,box-shadow] motion-safe:duration-300 motion-safe:ease-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-blue-900/25"
               onMouseEnter={() => setIsSliderPaused(true)}
               onMouseLeave={() => setIsSliderPaused(false)}
               onFocus={() => setIsSliderPaused(true)}
@@ -159,40 +140,40 @@ export default function Home() {
             >
             <div className="grid min-h-56 md:grid-cols-[0.9fr_1.1fr]">
               <div className="order-2 flex flex-col justify-center p-5 text-right md:order-1 md:p-7">
-                <div className="mb-3 flex items-center gap-2 text-blue-100">
+                <div className="mb-3 flex items-center gap-2 text-blue-600">
                   <Sparkles className="h-4 w-4" aria-hidden="true" />
                   <span className="text-sm font-semibold">طازة ومختارة بعناية</span>
                 </div>
                 <h3 className="mb-2 text-2xl font-bold">{activeProduct.name}</h3>
-                <p className="mb-4 line-clamp-2 min-h-10 text-sm text-blue-50">
+                <p className="mb-4 line-clamp-2 min-h-10 text-sm text-gray-600">
                   {activeProduct.description || "جودة ممتازة وسعر مناسب من الوحيد ماركت"}
                 </p>
-                <div className="mb-5 text-2xl font-extrabold">
+                <div className="mb-5 text-2xl font-extrabold text-blue-700">
                   {Number(activeProduct.price).toFixed(2)} <span className="text-base font-medium">ج.م</span>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                   <button
                     type="button"
                     onClick={() => addToCart(activeProduct)}
-                    className="rounded-lg bg-white px-4 py-2 text-sm font-bold text-blue-700 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-blue-50 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-blue-600 active:scale-[0.97]"
+                    className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 active:scale-[0.97]"
                   >
                     أضف للسلة
                   </button>
                   <Link href={`/product/${activeProduct.id}`}>
-                    <Button variant="outline" className="border-white bg-transparent text-white transition duration-200 hover:-translate-y-0.5 hover:bg-white/15 hover:text-white hover:shadow-md focus-visible:ring-2 focus-visible:ring-white active:scale-[0.97]">
+                    <Button variant="outline" className="border-blue-200 bg-white text-blue-700 transition duration-200 hover:-translate-y-0.5 hover:bg-blue-50 hover:text-blue-800 hover:shadow-md focus-visible:ring-2 focus-visible:ring-blue-200 active:scale-[0.97]">
                       عرض المنتج
                     </Button>
                   </Link>
                 </div>
               </div>
-              <div className="order-1 min-h-48 overflow-hidden bg-white/10 md:order-2">
+              <div className="order-1 min-h-48 overflow-hidden bg-blue-50 md:order-2">
                 <div className="relative h-full min-h-48 md:min-h-56">
                   <img
                     src={activeProduct.image || "/icon.svg"}
                     alt={activeProduct.name}
                     className="h-full min-h-48 w-full object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-out group-hover:scale-105 md:min-h-56"
                   />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-blue-950/45 via-transparent to-white/10 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-blue-900/20 via-transparent to-white/20 opacity-0" transition-opacity duration-300 group-hover:opacity-100" />
                 </div>
               </div>
             </div>
@@ -267,12 +248,12 @@ export default function Home() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-800 text-white py-8 mt-12">
+      <footer className="bg-gradient-to-l from-blue-800 via-blue-700 to-blue-600 text-white py-8 mt-12">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <h3 className="text-xl font-bold mb-4">الوحيد ماركت</h3>
-              <p className="text-gray-400">أفضل متجر تجزئة في رأس البر</p>
+              <p className="text-blue-100">أفضل متجر تجزئة في رأس البر</p>
             </div>
             <div>
               <h3 className="text-xl font-bold mb-4">تواصل معنا</h3>
@@ -287,11 +268,11 @@ export default function Home() {
             </div>
             <div>
               <h3 className="text-xl font-bold mb-4">ساعات العمل</h3>
-              <p className="text-gray-400">السبت - الخميس: 8:00 - 22:00</p>
-              <p className="text-gray-400">الجمعة: 10:00 - 22:00</p>
+              <p className="text-blue-100">السبت - الخميس: 8:00 - 22:00</p>
+              <p className="text-blue-100">الجمعة: 10:00 - 22:00</p>
             </div>
           </div>
-          <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
+          <div className="border-t border-white/20 mt-8 pt-8 text-center text-blue-100">
             <p>&copy; <Link href="/admin" aria-label="الدخول إلى لوحة الإدارة" data-admin-entry="footer-year" className="rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-400">2026</Link> الوحيد ماركت. جميع الحقوق محفوظة.</p>
           </div>
         </div>
