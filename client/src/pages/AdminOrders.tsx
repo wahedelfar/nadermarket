@@ -87,10 +87,24 @@ export default function AdminOrders() {
           icon: <BellRing className="h-5 w-5" />,
         });
         if ("Notification" in window && Notification.permission === "granted") {
-          new Notification("طلب جديد — نادر ماركت", {
-            body: `#${order.id} — ${order.customerName} — ${Number(order.totalAmount).toFixed(2)} ج.م`,
-            tag: `order-${order.id}`,
-          });
+          void (async () => {
+            try {
+              if ("serviceWorker" in navigator) {
+                const registration = await navigator.serviceWorker.ready;
+                await registration.showNotification("طلب جديد — نادر ماركت", {
+                  body: `#${order.id} — ${order.customerName} — ${Number(order.totalAmount).toFixed(2)} ج.م`,
+                  tag: `order-${order.id}`,
+                  icon: "/icon.svg",
+                  badge: "/icon.svg",
+                  dir: "rtl",
+                  lang: "ar",
+                  requireInteraction: true,
+                });
+              }
+            } catch {
+              // Notification failures must never interrupt order handling.
+            }
+          })();
         }
       });
     }
