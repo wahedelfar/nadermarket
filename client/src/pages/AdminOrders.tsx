@@ -15,7 +15,10 @@ export default function AdminOrders() {
   const knownOrderIdsRef = useRef<Set<number> | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
 
-  const { data: ordersData } = trpc.orders.list.useQuery(undefined, {\n    refetchInterval: 4000,\n    refetchIntervalInBackground: true,\n  });
+  const { data: ordersData } = trpc.orders.list.useQuery(undefined, {
+    refetchInterval: 4000,
+    refetchIntervalInBackground: true,
+  });
   const { data: selectedOrderItems } = trpc.orders.getItems.useQuery(selectedOrder?.id ?? 0, { enabled: Boolean(selectedOrder?.id) });
   const updateStatusMutation = trpc.orders.updateStatus.useMutation();
   const deleteMutation = trpc.orders.delete.useMutation();
@@ -27,6 +30,75 @@ export default function AdminOrders() {
   useEffect(() => {
     setOrderItems(selectedOrderItems || []);
   }, [selectedOrderItems]);
+
+  const playAlertSound = async () => {
+    try {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) return;
+      const ctx = audioContextRef.current ?? new AudioContextClass();
+      audioContextRef.current = ctx;
+      if (ctx.state === "suspended") await ctx.resume();
+
+      const now = ctx.currentTime;
+      [0, 0.18, 0.36].forEach((offset, index) => {
+        const oscillator = ctx.createOscillator();
+        const gain = ctx.createGain();
+        oscillator.type = "sine";
+        oscillator.frequency.value = index === 1 ? 880 : 660;
+        gain.gain.setValueAtTime(0.0001, now + offset);
+        gain.gain.exponentialRampToValueAtTime(0.22, now + offset + 0.02);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + offset + 0.14);
+        oscillator.connect(gain);
+        gain.connect(ctx.destination);
+        oscillator.start(now + offset);
+        oscillator.stop(now + offset + 0.16);
+      });
+    } catch {}
+  };
+
+  const enableNotifications = async () => {
+    await playAlertSound();
+    setSoundEnabled(true);
+    if ("Notification" in window) {
+      const permission = Notification.permission === "default"
+        ? await Notification.requestPermission()
+        : Notification.permission;
+      setNotificationEnabled(permission === "granted");
+    }
+    toast.success("تم تفعيل تنبيهات الطلبات الجديدة");
+  };
+
+  useEffect(() => {
+    if (!ordersData) return;
+    const incoming = ordersData as any[];
+    const incomingIds = new Set(incoming.map((order) => Number(order.id)));
+
+    if (knownOrderIdsRef.current === null) {
+      knownOrderIdsRef.current = incomingIds;
+      setOrders(incoming);
+      return;
+    }
+
+    const newOrders = incoming.filter((order) => !knownOrderIdsRef.current!.has(Number(order.id)));
+    knownOrderIdsRef.current = incomingIds;
+    setOrders(incoming);
+
+    if (newOrders.length > 0) {
+      void playAlertSound();
+      newOrders.forEach((order) => {
+        toast.error(`طلب جديد #${order.id} — ${order.customerName}`, {
+          duration: 10000,
+          icon: <BellRing className="h-5 w-5" />,
+        });
+        if ("Notification" in window && Notification.permission === "granted") {
+          new Notification("طلب جديد — نادر ماركت", {
+            body: `#${order.id} — ${order.customerName} — ${Number(order.totalAmount).toFixed(2)} ج.م`,
+            tag: `order-${order.id}`,
+          });
+        }
+      });
+    }
+  }, [ordersData]);
 
   const handleViewOrder = async (order: any) => {
     setSelectedOrder(order);
@@ -82,13 +154,26 @@ export default function AdminOrders() {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div>\n            <h1 className="text-2xl font-bold text-blue-600">إدارة الطلبات</h1>\n            <p className="text-sm text-gray-500 mt-1">تتحدث الطلبات تلقائياً كل 4 ثوانٍ</p>\n          </div>
-          <Link href="/admin">
-            <Button variant="outline">
-              <ArrowRight className="w-4 h-4 ml-2" />
-              العودة
+          <div>
+            <h1 className="text-2xl font-bold text-blue-600">إدارة الطلبات</h1>
+            <p className="text-sm text-gray-500 mt-1">تتحدث الطلبات تلقائياً كل 4 ثوانٍ</p>
+          </div>
+          <div className="flex items-center gap-2">
+            <Button
+              variant={soundEnabled ? "default" : "outline"}
+              onClick={enableNotifications}
+              className={soundEnabled ? "bg-green-600 hover:bg-green-700" : ""}
+            >
+              {soundEnabled ? <Bell className="w-4 h-4 ml-2" /> : <Volume2 className="w-4 h-4 ml-2" />}
+              {soundEnabled ? "التنبيهات مفعلة" : "تفعيل صوت التنبيهات"}
             </Button>
-          </Link>
+            <Link href="/admin">
+              <Button variant="outline">
+                <ArrowRight className="w-4 h-4 ml-2" />
+                العودة
+              </Button>
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -151,7 +236,12 @@ export default function AdminOrders() {
                   تفاصيل الطلب #{selectedOrder.id}
                 </h2>
 
-                <div className="mb-6 rounded-xl border-2 border-blue-100 bg-blue-50 p-4">\n                  <p className="text-sm font-bold text-blue-900">حالة الدفع</p>\n                  <p className="mt-1 font-semibold text-blue-800">{selectedOrder.paymentMethod === "vodafone_cash" ? "تم الدفع عبر Vodafone Cash — راجع إثبات التحويل قبل التأكيد" : "الدفع عند الاستلام — العميل سيدفع للمندوب عند التسليم"}</p>\n                </div>\n\n                <div className="space-y-4 mb-6 pb-6 border-b border-gray-200">
+                <div className="mb-6 rounded-xl border-2 border-blue-100 bg-blue-50 p-4">
+                  <p className="text-sm font-bold text-blue-900">حالة الدفع</p>
+                  <p className="mt-1 font-semibold text-blue-800">{selectedOrder.paymentMethod === "vodafone_cash" ? "تم الدفع عبر Vodafone Cash — راجع إثبات التحويل قبل التأكيد" : "الدفع عند الاستلام — العميل سيدفع للمندوب عند التسليم"}</p>
+                </div>
+
+                <div className="space-y-4 mb-6 pb-6 border-b border-gray-200">
                   <div>
                     <p className="text-sm text-gray-600">اسم العميل</p>
                     <p className="font-semibold text-gray-800">{selectedOrder.customerName}</p>
