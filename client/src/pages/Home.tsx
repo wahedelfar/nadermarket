@@ -41,15 +41,52 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#c7e9ff] via-[#e8f6ff] to-[#f8fcff]">
-      {/* Full-width storefront header artwork — full image, slightly shorter, no crop */}
-      <header className="relative w-full overflow-hidden bg-[#063b78]">
-        <img
-          src="/header-storefront.svg"
-          alt="الوحيد ماركت"
-          className="block h-auto w-full"
-          fetchPriority="high"
-        />
-      </header>
+      {/* Premium storefront header */}
+      <section className="relative overflow-hidden bg-white shadow-[0_10px_35px_-20px_rgba(15,70,130,0.45)]">
+        <div className="mx-auto max-w-7xl border-x border-blue-100" dir="rtl">
+          <div className="flex flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 md:py-5">
+            <div className="flex items-center gap-3">
+              <img src="/icon.svg" alt="الوحيد ماركت" className="h-14 w-14 object-contain md:h-16 md:w-16" />
+              <div className="text-right">
+                <h1 className="text-2xl font-black tracking-tight text-[#123f91] md:text-3xl">الوحيد ماركت</h1>
+                <p className="mt-1 flex items-center gap-1 text-sm font-semibold text-slate-600">
+                  <MapPin className="h-4 w-4 text-[#123f91]" aria-hidden="true" />
+                  رأس البر - سوق 89
+                </p>
+              </div>
+            </div>
+            <div className="flex w-full gap-2 sm:w-auto">
+              <Link href="/products" className="flex-1 sm:flex-none">
+                <Button className="w-full rounded-xl bg-[#123f91] px-5 py-2.5 font-black text-white shadow-md hover:bg-[#0d3275]">تصفح المنتجات</Button>
+              </Link>
+              <a href="#contact" className="flex-1 sm:flex-none">
+                <Button variant="outline" className="w-full rounded-xl border-2 border-[#123f91] bg-white px-5 py-2.5 font-black text-[#123f91] hover:bg-blue-50">
+                  <Phone className="ml-2 h-4 w-4" aria-hidden="true" />اتصل بنا
+                </Button>
+              </a>
+            </div>
+          </div>
+          <div className="relative overflow-hidden bg-gradient-to-br from-[#0c43a8] via-[#1166c4] to-[#197fd0] px-5 py-7 text-center text-white md:px-8 md:py-9">
+            <div className="absolute -right-20 -top-20 h-48 w-48 rounded-full bg-cyan-300/20 blur-3xl" />
+            <div className="absolute -bottom-24 -left-16 h-56 w-56 rounded-full bg-blue-950/25 blur-3xl" />
+            <div className="relative">
+              <p className="mb-1 text-sm font-bold text-blue-100">كل احتياجاتك في مكان واحد</p>
+              <h2 className="text-3xl font-black md:text-5xl">الوحيد ماركت</h2>
+              <p className="mx-auto mt-2 max-w-2xl text-base font-semibold text-blue-50 md:text-xl">أفضل المنتجات بأسعار منافسة</p>
+              <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
+                <Link href="/products">
+                  <Button className="rounded-xl bg-white px-7 py-3 font-black text-[#123f91] shadow-lg hover:bg-blue-50">تصفح المنتجات</Button>
+                </Link>
+                <a href="#contact">
+                  <Button variant="outline" className="rounded-xl border-2 border-white bg-transparent px-7 py-3 font-black text-white hover:bg-white/10">
+                    <Phone className="ml-2 h-4 w-4" aria-hidden="true" />اتصل بنا
+                  </Button>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* Floating cart */}
       <Link
@@ -64,25 +101,6 @@ export default function Home() {
           </span>
         )}
       </Link>
-
-      {/* Hero / Welcome Banner */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#bfe7ff] via-[#d9f1ff] to-[#f3faff] py-8 md:py-12">
-        <div className="absolute -left-20 -top-20 h-56 w-56 rounded-full bg-white/70 blur-3xl" />
-        <div className="absolute -bottom-24 -right-12 h-64 w-64 rounded-full bg-sky-200/60 blur-3xl" />
-        <div className="relative mx-auto max-w-7xl px-4">
-          <div className="rounded-3xl border border-white/80 bg-white/80 p-6 text-center shadow-xl backdrop-blur-sm md:p-10">
-            <p className="mb-2 text-sm font-semibold text-blue-600">مرحباً بك في</p>
-            <h2 className="text-3xl font-black text-blue-900 md:text-5xl">الوحيد ماركت</h2>
-            <div className="mx-auto mt-5 max-w-3xl rounded-2xl bg-white px-5 py-4 shadow-lg">
-              <p className="text-xl font-black text-blue-800 md:text-3xl">كل ما تطلب أكتر… هتوفر أكتر</p>
-            </div>
-            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-slate-600 md:text-base">اختار احتياجاتك، أضفها للسلة، واختار طريقة الدفع المناسبة ليك.</p>
-            <Link href="/products" className="mt-6 inline-block">
-              <Button className="rounded-xl bg-blue-600 px-7 py-3 font-bold text-white shadow-md hover:bg-blue-700">تسوّق الآن</Button>
-            </Link>
-          </div>
-        </div>
-      </section>
 
       {/* Hero Section */}
       
