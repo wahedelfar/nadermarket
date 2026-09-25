@@ -2,25 +2,62 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Banknote, Upload, Wallet, CheckCircle2 } from "lucide-react";
 import { Link } from "wouter";
 import { useCart } from "@/contexts/CartContext";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
+
+const VODAFONE_CASH_NUMBER = "01012345678";
+const SHOP_WHATSAPP = "201002934519";
+
+async function fileToBase64(file: File) {
+  const buffer = await file.arrayBuffer();
+  let binary = "";
+  const bytes = new Uint8Array(buffer);
+  const chunk = 0x8000;
+  for (let i = 0; i < bytes.length; i += chunk) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunk));
+  }
+  return btoa(binary);
+}
+
+async function prepareProof(file: File) {
+  const bitmap = await createImageBitmap(file);
+  const maxSide = 1600;
+  const scale = Math.min(1, maxSide / Math.max(bitmap.width, bitmap.height));
+  const canvas = document.createElement("canvas");
+  canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+  canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+  const ctx = canvas.getContext("2d");
+  if (!ctx) throw new Error("تعذر تجهيز صورة التحويل");
+  ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+  bitmap.close();
+
+  const blob = await new Promise<Blob | null>((resolve) =>
+    canvas.toBlob(resolve, "image/webp", 0.82)
+  );
+  if (!blob) throw new Error("تعذر ضغط صورة التحويل");
+  if (blob.size > 3 * 1024 * 1024) throw new Error("صورة التحويل كبيرة. اختر صورة أصغر.");
+  const optimized = new File([blob], "payment-proof.webp", { type: "image/webp" });
+  return { base64: await fileToBase64(optimized), contentType: "image/webp" as const };
+}
 
 export default function Checkout() {
   const { items, total, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
   const [orderCreated, setOrderCreated] = useState(false);
   const [orderId, setOrderId] = useState<number | null>(null);
+  const [paymentMethod, setPaymentMethod] = useState<"cash_on_delivery" | "vodafone_cash">("cash_on_delivery");
+  const [proofFile, setProofFile] = useState<File | null>(null);
   const [formData, setFormData] = useState({
     customerName: "",
     customerPhone: "",
     customerAddress: "",
-    vodafoneWalletNumber: "",
   });
 
   const createOrderMutation = trpc.orders.create.useMutation();
+  const uploadProofMutation = trpc.orders.uploadPaymentProof.useMutation();
 
   if (orderCreated) {
     return (
@@ -32,27 +69,19 @@ export default function Checkout() {
             </Link>
           </div>
         </header>
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          <Card className="p-12 text-center">
-            <div className="text-green-600 mb-4">
-              <svg className="w-16 h-16 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-            </div>
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">تم إنشاء الطلب بنجاح!</h2>
+        <div className="max-w-2xl mx-auto px-4 py-12">
+          <Card className="p-8 text-center">
+            <CheckCircle2 className="mx-auto mb-4 h-16 w-16 text-green-600" />
+            <h2 className="text-3xl font-bold text-gray-800 mb-2">تم استلام طلبك!</h2>
             <p className="text-xl text-gray-600 mb-2">رقم الطلب: <span className="font-bold text-blue-600">#{orderId}</span></p>
-            <p className="text-gray-600 mb-8">سيتم التواصل معك قريباً عبر واتساب على الرقم المسجل</p>
+            {paymentMethod === "vodafone_cash" ? (
+              <p className="text-gray-600 mb-8">تم حفظ بيانات الطلب وصورة التحويل. سيتم مراجعة التحويل والتواصل معك عبر واتساب.</p>
+            ) : (
+              <p className="text-gray-600 mb-8">سيتم التواصل معك عبر واتساب لتأكيد الطلب وموعد التسليم.</p>
+            )}
             <div className="space-y-3">
-              <Link href="/products">
-                <Button className="w-full bg-blue-600 hover:bg-blue-700 py-3">
-                  متابعة التسوق
-                </Button>
-              </Link>
-              <Link href="/">
-                <Button variant="outline" className="w-full py-3">
-                  العودة للرئيسية
-                </Button>
-              </Link>
+              <Link href="/products"><Button className="w-full bg-blue-600 hover:bg-blue-700 py-3">متابعة التسوق</Button></Link>
+              <Link href="/"><Button variant="outline" className="w-full py-3">العودة للرئيسية</Button></Link>
             </div>
           </Card>
         </div>
@@ -65,18 +94,12 @@ export default function Checkout() {
       <div className="min-h-screen bg-gray-50">
         <header className="bg-white shadow-md">
           <div className="max-w-7xl mx-auto px-4 py-4">
-            <Link href="/">
-              <h1 className="text-2xl font-bold text-blue-600 cursor-pointer">نادر ماركت</h1>
-            </Link>
+            <Link href="/"><h1 className="text-2xl font-bold text-blue-600 cursor-pointer">نادر ماركت</h1></Link>
           </div>
         </header>
         <div className="max-w-7xl mx-auto px-4 py-12 text-center">
           <p className="text-xl text-gray-600 mb-6">السلة فارغة</p>
-          <Link href="/products">
-            <Button className="bg-blue-600 hover:bg-blue-700">
-              تصفح المنتجات
-            </Button>
-          </Link>
+          <Link href="/products"><Button className="bg-blue-600 hover:bg-blue-700">تصفح المنتجات</Button></Link>
         </div>
       </div>
     );
@@ -87,34 +110,26 @@ export default function Checkout() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleWhatsAppSubmit = async () => {
-    if (!formData.customerName || !formData.customerPhone || !formData.customerAddress) {
-      toast.error("يرجى ملء جميع البيانات المطلوبة");
+  const handleSubmit = async () => {
+    if (!formData.customerName.trim() || !formData.customerPhone.trim() || !formData.customerAddress.trim()) {
+      toast.error("اكتب الاسم ورقم الموبايل والعنوان بالتفصيل أولاً");
+      return;
+    }
+    if (paymentMethod === "vodafone_cash" && !proofFile) {
+      toast.error("ارفع صورة التحويل لفودافون كاش قبل إرسال الطلب");
       return;
     }
 
     setLoading(true);
-
     try {
-      // بناء رسالة الطلب
-      let message = "طلب جديد من نادر ماركت\n\n";
-      message += "بيانات العميل:\n";
-      message += `الاسم: ${formData.customerName}\n`;
-      message += `الهاتف: ${formData.customerPhone}\n`;
-      message += `العنوان: ${formData.customerAddress}\n\n`;
-      message += "المنتجات:\n";
-      
-      items.forEach((item) => {
-        const price = typeof item.price === 'string' ? parseFloat(item.price) : item.price;
-        message += `- ${item.name}: ${item.quantity} x ${price} ج.م = ${(item.quantity * price).toFixed(2)} ج.م\n`;
-      });
-      
-      message += `\nالإجمالي: ${total.toFixed(2)} ج.م\n`;
-      if (formData.vodafoneWalletNumber) {
-        message += `رقم محفظة فودافون كاش: ${formData.vodafoneWalletNumber}`;
+      let paymentProofUrl: string | undefined;
+
+      if (paymentMethod === "vodafone_cash" && proofFile) {
+        const prepared = await prepareProof(proofFile);
+        const uploaded = await uploadProofMutation.mutateAsync(prepared);
+        paymentProofUrl = uploaded.url;
       }
 
-      // إنشاء الطلب في قاعدة البيانات
       const orderItems = items.map((item) => ({
         productId: item.id,
         quantity: item.quantity,
@@ -122,22 +137,35 @@ export default function Checkout() {
       }));
 
       const result = await createOrderMutation.mutateAsync({
-        customerName: formData.customerName,
-        customerPhone: formData.customerPhone,
-        customerAddress: formData.customerAddress,
+        customerName: formData.customerName.trim(),
+        customerPhone: formData.customerPhone.trim(),
+        customerAddress: formData.customerAddress.trim(),
         totalAmount: total.toFixed(2),
-        vodafoneWalletNumber: formData.vodafoneWalletNumber,
+        paymentMethod,
+        paymentProofUrl,
         items: orderItems,
       });
 
-      toast.success(`تم إنشاء الطلب بنجاح! رقم الطلب: ${result.id}`);
-      
-      // فتح الواتساب برقم المحل
-      const shopPhone = "201002934519";
-      const encodedMessage = encodeURIComponent(message);
-      const whatsappUrl = `https://wa.me/${shopPhone}?text=${encodedMessage}`;
+      let message = "طلب جديد من نادر ماركت\n\n";
+      message += "بيانات العميل:\n";
+      message += `الاسم: ${formData.customerName.trim()}\n`;
+      message += `الهاتف: ${formData.customerPhone.trim()}\n`;
+      message += `العنوان بالتفصيل: ${formData.customerAddress.trim()}\n\n`;
+      message += "المنتجات:\n";
+      items.forEach((item) => {
+        const price = typeof item.price === "string" ? parseFloat(item.price) : item.price;
+        message += `- ${item.name}: ${item.quantity} × ${price.toFixed(2)} ج.م = ${(item.quantity * price).toFixed(2)} ج.م\n`;
+      });
+      message += `\nالإجمالي: ${total.toFixed(2)} ج.م\n`;
+      message += `طريقة الدفع: ${paymentMethod === "vodafone_cash" ? "فودافون كاش" : "الدفع عند الاستلام"}\n`;
+      if (paymentProofUrl) {
+        message += `صورة التحويل: ${paymentProofUrl}\n`;
+      }
+
+      const whatsappUrl = `https://wa.me/${SHOP_WHATSAPP}?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, "_blank");
-      
+
+      toast.success(`تم إنشاء الطلب بنجاح! رقم الطلب: ${result.id}`);
       setOrderId(result.id);
       setOrderCreated(true);
       clearCart();
@@ -150,18 +178,10 @@ export default function Checkout() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <Link href="/">
-            <h1 className="text-2xl font-bold text-blue-600 cursor-pointer">نادر ماركت</h1>
-          </Link>
-          <Link href="/cart">
-            <Button variant="outline">
-              <ArrowRight className="w-4 h-4 ml-2" />
-              العودة للسلة
-            </Button>
-          </Link>
+          <Link href="/"><h1 className="text-2xl font-bold text-blue-600 cursor-pointer">نادر ماركت</h1></Link>
+          <Link href="/cart"><Button variant="outline"><ArrowRight className="w-4 h-4 ml-2" />العودة للسلة</Button></Link>
         </div>
       </header>
 
@@ -169,131 +189,90 @@ export default function Checkout() {
         <h1 className="text-3xl font-bold mb-8 text-gray-800">إتمام الطلب</h1>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Form */}
           <div className="lg:col-span-2">
-            <Card className="p-8">
-              <form onSubmit={(e) => { e.preventDefault(); }}>
-                {/* Customer Information */}
-                <div className="mb-6">
-                  <h2 className="text-xl font-bold mb-4 text-gray-800">بيانات العميل</h2>
-                  
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-gray-700 font-semibold mb-2">
-                        الاسم الكامل *
-                      </label>
-                      <Input
-                        type="text"
-                        name="customerName"
-                        value={formData.customerName}
-                        onChange={handleInputChange}
-                        placeholder="أدخل اسمك الكامل"
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-gray-700 font-semibold mb-2">
-                        رقم الهاتف *
-                      </label>
-                      <Input
-                        type="tel"
-                        name="customerPhone"
-                        value={formData.customerPhone}
-                        onChange={handleInputChange}
-                        placeholder="أدخل رقم هاتفك"
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-gray-700 font-semibold mb-2">
-                        العنوان *
-                      </label>
-                      <Input
-                        type="text"
-                        name="customerAddress"
-                        value={formData.customerAddress}
-                        onChange={handleInputChange}
-                        placeholder="أدخل عنوانك"
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* Payment Information */}
-                <div className="border-t pt-6">
-                  <h2 className="text-xl font-bold mb-4 text-gray-800">طريقة الدفع</h2>
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
-                    <p className="text-blue-900 font-semibold">فودافون كاش</p>
-                    <p className="text-sm text-blue-800 mt-1">
-                      سيتم إرسال رابط الدفع إلى رقمك بعد تأكيد الطلب
-                    </p>
-                  </div>
-
+            <Card className="p-6 md:p-8">
+              <div className="mb-8">
+                <h2 className="text-xl font-bold mb-4 text-gray-800">بيانات التسليم</h2>
+                <div className="space-y-4">
                   <div>
-                    <label className="block text-gray-700 font-semibold mb-2">
-                      رقم محفظة فودافون كاش (اختياري)
-                    </label>
-                    <Input
-                      type="tel"
-                      name="vodafoneWalletNumber"
-                      value={formData.vodafoneWalletNumber}
-                      onChange={handleInputChange}
-                      placeholder="أدخل رقم محفظتك"
-                    />
-                    <p className="text-sm text-gray-600 mt-2">
-                      هذا الرقم سيُستخدم لتأكيد الدفع
-                    </p>
+                    <label className="block text-gray-700 font-semibold mb-2">الاسم الكامل *</label>
+                    <Input type="text" name="customerName" value={formData.customerName} onChange={handleInputChange} placeholder="اكتب اسمك بالكامل" required />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-semibold mb-2">رقم الموبايل *</label>
+                    <Input type="tel" name="customerPhone" value={formData.customerPhone} onChange={handleInputChange} placeholder="مثال: 01012345678" required />
+                  </div>
+                  <div>
+                    <label className="block text-gray-700 font-semibold mb-2">العنوان بالتفصيل *</label>
+                    <textarea name="customerAddress" value={formData.customerAddress} onChange={handleInputChange} placeholder="المدينة، المنطقة، الشارع، رقم العقار، الدور، الشقة، وأي علامة مميزة تساعد مندوب التوصيل" rows={4} required className="w-full rounded-lg border border-gray-300 px-3 py-3 outline-none focus:border-blue-500" />
+                    <p className="mt-1 text-xs text-gray-500">كلما كان العنوان أدق، كان التسليم أسهل وأسرع.</p>
                   </div>
                 </div>
+              </div>
 
-                {/* Submit Button - WhatsApp */}
-                <div className="border-t pt-6 space-y-3">
-                  <Button
-                    type="button"
-                    onClick={handleWhatsAppSubmit}
-                    disabled={loading}
-                    className="w-full bg-green-600 hover:bg-green-700 py-3 text-lg flex items-center justify-center gap-2"
-                  >
-                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004a9.87 9.87 0 00-4.255.949c-1.238.503-2.335 1.236-3.356 2.258-1.688 1.694-2.637 3.957-2.637 6.383 0 1.564.311 3.081.902 4.555l-1.38 5.116 5.319-1.384c1.279.855 2.807 1.279 4.152 1.279h.004c5.079 0 9.237-4.155 9.237-9.237 0-2.469-.967-4.787-2.724-6.528-1.757-1.74-4.09-2.697-6.549-2.697z"/>
-                    </svg>
-                    {loading ? "جاري المعالجة..." : "إرسال الطلب عبر واتساب"}
-                  </Button>
-                  <p className="text-xs text-gray-500 text-center">
-                    سيتم فتح واتساب برقم المحل مع تفاصيل طلبك
-                  </p>
+              <div className="border-t pt-6">
+                <h2 className="text-xl font-bold mb-4 text-gray-800">طريقة الدفع</h2>
+                <div className="grid gap-3 md:grid-cols-2">
+                  <button type="button" onClick={() => setPaymentMethod("cash_on_delivery")} className={`rounded-2xl border-2 p-4 text-right transition ${paymentMethod === "cash_on_delivery" ? "border-blue-600 bg-blue-50" : "border-gray-200 bg-white"}`}>
+                    <Banknote className="mb-2 h-7 w-7 text-blue-600" />
+                    <p className="font-bold">الدفع عند الاستلام</p>
+                    <p className="mt-1 text-sm text-gray-500">ادفع قيمة الطلب عند وصوله.</p>
+                  </button>
+                  <button type="button" onClick={() => setPaymentMethod("vodafone_cash")} className={`rounded-2xl border-2 p-4 text-right transition ${paymentMethod === "vodafone_cash" ? "border-red-600 bg-red-50" : "border-gray-200 bg-white"}`}>
+                    <Wallet className="mb-2 h-7 w-7 text-red-600" />
+                    <p className="font-bold">فودافون كاش</p>
+                    <p className="mt-1 text-sm text-gray-500">حوّل على الرقم المعروض ثم ارفع صورة التحويل.</p>
+                  </button>
                 </div>
-              </form>
+
+                {paymentMethod === "vodafone_cash" && (
+                  <div className="mt-5 space-y-4 rounded-2xl border border-red-200 bg-red-50 p-5">
+                    <div>
+                      <p className="font-bold text-red-900">رقم فودافون كاش</p>
+                      <p className="mt-1 text-2xl font-black tracking-wider text-red-700">{VODAFONE_CASH_NUMBER}</p>
+                      <p className="mt-2 text-sm text-red-800">تنبيه: هذا رقم تجريبي مؤقت للواجهة، ويجب استبداله برقم المحفظة الحقيقي قبل تشغيل المتجر فعليًا.</p>
+                    </div>
+                    <div className="rounded-xl bg-white p-4">
+                      <p className="font-semibold text-gray-800">بعد التحويل</p>
+                      <p className="mt-1 text-sm leading-6 text-gray-600">يرجى إرسال Screenshot / صورة التحويل. ارفع الصورة هنا، وسيتم حفظها مع الطلب وإرسال رابطها في رسالة واتساب مع تفاصيل المنتجات.</p>
+                    </div>
+                    <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed border-red-300 bg-white px-4 py-5 font-bold text-red-700 hover:bg-red-50">
+                      <Upload className="h-5 w-5" />
+                      {proofFile ? "تغيير صورة التحويل" : "رفع صورة التحويل"}
+                      <input type="file" accept="image/jpeg,image/png,image/webp,image/avif" className="hidden" onChange={(e) => setProofFile(e.target.files?.[0] || null)} />
+                    </label>
+                    {proofFile && <p className="text-sm text-gray-700">تم اختيار: <span className="font-semibold">{proofFile.name}</span></p>}
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-8 border-t pt-6">
+                <Button type="button" onClick={handleSubmit} disabled={loading} className="w-full bg-green-600 hover:bg-green-700 py-4 text-lg">
+                  {loading ? "جارٍ تجهيز الطلب..." : "تأكيد الطلب وإرساله عبر واتساب"}
+                </Button>
+                <p className="mt-2 text-center text-xs text-gray-500">سيتم فتح واتساب برسالة تحتوي على بيانات العميل والمنتجات والإجمالي.</p>
+              </div>
             </Card>
           </div>
 
-          {/* Order Summary */}
           <div className="lg:col-span-1">
             <Card className="p-6 sticky top-24">
               <h3 className="text-lg font-bold mb-4 text-gray-800">ملخص الطلب</h3>
-              
-              <div className="space-y-3 mb-4 max-h-64 overflow-y-auto">
-                {items.map((item) => (
-                  <div key={item.id} className="flex justify-between text-sm">
-                    <span className="text-gray-600">
-                      {item.name} x {item.quantity}
-                    </span>
-                    <span className="font-semibold">
-                      {(item.quantity * (typeof item.price === 'string' ? parseFloat(item.price) : item.price)).toFixed(2)} ج.م
-                    </span>
-                  </div>
-                ))}
+              <div className="space-y-3 mb-4 max-h-72 overflow-y-auto">
+                {items.map((item) => {
+                  const price = typeof item.price === "string" ? parseFloat(item.price) : item.price;
+                  return (
+                    <div key={item.id} className="flex justify-between gap-3 text-sm">
+                      <span className="text-gray-600">{item.name} × {item.quantity}</span>
+                      <span className="font-semibold whitespace-nowrap">{(item.quantity * price).toFixed(2)} ج.م</span>
+                    </div>
+                  );
+                })}
               </div>
-
               <div className="border-t pt-4">
-                <div className="flex justify-between mb-2">
+                <div className="flex justify-between items-center">
                   <span className="text-gray-600">الإجمالي:</span>
-                  <span className="text-2xl font-bold text-blue-600">
-                    {total.toFixed(2)} ج.م
-                  </span>
+                  <span className="text-2xl font-bold text-blue-600">{total.toFixed(2)} ج.م</span>
                 </div>
               </div>
             </Card>
