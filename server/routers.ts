@@ -11,7 +11,7 @@ import {
   validateAdminCredentials,
 } from "./adminAuth";
 import {
-  getCategories,
+  getStoreSettings,\n  updateStoreSettings,\n  getCategories,
   getCategoryById,
   createCategory,
   updateCategory,
@@ -85,7 +85,7 @@ export const appRouter = router({
     }),
   }),
 
-  categories: router({
+  store: router({\n    settings: publicProcedure.query(() => getStoreSettings()),\n    updateSettings: adminProcedure\n      .input(z.object({ vodafoneCashNumber: z.string().regex(/^01[0125][0-9]{8}$/, "رقم فودافون كاش يجب أن يكون 11 رقمًا") }))\n      .mutation(({ input }) => updateStoreSettings(input)),\n  }),\n\n  categories: router({
     list: publicProcedure.query(() => getCategories()),
     getById: publicProcedure.input(z.number()).query(({ input }) => getCategoryById(input)),
     create: adminProcedure
@@ -145,7 +145,7 @@ export const appRouter = router({
     create: publicProcedure
       .input(z.object({
         customerName: z.string(),
-        customerPhone: z.string(),
+        customerPhone: z.string().regex(/^01[0125][0-9]{8}$/, "رقم الموبايل يجب أن يكون رقمًا مصريًا صحيحًا مكوّنًا من 11 رقمًا"),
         customerAddress: z.string(),
         totalAmount: z.string(),
         paymentMethod: z.enum(["cash_on_delivery", "vodafone_cash"]),
