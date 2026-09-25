@@ -7,12 +7,11 @@ export const ADMIN_COOKIE_NAME = "nader_admin_session";
 const ADMIN_SESSION_TTL_SECONDS = 60 * 60 * 24 * 7;
 
 type AdminCredentials = {
-  email: string;
   username: string;
   password: string;
 };
 
-function configuredValue(name: "ADMIN_LOGIN_EMAIL" | "ADMIN_LOGIN_USERNAME" | "ADMIN_LOGIN_PASSWORD") {
+function configuredValue(name: "ADMIN_LOGIN_USERNAME" | "ADMIN_LOGIN_PASSWORD") {
   const value = process.env[name];
   if (!value) throw new Error(`${name} is not configured`);
   return value;
@@ -26,7 +25,6 @@ function safeEqual(left: string, right: string) {
 
 export function validateAdminCredentials(credentials: AdminCredentials) {
   return (
-    safeEqual(credentials.email, configuredValue("ADMIN_LOGIN_EMAIL")) &&
     safeEqual(credentials.username, configuredValue("ADMIN_LOGIN_USERNAME")) &&
     safeEqual(credentials.password, configuredValue("ADMIN_LOGIN_PASSWORD"))
   );
