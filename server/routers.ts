@@ -106,12 +106,6 @@ export const appRouter = router({
         contentType: z.enum(["image/jpeg", "image/png", "image/webp", "image/avif"]),
       }))
       .mutation(({ input }) => uploadProductImage(input)),
-    uploadPaymentProof: publicProcedure
-      .input(z.object({
-        base64: z.string().min(1).max(4_000_000),
-        contentType: z.enum(["image/jpeg", "image/png", "image/webp", "image/avif"]),
-      }))
-      .mutation(({ input }) => uploadPaymentProof(input)),
     create: adminProcedure
       .input(z.object({
         categoryId: z.number(),
@@ -139,6 +133,12 @@ export const appRouter = router({
   }),
 
   orders: router({
+    uploadPaymentProof: publicProcedure
+      .input(z.object({
+        base64: z.string().min(1).max(4_000_000),
+        contentType: z.enum(["image/jpeg", "image/png", "image/webp", "image/avif"]),
+      }))
+      .mutation(({ input }) => uploadPaymentProof(input)),
     list: adminProcedure.query(() => getOrders()),
     getById: adminProcedure.input(z.number()).query(({ input }) => getOrderById(input)),
     getItems: adminProcedure.input(z.number()).query(({ input }) => getOrderItems(input)),
