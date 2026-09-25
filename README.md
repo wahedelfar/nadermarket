@@ -6,7 +6,7 @@
 
 **منصة تسوق إلكترونية حديثة وموثوقة لتوفير أفضل المنتجات الطازة والجودة العالية**
 
-[![Status](https://img.shields.io/badge/Status-Active-success?style=flat-square)](https://nadermarket-fdwgbli8.manus.space)
+[![Status](https://img.shields.io/badge/Status-Active-success?style=flat-square)](https://nader-market.vercel.app)
 [![License](https://img.shields.io/badge/License-MIT-blue?style=flat-square)](LICENSE)
 [![Version](https://img.shields.io/badge/Version-1.0.0-brightgreen?style=flat-square)](package.json)
 [![Node](https://img.shields.io/badge/Node-22.13.0-green?style=flat-square)](https://nodejs.org/)
@@ -19,7 +19,7 @@
 
 ## 🌐 الموقع الرسمي
 
-🔗 **الرابط الرسمي:** [https://nadermarket-fdwgbli8.manus.space](https://nadermarket-fdwgbli8.manus.space)
+🔗 **الرابط الرسمي:** [https://nader-market.vercel.app](https://nader-market.vercel.app)
 
 **العنوان:** رأس البر - سوق 89  
 **رقم الواتساب:** +20 100 293 4519  
@@ -214,7 +214,7 @@ pnpm db:studio    # فتح واجهة إدارة قاعدة البيانات
 
 - 📧 **البريد الإلكتروني:** support@nadermarket.com
 - 💬 **واتساب:** [+20 100 293 4519](https://wa.me/201002934519)
-- 🌐 **الموقع:** [https://nadermarket-fdwgbli8.manus.space](https://nadermarket-fdwgbli8.manus.space)
+- 🌐 **الموقع:** [https://nader-market.vercel.app](https://nader-market.vercel.app)
 
 ---
 
