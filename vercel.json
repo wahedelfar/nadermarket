@@ -26,9 +26,7 @@
   ],
   "functions": {
     "api/index.ts": {
-      "includeFiles": [
-        "dist/api-server.js"
-      ]
+      "includeFiles": "dist/api-server.js"
     }
   }
 }
