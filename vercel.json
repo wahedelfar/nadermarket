@@ -1,0 +1,11 @@
+{
+  "buildCommand": "pnpm build",
+  "outputDirectory": "dist/public",
+  "framework": "vite",
+  "rewrites": [
+    { "source": "/api/trpc/:path*", "destination": "/api/index" },
+    { "source": "/api/oauth/:path*", "destination": "/api/index" },
+    { "source": "/manus-storage/:path*", "destination": "/api/index" },
+    { "source": "/((?!assets/|manifest.webmanifest|favicon|icon|robots.txt|sitemap.xml).*)", "destination": "/api/index" }
+  ]
+}
