@@ -46,7 +46,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <img 
-              src="https://d2xsxph8kpxj0f.cloudfront.net/310519663186632256/fDwgbLi8MTwHPsfBbGL7bd/nader-market-logo-mmFgRXmD7rbQX4rmisPczg.webp"
+              src="/icon.svg"
               alt="نادر ماركت"
               className="w-12 h-12"
             />
@@ -70,21 +70,19 @@ export default function Home() {
       </header>
 
       {/* Promotional Banner */}
-      <section className="relative overflow-hidden bg-gradient-to-r from-blue-600 to-blue-800">
-        <img 
-          src="https://d2xsxph8kpxj0f.cloudfront.net/310519663186632256/fDwgbLi8MTwHPsfBbGL7bd/nader-market-banner-XjcBUxU6RXsiUoxscux4Lk.webp"
-          alt="كل ما تطلب أكتر - هتوفر أكتر"
-          className="w-full h-auto object-cover"
-        />
-        <style>{`
-          @keyframes pulse-banner {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
-          }
-          .banner-pulse {
-            animation: pulse-banner 2s ease-in-out infinite;
-          }
-        `}</style>
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#082b67] via-[#0e4196] to-[#1767c4]">
+        <div className="absolute -left-20 -top-20 h-56 w-56 rounded-full bg-white/10 blur-3xl" />
+        <div className="absolute -bottom-24 -right-12 h-64 w-64 rounded-full bg-cyan-300/10 blur-3xl" />
+        <div className="relative mx-auto flex min-h-44 max-w-7xl items-center justify-between gap-6 px-5 py-10 text-white md:min-h-56 md:px-10">
+          <div>
+            <p className="mb-2 text-sm font-semibold text-blue-100">عرض نادر ماركت</p>
+            <h2 className="text-3xl font-black tracking-tight md:text-5xl">كل ما تطلب أكتر… هتوفر أكتر</h2>
+            <p className="mt-3 max-w-xl text-sm text-blue-50 md:text-base">اختار احتياجاتك اليومية، أضفها للسلة، وخلي نادر ماركت يجهز طلبك.</p>
+          </div>
+          <Link href="/products" className="hidden shrink-0 md:block">
+            <Button className="rounded-xl bg-white px-6 py-3 font-bold text-blue-700 hover:bg-blue-50">تسوّق الآن</Button>
+          </Link>
+        </div>
       </section>
 
       {/* Hero Section */}
@@ -182,7 +180,7 @@ export default function Home() {
               <div className="order-1 min-h-48 overflow-hidden bg-white/10 md:order-2">
                 <div className="relative h-full min-h-48 md:min-h-56">
                   <img
-                    src={activeProduct.image || "https://via.placeholder.com/600x400?text=Nader+Market"}
+                    src={activeProduct.image || "/icon.svg"}
                     alt={activeProduct.name}
                     className="h-full min-h-48 w-full object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-out group-hover:scale-105 md:min-h-56"
                   />
