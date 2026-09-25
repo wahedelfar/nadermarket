@@ -21,6 +21,7 @@ export default function AdminOrders() {
   const { data: selectedOrderItems } = trpc.orders.getItems.useQuery(selectedOrder?.id ?? 0, { enabled: Boolean(selectedOrder?.id) });
   const updateStatusMutation = trpc.orders.updateStatus.useMutation();
   const deleteMutation = trpc.orders.delete.useMutation();
+  const utils = trpc.useUtils();
 
   useEffect(() => {
     if (ordersData) setOrders(ordersData);
@@ -130,6 +131,10 @@ export default function AdminOrders() {
     if (!confirm("هل أنت متأكد من حذف هذا الطلب؟")) return;
     try {
       await deleteMutation.mutateAsync(id);
+      setOrders((current) => current.filter((order) => Number(order.id) !== Number(id)));
+      setSelectedOrder((current) => (current?.id === id ? null : current));
+      setOrderItems([]);
+      await utils.orders.list.invalidate();
       toast.success("تم حذف الطلب بنجاح");
     } catch (error: any) {
       toast.error(error.message || "حدث خطأ");
