@@ -155,7 +155,7 @@ export default function Admin() {
             </Card>
           </Link>
 
-          <Link href="/admin/orders">
+          <Link href="/admin/settings">\n            <Card className="p-6 cursor-pointer hover:shadow-lg transition-shadow bg-gradient-to-br from-purple-50 to-blue-50">\n              <h3 className="text-xl font-bold text-purple-600 mb-2">إعدادات المتجر</h3>\n              <p className="text-gray-600">تغيير رقم فودافون كاش</p>\n            </Card>\n          </Link>\n\n          <Link href="/admin/orders">
             <Card className="p-6 cursor-pointer hover:shadow-lg transition-shadow">
               <h3 className="text-xl font-bold text-gray-800 mb-2">الطلبات</h3>
               <p className="text-gray-600">إدارة الطلبات والحالات</p>
