@@ -9,8 +9,6 @@ import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 
 const VODAFONE_CASH_NUMBER = "01012345678";
-const SHOP_WHATSAPP = "201002934519";
-
 async function fileToBase64(file: File) {
   const buffer = await file.arrayBuffer();
   let binary = "";
@@ -72,12 +70,12 @@ export default function Checkout() {
         <div className="max-w-2xl mx-auto px-4 py-12">
           <Card className="p-8 text-center">
             <CheckCircle2 className="mx-auto mb-4 h-16 w-16 text-green-600" />
-            <h2 className="text-3xl font-bold text-gray-800 mb-2">تم استلام طلبك!</h2>
-            <p className="text-xl text-gray-600 mb-2">رقم الطلب: <span className="font-bold text-blue-600">#{orderId}</span></p>
+            <h2 className="text-3xl font-bold text-gray-800 mb-2">شكراً لاختيارك نادر ماركت</h2>
+            <p className="text-xl text-gray-600 mb-2">تم استلام طلبك بنجاح. رقم الطلب: <span className="font-bold text-blue-600">#{orderId}</span></p>
             {paymentMethod === "vodafone_cash" ? (
-              <p className="text-gray-600 mb-8">تم حفظ بيانات الطلب وصورة التحويل. سيتم مراجعة التحويل والتواصل معك عبر واتساب.</p>
+              <p className="text-gray-600 mb-8">تم حفظ بيانات الطلب وصورة التحويل. سيتم مراجعة الطلب والتواصل معك لتأكيد التسليم.</p>
             ) : (
-              <p className="text-gray-600 mb-8">سيتم التواصل معك عبر واتساب لتأكيد الطلب وموعد التسليم.</p>
+              <p className="text-gray-600 mb-8">نرجو انتظار اتصال المندوب لتأكيد الطلب وموعد التسليم.</p>
             )}
             <div className="space-y-3">
               <Link href="/products"><Button className="w-full bg-blue-600 hover:bg-blue-700 py-3">متابعة التسوق</Button></Link>
@@ -165,7 +163,7 @@ export default function Checkout() {
       const whatsappUrl = `https://wa.me/${SHOP_WHATSAPP}?text=${encodeURIComponent(message)}`;
       window.open(whatsappUrl, "_blank");
 
-      toast.success(`تم إنشاء الطلب بنجاح! رقم الطلب: ${result.id}`);
+      toast.success(`تم استلام طلبك بنجاح! رقم الطلب: ${result.id}`);
       setOrderId(result.id);
       setOrderCreated(true);
       clearCart();
@@ -234,7 +232,7 @@ export default function Checkout() {
                     </div>
                     <div className="rounded-xl bg-white p-4">
                       <p className="font-semibold text-gray-800">بعد التحويل</p>
-                      <p className="mt-1 text-sm leading-6 text-gray-600">يرجى إرسال Screenshot / صورة التحويل. ارفع الصورة هنا، وسيتم حفظها مع الطلب وإرسال رابطها في رسالة واتساب مع تفاصيل المنتجات.</p>
+                      <p className="mt-1 text-sm leading-6 text-gray-600">يرجى إرسال Screenshot / صورة التحويل. ارفع الصورة هنا، وسيتم حفظها مع الطلب ليتمكن فريق الماركت من مراجعتها.</p>
                     </div>
                     <label className="flex cursor-pointer items-center justify-center gap-2 rounded-xl border-2 border-dashed border-red-300 bg-white px-4 py-5 font-bold text-red-700 hover:bg-red-50">
                       <Upload className="h-5 w-5" />
@@ -248,9 +246,9 @@ export default function Checkout() {
 
               <div className="mt-8 border-t pt-6">
                 <Button type="button" onClick={handleSubmit} disabled={loading} className="w-full bg-green-600 hover:bg-green-700 py-4 text-lg">
-                  {loading ? "جارٍ تجهيز الطلب..." : "تأكيد الطلب وإرساله عبر واتساب"}
+                  {loading ? "جارٍ تجهيز الطلب..." : "إرسال طلبك للماركت"}
                 </Button>
-                <p className="mt-2 text-center text-xs text-gray-500">سيتم فتح واتساب برسالة تحتوي على بيانات العميل والمنتجات والإجمالي.</p>
+                <p className="mt-2 text-center text-xs text-gray-500">سيتم حفظ طلبك مباشرة في نظام الماركت، ونرجو انتظار اتصال المندوب.</p>
               </div>
             </Card>
           </div>
