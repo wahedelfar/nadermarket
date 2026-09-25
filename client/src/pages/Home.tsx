@@ -41,81 +41,31 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#c7e9ff] via-[#e8f6ff] to-[#f8fcff]">
-      {/* Premium Hypermarket Header */}
-      <header className="sticky top-0 z-50 border-b border-white/60 bg-gradient-to-l from-[#8ed0ff] via-[#b9e5ff] to-[#eaf8ff] shadow-[0_10px_35px_-18px_rgba(37,99,235,0.45)] backdrop-blur-xl">
-        <div className="border-b border-blue-900/5 bg-blue-900/[0.035]">
-          <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-2 text-[11px] font-semibold text-blue-900/70 md:text-xs">
-            <div className="flex items-center gap-4">
-              <span className="inline-flex items-center gap-1.5"><Truck className="h-3.5 w-3.5 text-blue-600" /> توصيل سريع داخل رأس البر</span>
-              <span className="hidden items-center gap-1.5 sm:inline-flex"><MapPin className="h-3.5 w-3.5 text-blue-600" /> سوق 89</span>
-            </div>
-            <span className="hidden md:inline">السبت - الخميس 8:00 - 22:00 · الجمعة 10:00 - 22:00</span>
-          </div>
+      {/* Full-width storefront header artwork */}
+      <header className="relative w-full overflow-hidden bg-[#063b78]">
+        <div className="relative w-full aspect-[3/1] min-h-[170px] max-h-[430px]">
+          <img
+            src="/header-storefront.webp"
+            alt="الوحيد ماركت"
+            className="absolute inset-0 h-full w-full object-cover"
+            fetchPriority="high"
+          />
         </div>
-
-        <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 md:gap-5 md:py-4">
-          <Link href="/" className="group flex min-w-0 shrink-0 items-center gap-3 md:gap-4">
-            <div className="relative shrink-0">
-              <div className="absolute -inset-2 rounded-2xl bg-[#5aa6df]/55 opacity-80 blur-md transition duration-300 group-hover:opacity-100" />
-              <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl border border-blue-200/80 bg-[#8bbfe9] p-1.5 shadow-lg md:h-14 md:w-14">
-                <img src="/icon.svg" alt="الوحيد ماركت" className="h-full w-full object-contain" />
-              </div>
-            </div>
-            <div className="min-w-0">
-              <h1 className="whitespace-nowrap font-black leading-none tracking-tight text-[#073b7a] drop-shadow-[0_1px_0_rgba(255,255,255,0.8)] text-[22px] md:text-[30px]">الوحيد ماركت</h1>
-              <p className="mt-1.5 whitespace-nowrap text-[10px] font-bold text-blue-900/60 md:text-xs">كل احتياجاتك في مكان واحد</p>
-            </div>
-          </Link>
-
-          <div className="hidden min-w-0 flex-1 md:block">
-            <Link href="/products" className="group mx-auto flex max-w-2xl items-center rounded-2xl border border-blue-200/70 bg-[#a9d8f7]/90 px-4 py-2.5 shadow-inner shadow-blue-100/60 ring-1 ring-blue-100/50 transition hover:bg-[#b9e2fb] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
-              <span className="flex-1 text-right text-sm text-slate-400">ابحث عن منتج، قسم، أو احتياجاتك...</span>
-              <span className="mr-3 flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md transition group-hover:bg-blue-700"><Sparkles className="h-4 w-4" /></span>
-            </Link>
-          </div>
-
-          <div className="ml-auto flex shrink-0 items-center gap-2">
-            <div className="hidden shrink-0 md:block" aria-label="واجهة الوحيد ماركت">
-              <div className="relative h-[54px] w-[154px] overflow-hidden rounded-xl border border-blue-200/80 bg-gradient-to-b from-[#75b5e3] via-[#589ed2] to-[#2f78b8] shadow-[0_12px_24px_-12px_rgba(7,59,122,0.8)]">
-                <div className="absolute inset-x-2 top-1 h-7 -skew-x-6 rounded-md border border-blue-950/20 bg-gradient-to-r from-[#062f68] via-[#0b59ae] to-[#42aaf4] shadow-[0_4px_8px_rgba(7,59,122,0.35)]">
-                  <div className="flex h-full items-center justify-center gap-2">
-                    <span className="text-sm font-black text-white drop-shadow">الوحيد</span>
-                    <span className="text-[9px] font-black tracking-[0.16em] text-sky-100">MARKET</span>
-                  </div>
-                </div>
-                <div className="absolute bottom-0 left-2 right-2 h-7 rounded-t-md border border-blue-200/60 bg-[#78b7e4]/90 p-1">
-                  <div className="grid h-full grid-cols-3 gap-1">
-                    <span className="rounded-sm border border-blue-200/60 bg-gradient-to-b from-[#b9ddf5] to-[#579ed2] shadow-inner" />
-                    <span className="rounded-sm border border-blue-200/60 bg-gradient-to-b from-[#c2e2f7] to-[#4d91ca] shadow-inner" />
-                    <span className="rounded-sm border border-blue-200/60 bg-gradient-to-b from-white to-sky-100 shadow-inner" />
-                  </div>
-                </div>
-                <span className="absolute bottom-0 left-4 h-1.5 w-16 rounded-full bg-blue-950/25 blur-sm" />
-              </div>
-            </div>
-            <Link href="/cart">
-              <Button className="h-11 rounded-xl bg-blue-600 px-3.5 font-bold text-white shadow-lg shadow-blue-600/20 transition hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-blue-700/25 md:px-4">
-                <ShoppingCart className="ml-2 h-4 w-4" />
-                <span className="hidden sm:inline">السلة</span>
-                {items.reduce((sum, item) => sum + item.quantity, 0) > 0 && (
-                  <span className="mr-1.5 inline-flex min-w-6 h-6 items-center justify-center rounded-full bg-white px-1.5 text-xs font-black text-blue-700">
-                    {items.reduce((sum, item) => sum + item.quantity, 0)}
-                  </span>
-                )}
-              </Button>
-            </Link>
-          </div>
-        </div>
-
-        <nav className="hidden border-t border-white/55 bg-[#72b6e8]/55 md:block">
-          <div className="mx-auto flex max-w-7xl items-center justify-center gap-1 px-4 py-1.5">
-            <Link href="/" className="rounded-lg px-4 py-2 text-sm font-bold text-blue-950 transition hover:bg-white/60 hover:text-blue-700">الرئيسية</Link>
-            <Link href="/products" className="rounded-lg px-4 py-2 text-sm font-bold text-blue-950/75 transition hover:bg-white/60 hover:text-blue-700">تصفح المنتجات</Link>
-            <Link href="/products" className="rounded-lg px-4 py-2 text-sm font-bold text-blue-950/75 transition hover:bg-white/60 hover:text-blue-700">الأقسام</Link>
-            <Link href="/products" className="rounded-lg px-4 py-2 text-sm font-bold text-blue-950/75 transition hover:bg-white/60 hover:text-blue-700">الأكثر طلبًا</Link>
-          </div>
-        </nav>
       </header>
+
+      {/* Floating cart */}
+      <Link
+        href="/cart"
+        aria-label="سلة المشتريات"
+        className="fixed right-4 top-4 z-[70] flex h-14 w-14 items-center justify-center rounded-full border-2 border-white/80 bg-[#063b78] text-white shadow-[0_12px_30px_-8px_rgba(3,37,78,0.75)] backdrop-blur-md transition duration-200 hover:scale-105 hover:bg-[#084b96] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-300 md:right-6 md:top-6"
+      >
+        <ShoppingCart className="h-6 w-6" />
+        {items.reduce((sum, item) => sum + item.quantity, 0) > 0 && (
+          <span className="absolute -left-1 -top-1 inline-flex min-h-6 min-w-6 items-center justify-center rounded-full border-2 border-white bg-[#4aa8ef] px-1.5 text-[11px] font-black text-[#063b78] shadow-md">
+            {items.reduce((sum, item) => sum + item.quantity, 0)}
+          </span>
+        )}
+      </Link>
 
       {/* Hero / Welcome Banner */}
       <section className="relative overflow-hidden bg-gradient-to-br from-[#bfe7ff] via-[#d9f1ff] to-[#f3faff] py-8 md:py-12">
