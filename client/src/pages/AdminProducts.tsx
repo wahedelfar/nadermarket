@@ -11,7 +11,9 @@ export default function AdminProducts() {
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const [editingId, setEditingId] = useState<number | null>(null);\n  const [imageFile, setImageFile] = useState<File | null>(null);\n  const [uploadingImage, setUploadingImage] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [uploadingImage, setUploadingImage] = useState(false);
   const [formData, setFormData] = useState({
     categoryId: 0,
     name: "",
@@ -23,7 +25,8 @@ export default function AdminProducts() {
 
   const { data: productsData } = trpc.products.list.useQuery(undefined);
   const { data: categoriesData } = trpc.categories.list.useQuery();
-  const createMutation = trpc.products.create.useMutation();\n  const uploadImageMutation = trpc.products.uploadImage.useMutation();
+  const createMutation = trpc.products.create.useMutation();
+  const uploadImageMutation = trpc.products.uploadImage.useMutation();
   const updateMutation = trpc.products.update.useMutation();
   const deleteMutation = trpc.products.delete.useMutation();
   const utils = trpc.useUtils();
