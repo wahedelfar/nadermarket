@@ -35,7 +35,7 @@ function AdminSetupRoute() {
   return <AdminRouteGuard><AdminSetup /></AdminRouteGuard>;
 }
 
-function Router() {
+function AdminSettingsRoute() {\n  return <AdminRouteGuard><AdminSettings /></AdminRouteGuard>;\n}\n\nfunction Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
