@@ -7,15 +7,16 @@ import { registerOAuthRoutes } from "../server/_core/oauth";
 import { registerStorageProxy } from "../server/_core/storageProxy";
 
 const app = express();
+const internal = express();
 const distPath = path.join(process.cwd(), "dist", "public");
 
-app.use(express.json({ limit: "50mb" }));
-app.use(express.urlencoded({ limit: "50mb", extended: true }));
+internal.use(express.json({ limit: "50mb" }));
+internal.use(express.urlencoded({ limit: "50mb", extended: true }));
 
-registerStorageProxy(app);
-registerOAuthRoutes(app);
+registerStorageProxy(internal);
+registerOAuthRoutes(internal);
 
-app.use(
+internal.use(
   "/api/trpc",
   createExpressMiddleware({
     router: appRouter,
@@ -23,10 +24,8 @@ app.use(
   }),
 );
 
+app.use("/api/index", internal);
 app.use(express.static(distPath));
-
-app.use((_req, res) => {
-  res.sendFile(path.join(distPath, "index.html"));
-});
+app.use((_req, res) => res.sendFile(path.join(distPath, "index.html")));
 
 export default app;
