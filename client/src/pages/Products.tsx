@@ -11,7 +11,7 @@ export default function Products() {
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
-  const { addToCart } = useCart();
+  const { addToCart, items } = useCart();
 
   // Get category from URL
   useEffect(() => {
@@ -49,6 +49,11 @@ export default function Products() {
             <Button className="bg-blue-600 hover:bg-blue-700">
               <ShoppingCart className="w-4 h-4 ml-2" />
               السلة
+              {items.reduce((sum, item) => sum + item.quantity, 0) > 0 && (
+                <span className="mr-2 inline-flex min-w-6 h-6 items-center justify-center rounded-full bg-white px-1.5 text-xs font-black text-blue-700">
+                  {items.reduce((sum, item) => sum + item.quantity, 0)}
+                </span>
+              )}
             </Button>
           </Link>
         </div>
