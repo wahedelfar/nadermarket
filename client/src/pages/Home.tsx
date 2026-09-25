@@ -11,7 +11,7 @@ export default function Home() {
   const [categories, setCategories] = useState<any[]>([]);
   const [activeSlide, setActiveSlide] = useState(0);
   const [isSliderPaused, setIsSliderPaused] = useState(false);
-  const { addToCart } = useCart();
+  const { addToCart, items } = useCart();
   const { data: categoriesData, isLoading } = trpc.categories.list.useQuery();
   const { data: productsData, isLoading: productsLoading } = trpc.products.list.useQuery();
 
@@ -63,25 +63,33 @@ export default function Home() {
               <Button className="bg-blue-600 hover:bg-blue-700">
                 <ShoppingCart className="w-4 h-4 ml-2" />
                 السلة
+                {items.reduce((sum, item) => sum + item.quantity, 0) > 0 && (
+                  <span className="mr-2 inline-flex min-w-6 h-6 items-center justify-center rounded-full bg-white px-1.5 text-xs font-black text-blue-700">
+                    {items.reduce((sum, item) => sum + item.quantity, 0)}
+                  </span>
+                )}
               </Button>
             </Link>
           </div>
         </div>
       </header>
 
-      {/* Promotional Banner */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#082b67] via-[#0e4196] to-[#1767c4]">
+      {/* Hero / Welcome Banner */}
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#082b67] via-[#0e4196] to-[#1767c4] py-8 md:py-12">
         <div className="absolute -left-20 -top-20 h-56 w-56 rounded-full bg-white/10 blur-3xl" />
         <div className="absolute -bottom-24 -right-12 h-64 w-64 rounded-full bg-cyan-300/10 blur-3xl" />
-        <div className="relative mx-auto flex min-h-44 max-w-7xl items-center justify-between gap-6 px-5 py-10 text-white md:min-h-56 md:px-10">
-          <div>
-            <p className="mb-2 text-sm font-semibold text-blue-100">عرض نادر ماركت</p>
-            <h2 className="text-3xl font-black tracking-tight md:text-5xl">كل ما تطلب أكتر… هتوفر أكتر</h2>
-            <p className="mt-3 max-w-xl text-sm text-blue-50 md:text-base">اختار احتياجاتك اليومية، أضفها للسلة، وخلي نادر ماركت يجهز طلبك.</p>
+        <div className="relative mx-auto max-w-7xl px-4">
+          <div className="rounded-3xl border border-white/15 bg-white/10 p-6 text-center shadow-2xl backdrop-blur-sm md:p-10">
+            <p className="mb-2 text-sm font-semibold text-blue-100">مرحباً بك في</p>
+            <h2 className="text-3xl font-black text-white md:text-5xl">نادر ماركت</h2>
+            <div className="mx-auto mt-5 max-w-3xl rounded-2xl bg-white px-5 py-4 shadow-lg">
+              <p className="text-xl font-black text-blue-800 md:text-3xl">كل ما تطلب أكتر… هتوفر أكتر</p>
+            </div>
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-blue-50 md:text-base">اختار احتياجاتك، أضفها للسلة، واختار طريقة الدفع المناسبة ليك.</p>
+            <Link href="/products" className="mt-6 inline-block">
+              <Button className="rounded-xl bg-white px-7 py-3 font-bold text-blue-700 hover:bg-blue-50">تسوّق الآن</Button>
+            </Link>
           </div>
-          <Link href="/products" className="hidden shrink-0 md:block">
-            <Button className="rounded-xl bg-white px-6 py-3 font-bold text-blue-700 hover:bg-blue-50">تسوّق الآن</Button>
-          </Link>
         </div>
       </section>
 
