@@ -68,25 +68,25 @@ export default function Home() {
           </Link>
 
           <div className="hidden min-w-0 flex-1 md:block">
-            <Link href="/products" className="group mx-auto flex max-w-2xl items-center rounded-2xl border border-blue-200/70 bg-[#a9d8f7]/90 px-4 py-2.5 shadow-inner shadow-blue-100/60 ring-1 ring-blue-100/50 transition hover:bg-[#a9d8f7] hover:bg-[#b9e2fb] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
+            <Link href="/products" className="group mx-auto flex max-w-2xl items-center rounded-2xl border border-blue-200/70 bg-[#a9d8f7]/90 px-4 py-2.5 shadow-inner shadow-blue-100/60 ring-1 ring-blue-100/50 transition hover:bg-[#b9e2fb] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400">
               <span className="flex-1 text-right text-sm text-slate-400">ابحث عن منتج، قسم، أو احتياجاتك...</span>
               <span className="mr-3 flex h-9 w-9 items-center justify-center rounded-xl bg-blue-600 text-white shadow-md transition group-hover:bg-blue-700"><Sparkles className="h-4 w-4" /></span>
             </Link>
           </div>
 
           <div className="ml-auto flex shrink-0 items-center gap-2">
-            <div className="hidden shrink-0 lg:block" aria-label="واجهة الوحيد ماركت">
-              <div className="relative h-[58px] w-[178px] overflow-hidden rounded-xl border border-white/90 bg-gradient-to-b from-white via-[#d9f2ff] to-[#7fc8ff] shadow-[0_12px_24px_-12px_rgba(7,59,122,0.8)]">
+            <div className="hidden shrink-0 md:block" aria-label="واجهة الوحيد ماركت">
+              <div className="relative h-[54px] w-[154px] overflow-hidden rounded-xl border border-blue-200/80 bg-gradient-to-b from-[#75b5e3] via-[#589ed2] to-[#2f78b8] shadow-[0_12px_24px_-12px_rgba(7,59,122,0.8)]">
                 <div className="absolute inset-x-2 top-1 h-7 -skew-x-6 rounded-md border border-blue-950/20 bg-gradient-to-r from-[#062f68] via-[#0b59ae] to-[#42aaf4] shadow-[0_4px_8px_rgba(7,59,122,0.35)]">
                   <div className="flex h-full items-center justify-center gap-2">
                     <span className="text-sm font-black text-white drop-shadow">الوحيد</span>
                     <span className="text-[9px] font-black tracking-[0.16em] text-sky-100">MARKET</span>
                   </div>
                 </div>
-                <div className="absolute bottom-0 left-2 right-2 h-7 rounded-t-md border border-blue-400/50 bg-white/75 p-1">
+                <div className="absolute bottom-0 left-2 right-2 h-7 rounded-t-md border border-blue-200/60 bg-[#78b7e4]/90 p-1">
                   <div className="grid h-full grid-cols-3 gap-1">
-                    <span className="rounded-sm border border-blue-200/60 bg-gradient-to-b from-white to-sky-100 shadow-inner" />
-                    <span className="rounded-sm border border-blue-200/60 bg-gradient-to-b from-white to-blue-100 shadow-inner" />
+                    <span className="rounded-sm border border-blue-200/60 bg-gradient-to-b from-[#b9ddf5] to-[#579ed2] shadow-inner" />
+                    <span className="rounded-sm border border-blue-200/60 bg-gradient-to-b from-[#c2e2f7] to-[#4d91ca] shadow-inner" />
                     <span className="rounded-sm border border-blue-200/60 bg-gradient-to-b from-white to-sky-100 shadow-inner" />
                   </div>
                 </div>
