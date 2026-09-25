@@ -19,6 +19,7 @@ import {
   getProducts,
   getProductById,
   createProduct,
+  uploadProductImage,
   updateProduct,
   deleteProduct,
   getOrders,
@@ -99,6 +100,12 @@ export const appRouter = router({
   products: router({
     list: publicProcedure.input(z.number().optional()).query(({ input }) => getProducts(input)),
     getById: publicProcedure.input(z.number()).query(({ input }) => getProductById(input)),
+    uploadImage: adminProcedure
+      .input(z.object({
+        base64: z.string().min(1).max(4_000_000),
+        contentType: z.enum(["image/jpeg", "image/png", "image/webp", "image/avif"]),
+      }))
+      .mutation(({ input }) => uploadProductImage(input)),
     create: adminProcedure
       .input(z.object({
         categoryId: z.number(),
