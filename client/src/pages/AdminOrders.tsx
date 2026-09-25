@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Eye, Trash2, ArrowRight } from "lucide-react";
+import { Eye, Trash2, ArrowRight, Volume2, Bell, BellRing } from "lucide-react";
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
@@ -10,8 +10,12 @@ export default function AdminOrders() {
   const [orders, setOrders] = useState<any[]>([]);
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [orderItems, setOrderItems] = useState<any[]>([]);
+  const [soundEnabled, setSoundEnabled] = useState(false);
+  const [notificationEnabled, setNotificationEnabled] = useState(false);
+  const knownOrderIdsRef = useRef<Set<number> | null>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
 
-  const { data: ordersData } = trpc.orders.list.useQuery();
+  const { data: ordersData } = trpc.orders.list.useQuery(undefined, {\n    refetchInterval: 4000,\n    refetchIntervalInBackground: true,\n  });
   const { data: selectedOrderItems } = trpc.orders.getItems.useQuery(selectedOrder?.id ?? 0, { enabled: Boolean(selectedOrder?.id) });
   const updateStatusMutation = trpc.orders.updateStatus.useMutation();
   const deleteMutation = trpc.orders.delete.useMutation();
@@ -78,7 +82,7 @@ export default function AdminOrders() {
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-blue-600">إدارة الطلبات</h1>
+          <div>\n            <h1 className="text-2xl font-bold text-blue-600">إدارة الطلبات</h1>\n            <p className="text-sm text-gray-500 mt-1">تتحدث الطلبات تلقائياً كل 4 ثوانٍ</p>\n          </div>
           <Link href="/admin">
             <Button variant="outline">
               <ArrowRight className="w-4 h-4 ml-2" />
@@ -147,7 +151,7 @@ export default function AdminOrders() {
                   تفاصيل الطلب #{selectedOrder.id}
                 </h2>
 
-                <div className="space-y-4 mb-6 pb-6 border-b border-gray-200">
+                <div className="mb-6 rounded-xl border-2 border-blue-100 bg-blue-50 p-4">\n                  <p className="text-sm font-bold text-blue-900">حالة الدفع</p>\n                  <p className="mt-1 font-semibold text-blue-800">{selectedOrder.paymentMethod === "vodafone_cash" ? "تم الدفع عبر Vodafone Cash — راجع إثبات التحويل قبل التأكيد" : "الدفع عند الاستلام — العميل سيدفع للمندوب عند التسليم"}</p>\n                </div>\n\n                <div className="space-y-4 mb-6 pb-6 border-b border-gray-200">
                   <div>
                     <p className="text-sm text-gray-600">اسم العميل</p>
                     <p className="font-semibold text-gray-800">{selectedOrder.customerName}</p>
@@ -165,7 +169,7 @@ export default function AdminOrders() {
 
                   <div>
                     <p className="text-sm text-gray-600">طريقة الدفع</p>
-                    <p className="font-semibold text-gray-800">{selectedOrder.paymentMethod === "vodafone_cash" ? "فودافون كاش" : "الدفع عند الاستلام"}</p>
+                    <p className="font-semibold text-gray-800">{selectedOrder.paymentMethod === "vodafone_cash" ? "Vodafone Cash — مدفوع" : "الدفع عند الاستلام — غير مدفوع"}</p>
                   </div>
 
                   {selectedOrder.paymentMethod === "vodafone_cash" && (
