@@ -12,12 +12,17 @@ export default function AdminOrders() {
   const [orderItems, setOrderItems] = useState<any[]>([]);
 
   const { data: ordersData } = trpc.orders.list.useQuery();
+  const { data: selectedOrderItems } = trpc.orders.getItems.useQuery(selectedOrder?.id ?? 0, { enabled: Boolean(selectedOrder?.id) });
   const updateStatusMutation = trpc.orders.updateStatus.useMutation();
   const deleteMutation = trpc.orders.delete.useMutation();
 
   useEffect(() => {
     if (ordersData) setOrders(ordersData);
   }, [ordersData]);
+
+  useEffect(() => {
+    setOrderItems(selectedOrderItems || []);
+  }, [selectedOrderItems]);
 
   const handleViewOrder = async (order: any) => {
     setSelectedOrder(order);
@@ -159,9 +164,26 @@ export default function AdminOrders() {
                   </div>
 
                   <div>
-                    <p className="text-sm text-gray-600">رقم المحفظة</p>
-                    <p className="font-semibold text-gray-800">{selectedOrder.vodafoneWalletNumber || "لم يتم إدخاله"}</p>
+                    <p className="text-sm text-gray-600">طريقة الدفع</p>
+                    <p className="font-semibold text-gray-800">{selectedOrder.paymentMethod === "vodafone_cash" ? "فودافون كاش" : "الدفع عند الاستلام"}</p>
                   </div>
+
+                  {selectedOrder.paymentMethod === "vodafone_cash" && (
+                    <>
+                      <div>
+                        <p className="text-sm text-gray-600">رقم المحفظة</p>
+                        <p className="font-semibold text-gray-800">{selectedOrder.vodafoneWalletNumber || "غير مسجل"}</p>
+                      </div>
+                      {selectedOrder.paymentProofUrl && (
+                        <div>
+                          <p className="text-sm text-gray-600 mb-2">صورة التحويل</p>
+                          <a href={selectedOrder.paymentProofUrl} target="_blank" rel="noreferrer" className="block">
+                            <img src={selectedOrder.paymentProofUrl} alt="صورة تحويل فودافون كاش" className="w-full max-h-64 rounded-xl border object-contain bg-gray-50" />
+                          </a>
+                        </div>
+                      )}
+                    </>
+                  )}
                 </div>
 
                 <div className="space-y-3 mb-6 pb-6 border-b border-gray-200">
