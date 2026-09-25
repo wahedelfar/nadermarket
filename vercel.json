@@ -4,28 +4,23 @@
   "framework": "vite",
   "rewrites": [
     {
-      "source": "/api/trpc",
-      "destination": "/api/index/api/trpc"
-    },
-    {
-      "source": "/api/trpc/:path*",
-      "destination": "/api/index/api/trpc/:path*"
-    },
-    {
       "source": "/api/oauth/:path*",
-      "destination": "/api/index/api/oauth/:path*"
+      "destination": "/api/index"
     },
     {
       "source": "/manus-storage/:path*",
-      "destination": "/api/index/manus-storage/:path*"
+      "destination": "/api/index"
     },
     {
-      "source": "/((?!assets/|manifest.webmanifest|favicon|icon|robots.txt|sitemap.xml).*)",
+      "source": "/((?!assets/|manifest.webmanifest|favicon|icon|robots.txt|sitemap.xml|api/).*)",
       "destination": "/api/index"
     }
   ],
   "functions": {
     "api/index.ts": {
+      "includeFiles": "dist/api-server.js"
+    },
+    "api/trpc/[trpc].ts": {
       "includeFiles": "dist/api-server.js"
     }
   }
