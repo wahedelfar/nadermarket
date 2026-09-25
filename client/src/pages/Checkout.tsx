@@ -71,11 +71,11 @@ export default function Checkout() {
           <Card className="p-8 text-center">
             <CheckCircle2 className="mx-auto mb-4 h-16 w-16 text-green-600" />
             <h2 className="text-3xl font-bold text-gray-800 mb-2">شكراً لاختيارك نادر ماركت</h2>
-            <p className="text-xl text-gray-600 mb-2">تم استلام طلبك بنجاح. رقم الطلب: <span className="font-bold text-blue-600">#{orderId}</span></p>
+            <p className="text-xl text-gray-600 mb-2">تم استلام طلبك بنجاح. نرجوا انتظار اتصال المندوب. رقم الطلب: <span className="font-bold text-blue-600">#{orderId}</span></p>
             {paymentMethod === "vodafone_cash" ? (
-              <p className="text-gray-600 mb-8">تم حفظ بيانات الطلب وصورة التحويل. سيتم مراجعة الطلب والتواصل معك لتأكيد التسليم.</p>
+              <p className="text-gray-600 mb-8">تم حفظ بيانات الطلب وصورة التحويل. نرجوا انتظار اتصال المندوب لتأكيد الطلب وموعد التسليم.</p>
             ) : (
-              <p className="text-gray-600 mb-8">نرجو انتظار اتصال المندوب لتأكيد الطلب وموعد التسليم.</p>
+              <p className="text-gray-600 mb-8">نرجوا انتظار اتصال المندوب لتأكيد الطلب وموعد التسليم.</p>
             )}
             <div className="space-y-3">
               <Link href="/products"><Button className="w-full bg-blue-600 hover:bg-blue-700 py-3">متابعة التسوق</Button></Link>
@@ -143,25 +143,6 @@ export default function Checkout() {
         paymentProofUrl,
         items: orderItems,
       });
-
-      let message = "طلب جديد من نادر ماركت\n\n";
-      message += "بيانات العميل:\n";
-      message += `الاسم: ${formData.customerName.trim()}\n`;
-      message += `الهاتف: ${formData.customerPhone.trim()}\n`;
-      message += `العنوان بالتفصيل: ${formData.customerAddress.trim()}\n\n`;
-      message += "المنتجات:\n";
-      items.forEach((item) => {
-        const price = typeof item.price === "string" ? parseFloat(item.price) : item.price;
-        message += `- ${item.name}: ${item.quantity} × ${price.toFixed(2)} ج.م = ${(item.quantity * price).toFixed(2)} ج.م\n`;
-      });
-      message += `\nالإجمالي: ${total.toFixed(2)} ج.م\n`;
-      message += `طريقة الدفع: ${paymentMethod === "vodafone_cash" ? "فودافون كاش" : "الدفع عند الاستلام"}\n`;
-      if (paymentProofUrl) {
-        message += `صورة التحويل: ${paymentProofUrl}\n`;
-      }
-
-      const whatsappUrl = `https://wa.me/${SHOP_WHATSAPP}?text=${encodeURIComponent(message)}`;
-      window.open(whatsappUrl, "_blank");
 
       toast.success(`تم استلام طلبك بنجاح! رقم الطلب: ${result.id}`);
       setOrderId(result.id);
@@ -248,7 +229,7 @@ export default function Checkout() {
                 <Button type="button" onClick={handleSubmit} disabled={loading} className="w-full bg-green-600 hover:bg-green-700 py-4 text-lg">
                   {loading ? "جارٍ تجهيز الطلب..." : "إرسال طلبك للماركت"}
                 </Button>
-                <p className="mt-2 text-center text-xs text-gray-500">سيتم حفظ طلبك مباشرة في نظام الماركت، ونرجو انتظار اتصال المندوب.</p>
+                <p className="mt-2 text-center text-xs text-gray-500">سيتم حفظ طلبك مباشرة في نظام الماركت، ونرجوا انتظار اتصال المندوب.</p>
               </div>
             </Card>
           </div>
