@@ -91,7 +91,7 @@ export default function AdminOrders() {
             try {
               if ("serviceWorker" in navigator) {
                 const registration = await navigator.serviceWorker.ready;
-                await registration.showNotification("طلب جديد — نادر ماركت", {
+                await registration.showNotification("طلب جديد — الوحيد ماركت", {
                   body: `#${order.id} — ${order.customerName} — ${Number(order.totalAmount).toFixed(2)} ج.م`,
                   tag: `order-${order.id}`,
                   icon: "/icon.svg",
