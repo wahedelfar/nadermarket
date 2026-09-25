@@ -73,7 +73,7 @@ export default function PwaInstallPrompt() {
             type="button"
             onClick={handleInstall}
             className="group rounded-full border border-white/30 bg-gradient-to-l from-blue-700 via-blue-600 to-cyan-500 px-4 py-3 text-sm font-bold text-white shadow-xl shadow-blue-900/25 transition duration-200 hover:-translate-y-1 hover:shadow-2xl focus-visible:ring-2 focus-visible:ring-cyan-200 active:scale-95"
-            aria-label="تثبيت نادر ماركت كتطبيق"
+            aria-label="تثبيت الوحيد ماركت كتطبيق"
           >
             <Download className="ml-2 h-4 w-4 transition-transform duration-200 group-hover:-translate-y-0.5" aria-hidden="true" />
             ثبّت التطبيق
@@ -88,7 +88,7 @@ export default function PwaInstallPrompt() {
           </button>
           <div className="mb-3 flex items-center gap-2 text-blue-700">
             <Sparkles className="h-5 w-5" aria-hidden="true" />
-            <h2 className="font-bold">ثبّت نادر ماركت على جهازك</h2>
+            <h2 className="font-bold">ثبّت الوحيد ماركت على جهازك</h2>
           </div>
           <p className="mb-4 text-sm leading-6 text-gray-600">التثبيت غير متاح تلقائياً في هذا المتصفح. استخدم قائمة المتصفح ثم اختر «إضافة إلى الشاشة الرئيسية» على الهاتف، أو «تثبيت التطبيق» من شريط العنوان على الكمبيوتر.</p>
           <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
@@ -105,7 +105,7 @@ export default function PwaInstallPrompt() {
               <Sparkles className="h-8 w-8 text-amber-200" aria-hidden="true" />
             </div>
             <p className="mb-2 text-sm font-semibold text-cyan-100">تجربة تسوّق أذكى وأسرع</p>
-            <h2 id="pwa-welcome-title" className="mb-3 text-3xl font-extrabold">أهلاً بك في نادر ماركت</h2>
+            <h2 id="pwa-welcome-title" className="mb-3 text-3xl font-extrabold">أهلاً بك في الوحيد ماركت</h2>
             <p className="mb-6 leading-7 text-blue-50">يسعدنا وجودك معنا. كل احتياجاتك اليومية أصبحت أقرب إليك، بجودة نثق بها وتوصيل سريع إلى باب منزلك.</p>
             <Button type="button" onClick={dismissWelcome} className="w-full rounded-xl bg-white py-3 font-bold text-blue-700 transition hover:-translate-y-0.5 hover:bg-blue-50 active:scale-[0.98]">ابدأ التسوق</Button>
           </div>
