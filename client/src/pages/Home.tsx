@@ -173,7 +173,7 @@ export default function Home() {
                     alt={activeProduct.name}
                     className="h-full min-h-48 w-full object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:ease-out group-hover:scale-105 md:min-h-56"
                   />
-                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-blue-900/20 via-transparent to-white/20 opacity-0" transition-opacity duration-300 group-hover:opacity-100" />
+                  <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-blue-900/20 via-transparent to-white/20 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
                 </div>
               </div>
             </div>
