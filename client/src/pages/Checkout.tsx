@@ -47,7 +47,9 @@ export default function Checkout() {
   const [orderCreated, setOrderCreated] = useState(false);
   const [orderId, setOrderId] = useState<number | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<"cash_on_delivery" | "vodafone_cash">("cash_on_delivery");
-  const [proofFile, setProofFile] = useState<File | null>(null);\n  const { data: storeSettings } = trpc.store.settings.useQuery();\n  const vodafoneCashNumber = storeSettings?.vodafoneCashNumber || "01012345678";
+  const [proofFile, setProofFile] = useState<File | null>(null);
+  const { data: storeSettings } = trpc.store.settings.useQuery();
+  const vodafoneCashNumber = storeSettings?.vodafoneCashNumber || "01012345678";
   const [formData, setFormData] = useState({
     customerName: "",
     customerPhone: "",
