@@ -11,7 +11,6 @@ export default function AdminOrders() {
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
   const [orderItems, setOrderItems] = useState<any[]>([]);
   const [soundEnabled, setSoundEnabled] = useState(false);
-  const [notificationEnabled, setNotificationEnabled] = useState(false);
   const knownOrderIdsRef = useRef<Set<number> | null>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
 
@@ -59,11 +58,8 @@ export default function AdminOrders() {
   const enableNotifications = async () => {
     await playAlertSound();
     setSoundEnabled(true);
-    if ("Notification" in window) {
-      const permission = Notification.permission === "default"
-        ? await Notification.requestPermission()
-        : Notification.permission;
-      setNotificationEnabled(permission === "granted");
+    if ("Notification" in window && Notification.permission === "default") {
+      await Notification.requestPermission();
     }
     toast.success("تم تفعيل تنبيهات الطلبات الجديدة");
   };
