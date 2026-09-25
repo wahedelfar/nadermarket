@@ -44,7 +44,6 @@ export const appRouter = router({
   admin: router({
     login: publicProcedure
       .input(z.object({
-        email: z.string().email(),
         username: z.string().min(1),
         password: z.string().min(1),
       }))
@@ -142,7 +141,9 @@ export const appRouter = router({
         customerPhone: z.string(),
         customerAddress: z.string(),
         totalAmount: z.string(),
+        paymentMethod: z.enum(["cash_on_delivery", "vodafone_cash"]),
         vodafoneWalletNumber: z.string().optional(),
+        paymentProofUrl: z.string().url().optional(),
         items: z.array(z.object({ productId: z.number(), quantity: z.number(), price: z.string() })),
       }))
       .mutation(({ input }) => createOrder(input)),
