@@ -339,7 +339,7 @@ export default function Home() {
             <p className="font-semibold">تجربة تسوق حديثة من الوحيد ماركت</p>
           </div>
         </div>
-      </footer>>
+      </footer>
     </div>
   );
 }
