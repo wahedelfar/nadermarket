@@ -119,9 +119,9 @@ nader-market-web/
 | **التصميم** | Tailwind CSS | 4 |
 | **الخادم** | Express | 4 |
 | **الاتصال** | tRPC | 11 |
-| **قاعدة البيانات** | Drizzle ORM | - |
-| **المصادقة** | Manus OAuth | - |
-| **التخزين** | AWS S3 | - |
+| **قاعدة البيانات** | Supabase PostgreSQL | - |
+| **المصادقة** | جلسة مدير موقعة | - |
+| **التخزين** | Supabase Storage | - |
 
 ### متغيرات البيئة
 
@@ -132,15 +132,11 @@ DATABASE_URL=mysql://user:password@host:port/database
 # المصادقة
 JWT_SECRET=your_jwt_secret_key
 VITE_APP_ID=your_app_id
-OAUTH_SERVER_URL=https://api.manus.im
-
-# التخزين
-BUILT_IN_FORGE_API_URL=https://api.manus.im
-BUILT_IN_FORGE_API_KEY=your_api_key
-
-# معلومات المالك
-OWNER_OPEN_ID=your_owner_id
-OWNER_NAME=Owner Name
+SUPABASE_URL=https://wvtmaqintxtnxorxwupl.supabase.co
+ADMIN_LOGIN_EMAIL=akardomiat@gmail.com
+ADMIN_LOGIN_USERNAME=nader
+ADMIN_LOGIN_PASSWORD=ضعها في Vercel Environment Variables
+JWT_SECRET=ضع مفتاح جلسة قوي في Vercel Environment Variables
 ```
 
 ---
