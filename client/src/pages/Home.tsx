@@ -54,16 +54,16 @@ export default function Home() {
         </div>
 
         <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 md:gap-5 md:py-4">
-          <Link href="/" className="group flex shrink-0 items-center gap-2.5 md:gap-3">
-            <div className="relative">
-              <div className="absolute -inset-2 rounded-2xl bg-white/55 opacity-70 blur-md transition duration-300 group-hover:opacity-100" />
-              <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl border border-white/80 bg-white/75 p-1.5 shadow-lg md:h-14 md:w-14">
+          <Link href="/" className="group flex min-w-0 shrink-0 items-center gap-3 md:gap-4">
+            <div className="relative shrink-0">
+              <div className="absolute -inset-2 rounded-2xl bg-white/60 opacity-80 blur-md transition duration-300 group-hover:opacity-100" />
+              <div className="relative flex h-12 w-12 items-center justify-center rounded-2xl border border-white/90 bg-white/85 p-1.5 shadow-lg md:h-14 md:w-14">
                 <img src="/icon.svg" alt="الوحيد ماركت" className="h-full w-full object-contain" />
               </div>
             </div>
-            <div className="hidden sm:block">
-              <h1 className="text-xl font-black tracking-tight text-blue-950 md:text-2xl">الوحيد ماركت</h1>
-              <p className="text-[11px] font-semibold text-blue-900/60 md:text-xs">كل احتياجاتك في مكان واحد</p>
+            <div className="min-w-0">
+              <h1 className="whitespace-nowrap font-black leading-none tracking-tight text-[#073b7a] drop-shadow-[0_1px_0_rgba(255,255,255,0.8)] text-[22px] md:text-[30px]">الوحيد ماركت</h1>
+              <p className="mt-1.5 whitespace-nowrap text-[10px] font-bold text-blue-900/60 md:text-xs">كل احتياجاتك في مكان واحد</p>
             </div>
           </Link>
 
