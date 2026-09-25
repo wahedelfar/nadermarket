@@ -75,22 +75,22 @@ export default function Home() {
           </div>
 
           <div className="ml-auto flex shrink-0 items-center gap-2">
-            <div className="hidden lg:block" aria-label="واجهة الوحيد ماركت">
-              <div className="relative h-12 w-40 overflow-hidden rounded-lg border border-white/80 bg-gradient-to-b from-[#f7fdff] via-[#d9f2ff] to-[#8ccfff] shadow-[0_8px_18px_-10px_rgba(7,59,122,0.65)]">
-                <div className="absolute inset-x-2 top-1 h-6 -skew-x-6 rounded-sm border border-blue-900/10 bg-gradient-to-r from-[#073b7a] via-[#0d62bd] to-[#5dbbff] shadow-md">
-                  <div className="flex h-full items-center justify-center gap-1.5">
-                    <span className="text-[11px] font-black tracking-tight text-white">الوحيد</span>
-                    <span className="text-[8px] font-bold text-sky-100">MARKET</span>
+            <div className="hidden shrink-0 lg:block" aria-label="واجهة الوحيد ماركت">
+              <div className="relative h-[58px] w-[178px] overflow-hidden rounded-xl border border-white/90 bg-gradient-to-b from-white via-[#d9f2ff] to-[#7fc8ff] shadow-[0_12px_24px_-12px_rgba(7,59,122,0.8)]">
+                <div className="absolute inset-x-2 top-1 h-7 -skew-x-6 rounded-md border border-blue-950/20 bg-gradient-to-r from-[#062f68] via-[#0b59ae] to-[#42aaf4] shadow-[0_4px_8px_rgba(7,59,122,0.35)]">
+                  <div className="flex h-full items-center justify-center gap-2">
+                    <span className="text-sm font-black text-white drop-shadow">الوحيد</span>
+                    <span className="text-[9px] font-black tracking-[0.16em] text-sky-100">MARKET</span>
                   </div>
                 </div>
-                <div className="absolute bottom-0 left-2 right-2 h-5 rounded-t-sm border border-blue-300/50 bg-white/80">
-                  <div className="grid h-full grid-cols-3 gap-px bg-blue-200/60 p-px">
-                    <span className="rounded-[2px] bg-gradient-to-t from-blue-100 to-white" />
-                    <span className="rounded-[2px] bg-gradient-to-t from-sky-100 to-white" />
-                    <span className="rounded-[2px] bg-gradient-to-t from-blue-100 to-white" />
+                <div className="absolute bottom-0 left-2 right-2 h-7 rounded-t-md border border-blue-400/50 bg-white/75 p-1">
+                  <div className="grid h-full grid-cols-3 gap-1">
+                    <span className="rounded-sm border border-blue-200/60 bg-gradient-to-b from-white to-sky-100 shadow-inner" />
+                    <span className="rounded-sm border border-blue-200/60 bg-gradient-to-b from-white to-blue-100 shadow-inner" />
+                    <span className="rounded-sm border border-blue-200/60 bg-gradient-to-b from-white to-sky-100 shadow-inner" />
                   </div>
                 </div>
-                <span className="absolute -bottom-1 left-1 h-2 w-14 rounded-full bg-blue-900/20 blur-sm" />
+                <span className="absolute bottom-0 left-4 h-1.5 w-16 rounded-full bg-blue-950/25 blur-sm" />
               </div>
             </div>
             <Link href="/cart">
@@ -290,36 +290,56 @@ export default function Home() {
         )}
       </section>
 
-      {/* Footer */}
-      <footer className="bg-gradient-to-l from-blue-800 via-blue-700 to-blue-600 text-white py-8 mt-12">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div>
-              <h3 className="text-xl font-bold mb-4">الوحيد ماركت</h3>
-              <p className="text-blue-100">أفضل متجر تجزئة في رأس البر</p>
+      {/* Premium Footer */}
+      <footer className="relative mt-16 overflow-hidden bg-gradient-to-br from-[#041f46] via-[#073b7a] to-[#0b63b7] text-white">
+        <div className="pointer-events-none absolute -left-24 -top-24 h-72 w-72 rounded-full bg-sky-400/15 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-32 -right-20 h-80 w-80 rounded-full bg-blue-300/10 blur-3xl" />
+
+        <div className="relative mx-auto max-w-7xl px-4 py-12 md:py-14">
+          <div className="grid gap-8 md:grid-cols-[1.4fr_1fr_1fr]">
+            <div className="rounded-3xl border border-white/10 bg-white/[0.07] p-6 backdrop-blur-sm">
+              <div className="mb-5 flex items-center gap-3">
+                <div className="flex h-14 w-14 items-center justify-center rounded-2xl border border-white/20 bg-white p-2 shadow-xl">
+                  <img src="/icon.svg" alt="" className="h-full w-full object-contain" />
+                </div>
+                <div>
+                  <h3 className="text-2xl font-black tracking-tight text-white">الوحيد ماركت</h3>
+                  <p className="text-xs font-semibold text-sky-200">كل احتياجاتك في مكان واحد</p>
+                </div>
+              </div>
+              <p className="max-w-md text-sm leading-7 text-blue-100">تسوّق بسهولة، اختار منتجاتك، واستلم طلبك بكل بساطة. تجربة تسوق إلكترونية مصممة لتكون سريعة وواضحة ومريحة.</p>
+              <Link href="/products" className="mt-5 inline-flex rounded-xl bg-white px-5 py-2.5 text-sm font-black text-[#073b7a] shadow-lg transition hover:-translate-y-0.5 hover:bg-sky-50">ابدأ التسوق</Link>
             </div>
-            <div>
-              <h3 className="text-xl font-bold mb-4">تواصل معنا</h3>
-              <p className="text-gray-400 flex items-center gap-2">
-                <Phone className="w-4 h-4" />
-                01002934519
-              </p>
-              <p className="text-gray-400 flex items-center gap-2 mt-2">
-                <MapPin className="w-4 h-4" />
-                رأس البر - سوق 89
-              </p>
+
+            <div className="rounded-3xl border border-white/10 bg-white/[0.05] p-6">
+              <h3 className="mb-5 text-lg font-black text-white">روابط سريعة</h3>
+              <div className="space-y-2.5 text-sm font-semibold text-blue-100">
+                <Link href="/" className="block rounded-lg px-3 py-2 transition hover:bg-white/10 hover:text-white">الرئيسية</Link>
+                <Link href="/products" className="block rounded-lg px-3 py-2 transition hover:bg-white/10 hover:text-white">تصفح المنتجات</Link>
+                <Link href="/cart" className="block rounded-lg px-3 py-2 transition hover:bg-white/10 hover:text-white">سلة المشتريات</Link>
+              </div>
             </div>
-            <div>
-              <h3 className="text-xl font-bold mb-4">ساعات العمل</h3>
-              <p className="text-blue-100">السبت - الخميس: 8:00 - 22:00</p>
-              <p className="text-blue-100">الجمعة: 10:00 - 22:00</p>
+
+            <div className="rounded-3xl border border-white/10 bg-white/[0.05] p-6">
+              <h3 className="mb-5 text-lg font-black text-white">تواصل معنا</h3>
+              <div className="space-y-4 text-sm text-blue-100">
+                <div className="flex items-center gap-3"><span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10"><Phone className="h-4 w-4 text-sky-200" /></span><span dir="ltr">01002934519</span></div>
+                <div className="flex items-center gap-3"><span className="flex h-9 w-9 items-center justify-center rounded-lg bg-white/10"><MapPin className="h-4 w-4 text-sky-200" /></span><span>رأس البر - سوق 89</span></div>
+                <div className="border-t border-white/10 pt-4">
+                  <p className="font-bold text-white">ساعات العمل</p>
+                  <p className="mt-1">السبت - الخميس: 8:00 - 22:00</p>
+                  <p>الجمعة: 10:00 - 22:00</p>
+                </div>
+              </div>
             </div>
           </div>
-          <div className="border-t border-white/20 mt-8 pt-8 text-center text-blue-100">
-            <p>&copy; <Link href="/admin" aria-label="الدخول إلى لوحة الإدارة" data-admin-entry="footer-year" className="rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-400">2026</Link> الوحيد ماركت. جميع الحقوق محفوظة.</p>
+
+          <div className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-white/15 pt-6 text-center text-xs text-blue-200 md:flex-row md:text-right">
+            <p>&copy; <Link href="/admin" aria-label="الدخول إلى لوحة الإدارة" data-admin-entry="footer-year" className="rounded-sm font-bold text-white outline-none focus-visible:ring-2 focus-visible:ring-sky-300">2026</Link> الوحيد ماركت. جميع الحقوق محفوظة.</p>
+            <p className="font-semibold">تجربة تسوق حديثة من الوحيد ماركت</p>
           </div>
         </div>
-      </footer>
+      </footer>>
     </div>
   );
 }
