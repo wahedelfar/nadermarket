@@ -75,19 +75,19 @@ export default function Home() {
       </header>
 
       {/* Hero / Welcome Banner */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#082b67] via-[#0e4196] to-[#1767c4] py-8 md:py-12">
-        <div className="absolute -left-20 -top-20 h-56 w-56 rounded-full bg-white/10 blur-3xl" />
-        <div className="absolute -bottom-24 -right-12 h-64 w-64 rounded-full bg-cyan-300/10 blur-3xl" />
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#bfe7ff] via-[#d9f1ff] to-[#f3faff] py-8 md:py-12">
+        <div className="absolute -left-20 -top-20 h-56 w-56 rounded-full bg-white/70 blur-3xl" />
+        <div className="absolute -bottom-24 -right-12 h-64 w-64 rounded-full bg-sky-200/60 blur-3xl" />
         <div className="relative mx-auto max-w-7xl px-4">
-          <div className="rounded-3xl border border-white/15 bg-white/10 p-6 text-center shadow-2xl backdrop-blur-sm md:p-10">
-            <p className="mb-2 text-sm font-semibold text-blue-100">مرحباً بك في</p>
-            <h2 className="text-3xl font-black text-white md:text-5xl">الوحيد ماركت</h2>
+          <div className="rounded-3xl border border-white/80 bg-white/80 p-6 text-center shadow-xl backdrop-blur-sm md:p-10">
+            <p className="mb-2 text-sm font-semibold text-blue-600">مرحباً بك في</p>
+            <h2 className="text-3xl font-black text-blue-900 md:text-5xl">الوحيد ماركت</h2>
             <div className="mx-auto mt-5 max-w-3xl rounded-2xl bg-white px-5 py-4 shadow-lg">
               <p className="text-xl font-black text-blue-800 md:text-3xl">كل ما تطلب أكتر… هتوفر أكتر</p>
             </div>
-            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-blue-50 md:text-base">اختار احتياجاتك، أضفها للسلة، واختار طريقة الدفع المناسبة ليك.</p>
+            <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-slate-600 md:text-base">اختار احتياجاتك، أضفها للسلة، واختار طريقة الدفع المناسبة ليك.</p>
             <Link href="/products" className="mt-6 inline-block">
-              <Button className="rounded-xl bg-white px-7 py-3 font-bold text-blue-700 hover:bg-blue-50">تسوّق الآن</Button>
+              <Button className="rounded-xl bg-blue-600 px-7 py-3 font-bold text-white shadow-md hover:bg-blue-700">تسوّق الآن</Button>
             </Link>
           </div>
         </div>
@@ -104,11 +104,11 @@ export default function Home() {
               <p className="text-xs font-semibold text-gray-800">توصيل سريع</p>
             </div>
             <div className="flex flex-col items-center border-l border-r border-blue-300">
-              <ShoppingCart className="w-6 h-6 text-green-600 mb-1" />
+              <ShoppingCart className="w-6 h-6 text-blue-600 mb-1" />
               <p className="text-xs font-semibold text-gray-800">منتجات متنوعة</p>
             </div>
             <div className="flex flex-col items-center">
-              <Phone className="w-6 h-6 text-orange-600 mb-1" />
+              <Phone className="w-6 h-6 text-blue-600 mb-1" />
               <p className="text-xs font-semibold text-gray-800">خدمة العملاء</p>
             </div>
           </div>
