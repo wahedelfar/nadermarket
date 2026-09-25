@@ -107,6 +107,10 @@ export async function getProductById(id: number) {
   return rows.find((row) => row.id === id);
 }
 
+export async function uploadProductImage(input: { base64: string; contentType: string }) {
+  return await api({ action: "admin.product-images.upload", body: input, admin: true });
+}
+
 export async function createProduct(input: {
   categoryId: number; name: string; description?: string; price: string; image?: string; stock?: number; isActive?: boolean;
 }) {
