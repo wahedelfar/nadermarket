@@ -8,7 +8,7 @@ import { useCart } from "@/contexts/CartContext";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 
-const VODAFONE_CASH_NUMBER = "01012345678";
+
 async function fileToBase64(file: File) {
   const buffer = await file.arrayBuffer();
   let binary = "";
@@ -47,7 +47,7 @@ export default function Checkout() {
   const [orderCreated, setOrderCreated] = useState(false);
   const [orderId, setOrderId] = useState<number | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<"cash_on_delivery" | "vodafone_cash">("cash_on_delivery");
-  const [proofFile, setProofFile] = useState<File | null>(null);
+  const [proofFile, setProofFile] = useState<File | null>(null);\n  const { data: storeSettings } = trpc.store.settings.useQuery();\n  const vodafoneCashNumber = storeSettings?.vodafoneCashNumber || "01012345678";
   const [formData, setFormData] = useState({
     customerName: "",
     customerPhone: "",
@@ -136,7 +136,7 @@ export default function Checkout() {
 
       const result = await createOrderMutation.mutateAsync({
         customerName: formData.customerName.trim(),
-        customerPhone: formData.customerPhone.trim(),
+        customerPhone: phone,
         customerAddress: formData.customerAddress.trim(),
         totalAmount: total.toFixed(2),
         paymentMethod,
@@ -179,7 +179,7 @@ export default function Checkout() {
                   </div>
                   <div>
                     <label className="block text-gray-700 font-semibold mb-2">رقم الموبايل *</label>
-                    <Input type="tel" name="customerPhone" value={formData.customerPhone} onChange={handleInputChange} placeholder="مثال: 01012345678" required />
+                    <Input type="tel" name="customerPhone" value={formData.customerPhone} onChange={handleInputChange} placeholder="مثال: 01012345678" inputMode="numeric" maxLength={11} minLength={11} pattern="01[0125][0-9]{8}" required />
                   </div>
                   <div>
                     <label className="block text-gray-700 font-semibold mb-2">العنوان بالتفصيل *</label>
@@ -208,7 +208,7 @@ export default function Checkout() {
                   <div className="mt-5 space-y-4 rounded-2xl border border-red-200 bg-red-50 p-5">
                     <div>
                       <p className="font-bold text-red-900">رقم فودافون كاش</p>
-                      <p className="mt-1 text-2xl font-black tracking-wider text-red-700">{VODAFONE_CASH_NUMBER}</p>
+                      <p className="mt-1 text-2xl font-black tracking-wider text-red-700">{vodafoneCashNumber}</p>
                       <p className="mt-2 text-sm text-red-800">تنبيه: هذا رقم تجريبي مؤقت للواجهة، ويجب استبداله برقم المحفظة الحقيقي قبل تشغيل المتجر فعليًا.</p>
                     </div>
                     <div className="rounded-xl bg-white p-4">
