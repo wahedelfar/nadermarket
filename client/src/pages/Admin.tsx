@@ -58,7 +58,7 @@ export default function Admin() {
           <div className="text-center mb-8">
             <Lock className="w-12 h-12 mx-auto text-blue-600 mb-4" />
             <h1 className="text-3xl font-bold text-gray-800">لوحة التحكم</h1>
-            <p className="text-gray-600 mt-2">نادر ماركت - الإدارة</p>
+            <p className="text-gray-600 mt-2">الوحيد ماركت - الإدارة</p>
           </div>
 
           <form onSubmit={handleLoginSubmit} className="space-y-5">
@@ -115,7 +115,7 @@ export default function Admin() {
       {/* Header */}
       <header className="bg-white shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold text-blue-600">نادر ماركت - الإدارة</h1>
+          <h1 className="text-2xl font-bold text-blue-600">الوحيد ماركت - الإدارة</h1>
           <div className="flex gap-2">
             <Link href="/">
               <Button variant="outline">العودة للمتجر</Button>
@@ -169,7 +169,7 @@ export default function Admin() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="bg-blue-50 p-4 rounded-lg">
               <p className="text-gray-600">اسم المتجر</p>
-              <p className="text-2xl font-bold text-blue-600">نادر ماركت</p>
+              <p className="text-2xl font-bold text-blue-600">الوحيد ماركت</p>
             </div>
             <div className="bg-blue-50 p-4 rounded-lg">
               <p className="text-gray-600">العنوان</p>
