@@ -11,7 +11,6 @@ type ApiOptions = {
 async function api({ action, body = {}, admin = false }: ApiOptions) {
   const payload = admin
     ? {
-        email: ENV.adminLoginEmail,
         username: ENV.adminLoginUsername,
         password: ENV.adminLoginPassword,
         payload: body,
@@ -67,7 +66,9 @@ function orderFromDb(row: any) {
     status: row.status,
     paymentMethod: row.payment_method,
     paymentStatus: row.payment_status,
+    paymentMethod: row.payment_method ?? null,
     vodafoneWalletNumber: row.vodafone_wallet_number ?? null,
+    paymentProofUrl: row.payment_proof_url ?? null,
     notes: row.notes ?? null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
@@ -153,7 +154,9 @@ export async function createOrder(input: {
   customerPhone: string;
   customerAddress: string;
   totalAmount: string;
+  paymentMethod: "cash_on_delivery" | "vodafone_cash";
   vodafoneWalletNumber?: string;
+  paymentProofUrl?: string;
   items: Array<{ productId: number; quantity: number; price: string }>;
 }) {
   return await api({ action: "order", body: input });
