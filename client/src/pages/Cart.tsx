@@ -8,12 +8,12 @@ export default function Cart() {
   const { items, removeFromCart, updateQuantity, clearCart, total } = useCart();
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#e8f6ff]">
       {/* Header */}
-      <header className="bg-white shadow-md sticky top-0 z-50">
+      <header className="bg-gradient-to-l from-[#9fd8ff] via-[#bfe7ff] to-[#dff3ff] shadow-md sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <Link href="/">
-            <h1 className="text-2xl font-bold text-blue-600 cursor-pointer">الوحيد ماركت</h1>
+            <h1 className="text-2xl font-black text-blue-800 cursor-pointer">الوحيد ماركت</h1>
           </Link>
           <Link href="/products">
             <Button variant="outline">
@@ -105,7 +105,7 @@ export default function Cart() {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">الإجمالي:</span>
-                    <span className="text-2xl font-bold text-blue-600">
+                    <span className="text-2xl font-black text-blue-800">
                       {total.toFixed(2)} ج.م
                     </span>
                   </div>
