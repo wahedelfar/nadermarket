@@ -47,11 +47,11 @@ export default function Home() {
           <div className="flex items-center gap-3">
             <img 
               src="/icon.svg"
-              alt="نادر ماركت"
+              alt="الوحيد ماركت"
               className="w-12 h-12"
             />
             <div>
-              <h1 className="text-2xl font-bold text-blue-600">نادر ماركت</h1>
+              <h1 className="text-2xl font-bold text-blue-600">الوحيد ماركت</h1>
               <p className="text-sm text-gray-600 flex items-center gap-1">
                 <MapPin className="w-4 h-4" />
                 رأس البر - سوق 89
@@ -81,7 +81,7 @@ export default function Home() {
         <div className="relative mx-auto max-w-7xl px-4">
           <div className="rounded-3xl border border-white/15 bg-white/10 p-6 text-center shadow-2xl backdrop-blur-sm md:p-10">
             <p className="mb-2 text-sm font-semibold text-blue-100">مرحباً بك في</p>
-            <h2 className="text-3xl font-black text-white md:text-5xl">نادر ماركت</h2>
+            <h2 className="text-3xl font-black text-white md:text-5xl">الوحيد ماركت</h2>
             <div className="mx-auto mt-5 max-w-3xl rounded-2xl bg-white px-5 py-4 shadow-lg">
               <p className="text-xl font-black text-blue-800 md:text-3xl">كل ما تطلب أكتر… هتوفر أكتر</p>
             </div>
@@ -96,7 +96,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="bg-gradient-to-r from-blue-600 to-blue-800 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 text-center">
-          <h2 className="text-4xl font-bold mb-4">مرحباً بك في نادر ماركت</h2>
+          <h2 className="text-4xl font-bold mb-4">مرحباً بك في الوحيد ماركت</h2>
           <p className="text-xl mb-8 opacity-90">أفضل المنتجات بأسعار منافسة</p>
           <div className="flex justify-center gap-4">
             <Link href="/products">
@@ -138,7 +138,7 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-4 pb-8" aria-labelledby="latest-products-title">
         <div className="mb-3 flex items-center justify-between gap-3">
           <div>
-            <p className="text-xs font-bold tracking-wide text-blue-600">اختيارات نادر ماركت</p>
+            <p className="text-xs font-bold tracking-wide text-blue-600">اختيارات الوحيد ماركت</p>
             <h2 id="latest-products-title" className="text-2xl font-bold text-gray-800">أحدث المنتجات الطازة</h2>
           </div>
           <Link href="/products" className="text-sm font-semibold text-blue-600 hover:text-blue-800">
@@ -165,7 +165,7 @@ export default function Home() {
                 </div>
                 <h3 className="mb-2 text-2xl font-bold">{activeProduct.name}</h3>
                 <p className="mb-4 line-clamp-2 min-h-10 text-sm text-blue-50">
-                  {activeProduct.description || "جودة ممتازة وسعر مناسب من نادر ماركت"}
+                  {activeProduct.description || "جودة ممتازة وسعر مناسب من الوحيد ماركت"}
                 </p>
                 <div className="mb-5 text-2xl font-extrabold">
                   {Number(activeProduct.price).toFixed(2)} <span className="text-base font-medium">ج.م</span>
@@ -271,7 +271,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <h3 className="text-xl font-bold mb-4">نادر ماركت</h3>
+              <h3 className="text-xl font-bold mb-4">الوحيد ماركت</h3>
               <p className="text-gray-400">أفضل متجر تجزئة في رأس البر</p>
             </div>
             <div>
@@ -292,7 +292,7 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t border-gray-700 mt-8 pt-8 text-center text-gray-400">
-            <p>&copy; <Link href="/admin" aria-label="الدخول إلى لوحة الإدارة" data-admin-entry="footer-year" className="rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-400">2026</Link> نادر ماركت. جميع الحقوق محفوظة.</p>
+            <p>&copy; <Link href="/admin" aria-label="الدخول إلى لوحة الإدارة" data-admin-entry="footer-year" className="rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-blue-400">2026</Link> الوحيد ماركت. جميع الحقوق محفوظة.</p>
           </div>
         </div>
       </footer>
