@@ -3,10 +3,32 @@
   "outputDirectory": "dist/public",
   "framework": "vite",
   "rewrites": [
-    { "source": "/api/trpc", "destination": "/api/index/api/trpc" },
-    { "source": "/api/trpc/:path*", "destination": "/api/index/api/trpc/:path*" },
-    { "source": "/api/oauth/:path*", "destination": "/api/index/api/oauth/:path*" },
-    { "source": "/manus-storage/:path*", "destination": "/api/index/manus-storage/:path*" },
-    { "source": "/((?!assets/|manifest.webmanifest|favicon|icon|robots.txt|sitemap.xml).*)", "destination": "/api/index" }
-  ]
+    {
+      "source": "/api/trpc",
+      "destination": "/api/index/api/trpc"
+    },
+    {
+      "source": "/api/trpc/:path*",
+      "destination": "/api/index/api/trpc/:path*"
+    },
+    {
+      "source": "/api/oauth/:path*",
+      "destination": "/api/index/api/oauth/:path*"
+    },
+    {
+      "source": "/manus-storage/:path*",
+      "destination": "/api/index/manus-storage/:path*"
+    },
+    {
+      "source": "/((?!assets/|manifest.webmanifest|favicon|icon|robots.txt|sitemap.xml).*)",
+      "destination": "/api/index"
+    }
+  ],
+  "functions": {
+    "api/index.ts": {
+      "includeFiles": [
+        "dist/api-server.js"
+      ]
+    }
+  }
 }
