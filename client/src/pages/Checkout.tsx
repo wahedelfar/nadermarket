@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -46,7 +46,6 @@ export default function Checkout() {
   const [loading, setLoading] = useState(false);
   const [orderCreated, setOrderCreated] = useState(false);
   const [orderId, setOrderId] = useState<number | null>(null);
-  const [deliveryStatus, setDeliveryStatus] = useState<"pending" | "on_the_way" | "delivered">("pending");
   const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<"cash_on_delivery" | "vodafone_cash">("cash_on_delivery");
   const [proofFile, setProofFile] = useState<File | null>(null);
@@ -61,64 +60,46 @@ export default function Checkout() {
   const createOrderMutation = trpc.orders.create.useMutation();
   const uploadProofMutation = trpc.orders.uploadPaymentProof.useMutation();
 
+  const { data: orderStatus } = trpc.orders.status.useQuery(orderId ?? 0, {
+    enabled: orderCreated && Boolean(orderId),
+    refetchInterval: 10000,
+    refetchIntervalInBackground: true,
+  });
+  const previousStatusRef = useRef<"pending" | "on_the_way" | "delivered" | null>(null);
+
   useEffect(() => {
     if (!orderCreated || !orderId) return;
 
-    let previousStatus: "pending" | "on_the_way" | "delivered" | null = null;
-    let active = true;
+    if ("Notification" in window && Notification.permission === "default") {
+      void Notification.requestPermission().catch(() => {});
+    }
+  }, [orderCreated, orderId]);
 
-    const requestNotificationPermission = async () => {
-      if ("Notification" in window && Notification.permission === "default") {
+  useEffect(() => {
+    if (!orderStatus || !orderId) return;
+
+    const nextStatus = orderStatus.status as "pending" | "on_the_way" | "delivered";
+    if (nextStatus === "on_the_way") {
+      setStatusMessage(`🛵 طلبك رقم #${orderId} في الطريق إليك الآن`);
+    } else if (nextStatus === "delivered") {
+      setStatusMessage(`✅ تم توصيل طلبك رقم #${orderId} - شكراً لإختيارنا`);
+    }
+
+    const previousStatus = previousStatusRef.current;
+    if (previousStatus && previousStatus !== nextStatus && (nextStatus === "on_the_way" || nextStatus === "delivered")) {
+      const body = nextStatus === "on_the_way"
+        ? `🛵 طلبك رقم #${orderId} في الطريق إليك الآن`
+        : `✅ تم توصيل طلبك رقم #${orderId} - شكراً لإختيارنا`;
+
+      if ("Notification" in window && Notification.permission === "granted") {
         try {
-          await Notification.requestPermission();
+          new Notification("الوحيد ماركت", { body });
         } catch {}
       }
-    };
+    }
 
-    const checkOrderStatus = async () => {
-      try {
-        const response = await fetch("https://wvtmaqintxtnxorxwupl.supabase.co/functions/v1/nader-api?action=order.status", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ id: orderId }),
-        });
-        const data = await response.json();
-        if (!response.ok || !data?.status || !active) return;
-
-        const nextStatus = data.status as "pending" | "on_the_way" | "delivered";
-        setDeliveryStatus(nextStatus);
-
-        if (nextStatus === "on_the_way") {
-          setStatusMessage(`🛵 طلبك رقم #${orderId} في الطريق إليك الآن`);
-        } else if (nextStatus === "delivered") {
-          setStatusMessage(`✅ تم توصيل طلبك رقم #${orderId} - شكراً لإختيارنا`);
-        }
-
-        if (previousStatus && previousStatus !== nextStatus && (nextStatus === "on_the_way" || nextStatus === "delivered")) {
-          const body = nextStatus === "on_the_way"
-            ? `🛵 طلبك رقم #${orderId} في الطريق إليك الآن`
-            : `✅ تم توصيل طلبك رقم #${orderId} - شكراً لإختيارنا`;
-
-          if ("Notification" in window && Notification.permission === "granted") {
-            try {
-              new Notification("الوحيد ماركت", { body });
-            } catch {}
-          }
-        }
-
-        previousStatus = nextStatus;
-      } catch {}
-    };
-
-    void requestNotificationPermission();
-    void checkOrderStatus();
-    const intervalId = window.setInterval(checkOrderStatus, 10000);
-
-    return () => {
-      active = false;
-      window.clearInterval(intervalId);
-    };
-  }, [orderCreated, orderId]);
+    previousStatusRef.current = nextStatus;
+  }, [orderStatus, orderId, orderCreated]);
 
   if (orderCreated) {
     return (
@@ -214,7 +195,6 @@ export default function Checkout() {
 
       toast.success(`تم استلام طلبك بنجاح! رقم الطلب: ${result.id}`);
       setOrderId(result.id);
-      setDeliveryStatus("pending");
       setStatusMessage(null);
       setOrderCreated(true);
       clearCart();
