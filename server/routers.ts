@@ -166,7 +166,7 @@ export const appRouter = router({
     updateStatus: adminProcedure
       .input(z.object({
         id: z.number(),
-        status: z.enum(["pending", "confirmed", "processing", "shipped", "completed", "cancelled"]),
+        status: z.enum(["pending", "on_the_way", "delivered"]),
       }))
       .mutation(({ input }) => updateOrderStatus(input.id, input.status)),
     delete: adminProcedure.input(z.number()).mutation(({ input }) => deleteOrder(input)),
