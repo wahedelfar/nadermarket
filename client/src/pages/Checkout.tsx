@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -46,6 +46,8 @@ export default function Checkout() {
   const [loading, setLoading] = useState(false);
   const [orderCreated, setOrderCreated] = useState(false);
   const [orderId, setOrderId] = useState<number | null>(null);
+  const [deliveryStatus, setDeliveryStatus] = useState<"pending" | "on_the_way" | "delivered">("pending");
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
   const [paymentMethod, setPaymentMethod] = useState<"cash_on_delivery" | "vodafone_cash">("cash_on_delivery");
   const [proofFile, setProofFile] = useState<File | null>(null);
   const { data: storeSettings } = trpc.store.settings.useQuery();
@@ -58,6 +60,65 @@ export default function Checkout() {
 
   const createOrderMutation = trpc.orders.create.useMutation();
   const uploadProofMutation = trpc.orders.uploadPaymentProof.useMutation();
+
+  useEffect(() => {
+    if (!orderCreated || !orderId) return;
+
+    let previousStatus: "pending" | "on_the_way" | "delivered" | null = null;
+    let active = true;
+
+    const requestNotificationPermission = async () => {
+      if ("Notification" in window && Notification.permission === "default") {
+        try {
+          await Notification.requestPermission();
+        } catch {}
+      }
+    };
+
+    const checkOrderStatus = async () => {
+      try {
+        const response = await fetch("https://wvtmaqintxtnxorxwupl.supabase.co/functions/v1/nader-api?action=order.status", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: orderId }),
+        });
+        const data = await response.json();
+        if (!response.ok || !data?.status || !active) return;
+
+        const nextStatus = data.status as "pending" | "on_the_way" | "delivered";
+        setDeliveryStatus(nextStatus);
+
+        if (nextStatus === "on_the_way") {
+          setStatusMessage(`🛵 طلبك رقم #${orderId} في الطريق إليك الآن`);
+        } else if (nextStatus === "delivered") {
+          setStatusMessage(`✅ تم توصيل طلبك رقم #${orderId} - شكراً لإختيارنا`);
+        }
+
+        if (previousStatus && previousStatus !== nextStatus && (nextStatus === "on_the_way" || nextStatus === "delivered")) {
+          const body = nextStatus === "on_the_way"
+            ? `🛵 طلبك رقم #${orderId} في الطريق إليك الآن`
+            : `✅ تم توصيل طلبك رقم #${orderId} - شكراً لإختيارنا`;
+
+          if ("Notification" in window && Notification.permission === "granted") {
+            try {
+              new Notification("الوحيد ماركت", { body });
+            } catch {}
+          }
+        }
+
+        previousStatus = nextStatus;
+      } catch {}
+    };
+
+    void requestNotificationPermission();
+    void checkOrderStatus();
+    const intervalId = window.setInterval(checkOrderStatus, 10000);
+
+    return () => {
+      active = false;
+      window.clearInterval(intervalId);
+    };
+  }, [orderCreated, orderId]);
 
   if (orderCreated) {
     return (
@@ -78,6 +139,11 @@ export default function Checkout() {
               <p className="text-gray-600 mb-8">تم حفظ بيانات الطلب وصورة التحويل. نرجوا انتظار اتصال المندوب لتأكيد الطلب وموعد التسليم.</p>
             ) : (
               <p className="text-gray-600 mb-8">نرجوا انتظار اتصال المندوب لتأكيد الطلب وموعد التسليم.</p>
+            )}
+            {statusMessage && (
+              <div className="mb-6 rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 font-semibold text-blue-900">
+                {statusMessage}
+              </div>
             )}
             <div className="space-y-3">
               <Link href="/products"><Button className="w-full bg-blue-600 hover:bg-blue-700 py-3">متابعة التسوق</Button></Link>
@@ -148,6 +214,8 @@ export default function Checkout() {
 
       toast.success(`تم استلام طلبك بنجاح! رقم الطلب: ${result.id}`);
       setOrderId(result.id);
+      setDeliveryStatus("pending");
+      setStatusMessage(null);
       setOrderCreated(true);
       clearCart();
     } catch (error: any) {
