@@ -138,7 +138,7 @@ export default function Checkout() {
 
       const result = await createOrderMutation.mutateAsync({
         customerName: formData.customerName.trim(),
-        customerPhone: phone,
+        customerPhone: formData.customerPhone.trim(),
         customerAddress: formData.customerAddress.trim(),
         totalAmount: total.toFixed(2),
         paymentMethod,
