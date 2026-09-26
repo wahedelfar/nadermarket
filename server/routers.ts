@@ -28,6 +28,7 @@ import {
   getOrders,
   getOrderById,
   getOrderItems,
+  getPublicOrderStatus,
   createOrder,
   updateOrderStatus,
   deleteOrder,
@@ -150,6 +151,7 @@ export const appRouter = router({
       .mutation(({ input }) => uploadPaymentProof(input)),
     list: adminProcedure.query(() => getOrders()),
     getById: adminProcedure.input(z.number()).query(({ input }) => getOrderById(input)),
+    status: publicProcedure.input(z.number()).query(({ input }) => getPublicOrderStatus(input)),
     getItems: adminProcedure.input(z.number()).query(({ input }) => getOrderItems(input)),
     create: publicProcedure
       .input(z.object({
