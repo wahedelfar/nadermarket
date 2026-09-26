@@ -121,6 +121,9 @@ export default function AdminOrders() {
         id: orderId,
         status: newStatus as any,
       });
+      setSelectedOrder((current: any) =>
+        current && Number(current.id) === Number(orderId) ? { ...current, status: newStatus } : current
+      );
       toast.success("تم تحديث حالة الطلب");
     } catch (error: any) {
       toast.error(error.message || "حدث خطأ");
@@ -144,11 +147,8 @@ export default function AdminOrders() {
   const getStatusColor = (status: string) => {
     const colors: Record<string, string> = {
       pending: "bg-yellow-100 text-yellow-800",
-      confirmed: "bg-blue-100 text-blue-800",
-      processing: "bg-purple-100 text-purple-800",
-      shipped: "bg-indigo-100 text-indigo-800",
-      completed: "bg-green-100 text-green-800",
-      cancelled: "bg-red-100 text-red-800",
+      on_the_way: "bg-blue-100 text-blue-800",
+      delivered: "bg-green-100 text-green-800",
     };
     return colors[status] || "bg-gray-100 text-gray-800";
   };
@@ -156,11 +156,8 @@ export default function AdminOrders() {
   const getStatusLabel = (status: string) => {
     const labels: Record<string, string> = {
       pending: "قيد الانتظار",
-      confirmed: "مؤكد",
-      processing: "قيد المعالجة",
-      shipped: "تم الشحن",
-      completed: "مكتمل",
-      cancelled: "ملغى",
+      on_the_way: "في الطريق 🛵",
+      delivered: "تم التوصيل ✅",
     };
     return labels[status] || status;
   };
@@ -194,7 +191,6 @@ export default function AdminOrders() {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Orders List */}
           <div className="lg:col-span-2">
             <Card className="overflow-hidden">
               <div className="overflow-x-auto">
@@ -227,11 +223,7 @@ export default function AdminOrders() {
                           </span>
                         </td>
                         <td className="px-6 py-4">
-                          <Button
-                            onClick={() => handleViewOrder(order)}
-                            variant="outline"
-                            size="sm"
-                          >
+                          <Button onClick={() => handleViewOrder(order)} variant="outline" size="sm">
                             <Eye className="w-4 h-4" />
                           </Button>
                         </td>
@@ -243,7 +235,6 @@ export default function AdminOrders() {
             </Card>
           </div>
 
-          {/* Order Details */}
           <div className="lg:col-span-1">
             {selectedOrder ? (
               <Card className="p-6 sticky top-24">
@@ -261,17 +252,14 @@ export default function AdminOrders() {
                     <p className="text-sm text-gray-600">اسم العميل</p>
                     <p className="font-semibold text-gray-800">{selectedOrder.customerName}</p>
                   </div>
-
                   <div>
                     <p className="text-sm text-gray-600">رقم الهاتف</p>
                     <p className="font-semibold text-gray-800">{selectedOrder.customerPhone}</p>
                   </div>
-
                   <div>
                     <p className="text-sm text-gray-600">العنوان</p>
                     <p className="font-semibold text-gray-800">{selectedOrder.customerAddress}</p>
                   </div>
-
                   <div>
                     <p className="text-sm text-gray-600">طريقة الدفع</p>
                     <p className="font-semibold text-gray-800">{selectedOrder.paymentMethod === "vodafone_cash" ? "Vodafone Cash — مدفوع" : "الدفع عند الاستلام — غير مدفوع"}</p>
@@ -322,19 +310,12 @@ export default function AdminOrders() {
                     className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm"
                   >
                     <option value="pending">قيد الانتظار</option>
-                    <option value="confirmed">مؤكد</option>
-                    <option value="processing">قيد المعالجة</option>
-                    <option value="shipped">تم الشحن</option>
-                    <option value="completed">مكتمل</option>
-                    <option value="cancelled">ملغى</option>
+                    <option value="on_the_way">في الطريق 🛵</option>
+                    <option value="delivered">تم التوصيل ✅</option>
                   </select>
                 </div>
 
-                <Button
-                  onClick={() => handleDelete(selectedOrder.id)}
-                  variant="destructive"
-                  className="w-full"
-                >
+                <Button onClick={() => handleDelete(selectedOrder.id)} variant="destructive" className="w-full">
                   <Trash2 className="w-4 h-4 ml-2" />
                   حذف الطلب
                 </Button>
