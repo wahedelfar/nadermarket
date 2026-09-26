@@ -66,23 +66,15 @@ export default function Home() {
               </a>
             </div>
           </div>
-          <div className="relative overflow-hidden bg-gradient-to-br from-[#0c43a8] via-[#1166c4] to-[#197fd0] px-5 py-7 text-center text-white md:px-8 md:py-9">
-            <div className="absolute -right-20 -top-20 h-48 w-48 rounded-full bg-cyan-300/20 blur-3xl" />
-            <div className="absolute -bottom-24 -left-16 h-56 w-56 rounded-full bg-blue-950/25 blur-3xl" />
-            <div className="relative">
-              <p className="mb-1 text-sm font-bold text-blue-100">كل احتياجاتك في مكان واحد</p>
-              <h2 className="text-3xl font-black md:text-5xl">الوحيد ماركت</h2>
-              <p className="mx-auto mt-2 max-w-2xl text-base font-semibold text-blue-50 md:text-xl">أفضل المنتجات بأسعار منافسة</p>
-              <div className="mt-5 flex flex-wrap items-center justify-center gap-3">
-                <Link href="/products">
-                  <Button className="rounded-xl bg-white px-7 py-3 font-black text-[#123f91] shadow-lg hover:bg-blue-50">تصفح المنتجات</Button>
-                </Link>
-                <a href="#contact">
-                  <Button variant="outline" className="rounded-xl border-2 border-white bg-transparent px-7 py-3 font-black text-white hover:bg-white/10">
-                    <Phone className="ml-2 h-4 w-4" aria-hidden="true" />اتصل بنا
-                  </Button>
-                </a>
-              </div>
+          <div className="relative overflow-hidden bg-[#073b7a] p-1 shadow-[0_18px_45px_-28px_rgba(3,59,120,0.9)] sm:p-2">
+            <div className="relative overflow-hidden rounded-xl border border-white/20 bg-[#063b78] shadow-[0_16px_40px_-22px_rgba(0,0,0,0.55)] sm:rounded-2xl">
+              <img
+                src="/nadermarket-banner.svg"
+                alt="الوحيد ماركت — كل ما تطلبه أكبر متوفر أكتر"
+                className="block h-auto w-full object-cover"
+                loading="eager"
+                fetchPriority="high"
+              />
             </div>
           </div>
         </div>
