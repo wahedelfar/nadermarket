@@ -151,6 +151,11 @@ export async function getOrderById(id: number) {
   return orderFromDb(await api({ action: "admin.orders.get", body: { id }, admin: true }));
 }
 
+export async function getPublicOrderStatus(id: number) {
+  const row = await api({ action: "admin.orders.get", body: { id }, admin: true });
+  return { id: Number(row.id), status: row.status };
+}
+
 export async function getOrderItems(orderId: number) {
   const rows = await api({ action: "admin.orders.items", body: { orderId }, admin: true });
   return Array.isArray(rows) ? rows.map((row) => ({
