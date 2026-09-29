@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight, MapPin, Phone, ShoppingCart, Sparkles, Truck
 import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { useCart } from "@/contexts/CartContext";
+import { getLastOrder } from "@/lib/repeatOrder";
 import { getNextSlideIndex, getPreviousSlideIndex, selectFeaturedProducts, SLIDER_INTERVAL_MS } from "@/lib/featuredProducts";
 
 export default function Home() {
@@ -12,6 +13,7 @@ export default function Home() {
   const [activeSlide, setActiveSlide] = useState(0);
   const [isSliderPaused, setIsSliderPaused] = useState(false);
   const { addToCart, items } = useCart();
+  const [lastOrder, setLastOrder] = useState<any[]>([]);
   const { data: categoriesData, isLoading } = trpc.categories.list.useQuery();
   const { data: productsData, isLoading: productsLoading } = trpc.products.list.useQuery();
 
@@ -216,6 +218,39 @@ export default function Home() {
           <Card className="p-6 text-center text-gray-600">سيتم عرض أحدث المنتجات هنا قريباً.</Card>
         )}
       </section>
+
+      {lastOrder.length > 0 && (
+        <section className="max-w-7xl mx-auto px-4 pb-8" aria-labelledby="repeat-order-title">
+          <Card className="overflow-hidden border-blue-100 bg-white shadow-md">
+            <div className="flex flex-col gap-4 p-5 md:flex-row md:items-center md:justify-between">
+              <div className="text-right" dir="rtl">
+                <p className="text-xs font-bold tracking-wide text-blue-600">مشترياتك المعتادة</p>
+                <h2 id="repeat-order-title" className="mt-1 text-2xl font-black text-gray-800">عايز نفس طلبك السابق؟</h2>
+                <p className="mt-1 text-sm text-gray-600">رجّع المنتجات المتاحة للسلة بضغطة واحدة.</p>
+              </div>
+              <Button
+                type="button"
+                className="rounded-xl bg-[#123f91] px-6 py-3 font-black text-white hover:bg-[#0d3275]"
+                onClick={() => lastOrder.forEach((item) => addToCart(item))}
+              >
+                إعادة الطلب
+              </Button>
+            </div>
+            <div className="flex gap-2 overflow-x-auto border-t border-blue-50 px-5 py-3" dir="rtl">
+              {lastOrder.slice(0, 6).map((item) => (
+                <div key={item.id} className="shrink-0 rounded-full bg-blue-50 px-3 py-1.5 text-xs font-semibold text-blue-900">
+                  {item.name} × {item.quantity}
+                </div>
+              ))}
+              {lastOrder.length > 6 && (
+                <div className="shrink-0 rounded-full bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-600">
+                  +{lastOrder.length - 6} منتجات
+                </div>
+              )}
+            </div>
+          </Card>
+        </section>
+      )}
 
       {/* Categories Section */}
       <section className="max-w-7xl mx-auto px-4 py-12">
