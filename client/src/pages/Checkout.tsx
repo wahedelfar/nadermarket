@@ -8,6 +8,7 @@ import { useCart } from "@/contexts/CartContext";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
 import { saveLastOrder } from "@/lib/repeatOrder";
+import { saveWeeklyPurchase } from "@/lib/shoppingMemory";
 
 
 async function fileToBase64(file: File) {
@@ -195,6 +196,7 @@ export default function Checkout() {
       });
 
       saveLastOrder(items);
+      saveWeeklyPurchase(items);
       toast.success(`تم استلام طلبك بنجاح! رقم الطلب: ${result.id}`);
       setOrderId(result.id);
       setStatusMessage(null);
