@@ -20,7 +20,9 @@ export default function Products() {
   useEffect(() => {
     const params = new URLSearchParams(location.split("?")[1] || "");
     const categoryId = params.get("category");
+    const searchParam = params.get("search") || "";
     setSelectedCategory(categoryId ? Number(categoryId) : null);
+    setSearch(searchParam);
   }, [location]);
 
   useEffect(() => {
