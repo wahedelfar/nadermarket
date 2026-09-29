@@ -263,7 +263,7 @@ export default function Home() {
         </section>
       )}
 
-      {/* Categories Section */
+      {/* Categories Section */}
       <section className="max-w-7xl mx-auto px-4 py-12">
         <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">الأقسام</h2>
         {isLoading ? (
