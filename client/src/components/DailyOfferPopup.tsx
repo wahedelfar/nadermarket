@@ -58,7 +58,7 @@ export default function DailyOfferPopup({ products }: Props) {
                   <span className="block text-sm text-blue-300 line-through">{Number(offer.price).toFixed(2)} ج.م</span><span>{discountedPrice(offer).toFixed(2)} <span className="text-sm">ج.م</span></span>
                 </div>
                 <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2.5 py-1 text-[10px] font-bold text-green-700">
-                  <Check className="h-3 w-3" /> خصم ${normalizedDiscountPercent(offer)}%
+                  <Check className="h-3 w-3" /> خصم {normalizedDiscountPercent(offer)}%
                 </span>
               </div>
             </div>
