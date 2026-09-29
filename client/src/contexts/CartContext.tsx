@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { CART_STORAGE_KEY, parseStoredCart, type CartItem } from "@/lib/cartStorage";
+import { addCustomRequest as saveCustomRequest, clearCustomRequests, getCustomRequests, removeCustomRequest as deleteCustomRequest, type CustomRequest } from "@/lib/customRequests";
 
 export type { CartItem } from "@/lib/cartStorage";
 
@@ -10,11 +11,16 @@ interface CartContextType {
   updateQuantity: (productId: number, quantity: number) => void;
   clearCart: () => void;
   total: number;
+  customRequests: CustomRequest[];
+  addCustomRequest: (text: string, quantity?: number) => void;
+  removeCustomRequest: (id: string) => void;
 }
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
 export function CartProvider({ children }: { children: ReactNode }) {
+  const [customRequests, setCustomRequests] = useState<CustomRequest[]>(() => getCustomRequests());
+
   const [items, setItems] = useState<CartItem[]>(() => {
     if (typeof window === "undefined") return [];
     return parseStoredCart(window.localStorage.getItem(CART_STORAGE_KEY));
@@ -81,6 +87,16 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = () => {
     setItems([]);
+    clearCustomRequests();
+    setCustomRequests([]);
+  };
+
+  const addCustomRequest = (text: string, quantity = 1) => {
+    setCustomRequests(saveCustomRequest(text, quantity));
+  };
+
+  const removeCustomRequest = (id: string) => {
+    setCustomRequests(deleteCustomRequest(id));
   };
 
   const total = items.reduce(
@@ -90,7 +106,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   return (
     <CartContext.Provider
-      value={{ items, addToCart, removeFromCart, updateQuantity, clearCart, total }}
+      value={{ items, addToCart, removeFromCart, updateQuantity, clearCart, total, customRequests, addCustomRequest, removeCustomRequest }}
     >
       {children}
     </CartContext.Provider>
