@@ -9,6 +9,7 @@ import { getNextSlideIndex, getPreviousSlideIndex, selectFeaturedProducts, SLIDE
 import { getLastOrder } from "@/lib/repeatOrder";
 import SmartAssistant from "@/components/SmartAssistant";
 import SmartShoppingLists from "@/components/SmartShoppingLists";
+import DailyOfferPopup from "@/components/DailyOfferPopup";
 
 export default function Home() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -305,6 +306,7 @@ export default function Home() {
       <SmartShoppingLists products={assistantProducts} />
 
       <SmartAssistant products={assistantProducts} />
+      <DailyOfferPopup products={assistantProducts} />
 
       {/* Simple Footer */}
       <footer id="contact" className="mt-12 border-t border-blue-900/15 bg-gradient-to-l from-[#073b7a] via-[#0b4f9e] to-[#1266b8] text-white">

@@ -21,6 +21,7 @@ export default function AdminProducts() {
     price: "",
     image: "",
     stock: 0,
+    showDailyOffer: false,
   });
 
   const { data: productsData } = trpc.products.list.useQuery(undefined);
@@ -95,11 +96,16 @@ export default function AdminProducts() {
         throw new Error("ارفع صورة المنتج أولًا");
       }
 
+      const baseDescription = String(formData.description || "").replace(/\\[?(عرض|خصم) اليوم\\]?/g, "").replace(/\\s{2,}/g, " ").trim();
+      const description = formData.showDailyOffer ? `[عرض اليوم] ${baseDescription}`.trim() : baseDescription;
+      const payload = { ...formData, description, image };
+      delete (payload as any).showDailyOffer;
+
       if (editingId) {
-        await updateMutation.mutateAsync({ id: editingId, ...formData, image });
+        await updateMutation.mutateAsync({ id: editingId, ...payload });
         toast.success("تم تحديث المنتج بنجاح");
       } else {
-        await createMutation.mutateAsync({ ...formData, image });
+        await createMutation.mutateAsync(payload);
         toast.success("تم إضافة المنتج بنجاح");
       }
       await utils.products.list.invalidate();
@@ -130,6 +136,7 @@ export default function AdminProducts() {
       price: "",
       image: "",
       stock: 0,
+      showDailyOffer: false,
     });
     setEditingId(null);
     setImageFile(null);
@@ -284,6 +291,20 @@ export default function AdminProducts() {
                 </div>
               </div>
 
+              <label className="flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 cursor-pointer">
+                <input
+                  type="checkbox"
+                  name="showDailyOffer"
+                  checked={Boolean(formData.showDailyOffer)}
+                  onChange={(e) => setFormData((prev) => ({ ...prev, showDailyOffer: e.target.checked }))}
+                  className="h-4 w-4 accent-amber-500"
+                />
+                <span>
+                  <span className="block font-bold text-amber-900">إظهار كـ «عرض اليوم»</span>
+                  <span className="block text-xs text-amber-700">سيظهر مرة واحدة للعميل عند دخوله الموقع في نافذة صغيرة أنيقة.</span>
+                </span>
+              </label>
+
               <div className="flex gap-2">
                 <Button
                   type="submit"
@@ -356,6 +377,7 @@ export default function AdminProducts() {
                                 price: product.price,
                                 image: product.image || "",
                                 stock: product.stock,
+                                showDailyOffer: String(product.description || "").includes("[عرض اليوم]") || String(product.description || "").includes("عرض اليوم"),
                               });
                               setImageFile(null);
                               setEditingId(product.id);

@@ -148,6 +148,22 @@ export default function SmartAssistant({ products }: Props) {
       }
     }
 
+    // Basket-aware answers: the assistant can reason over the live cart before searching the catalog.
+    if (/السله.*(اجمالي|المجموع|كام)|اجمالي.*السله/.test(normalized)) {
+      const total = items.reduce((sum, item) => sum + Number(item.price) * item.quantity, 0);
+      setMessages((current) => [
+        ...current,
+        { role: "user", text: clean },
+        { role: "assistant", text: total > 0 ? `إجمالي السلة حاليًا ${total.toFixed(2)} جنيه. لو عايز أوفّر عليك، قولّي "خلّيها أوفر".` : "السلة لسه فاضية. قولّي عايز نبدأ بإيه وأنا أرتبها لك." },
+      ]);
+      setQuery("");
+      return;
+    }
+
+    const cartContext = items.length
+      ? `السلة الحالية: ${items.map((item) => `${item.name} × ${item.quantity}`).join("، ")}`
+      : "السلة الحالية: فارغة";
+
     const lastOrder = getLastOrder().filter((item) => available.some((p) => Number(p.id) === Number(item.id)));
     const weeklyShopping = getWeeklyShopping().filter((item) => available.some((p) => Number(p.id) === Number(item.id)));
 
@@ -197,6 +213,7 @@ export default function SmartAssistant({ products }: Props) {
         ...(m.products ?? []).map((p) => p.name),
         ...(m.customRequests ?? []).map((request) => request.text),
       ]),
+      cartContext,
     );
     setMessages((current) => [
       ...current,
