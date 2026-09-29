@@ -260,6 +260,13 @@ export default function AdminOrders() {
                     <p className="text-sm text-gray-600">العنوان</p>
                     <p className="font-semibold text-gray-800">{selectedOrder.customerAddress}</p>
                   </div>
+                  {selectedOrder.notes && (
+                    <div className="rounded-xl border-2 border-amber-200 bg-amber-50 p-4">
+                      <p className="text-sm font-black text-amber-900">طلبات خاصة من «إسألني»</p>
+                      <p className="mt-2 whitespace-pre-line text-sm font-semibold leading-6 text-gray-800">{selectedOrder.notes}</p>
+                      <p className="mt-2 text-xs text-amber-800">هذه الطلبات ليست ضمن كتالوج الموقع وتحتاج مراجعة التوفر والسعر قبل التجهيز.</p>
+                    </div>
+                  )}
                   <div>
                     <p className="text-sm text-gray-600">طريقة الدفع</p>
                     <p className="font-semibold text-gray-800">{selectedOrder.paymentMethod === "vodafone_cash" ? "Vodafone Cash — مدفوع" : "الدفع عند الاستلام — غير مدفوع"}</p>
