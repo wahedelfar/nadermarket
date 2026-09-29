@@ -176,6 +176,7 @@ export async function createOrder(input: {
   paymentMethod: "cash_on_delivery" | "vodafone_cash";
   vodafoneWalletNumber?: string;
   paymentProofUrl?: string;
+  notes?: string;
   items: Array<{ productId: number; quantity: number; price: string }>;
 }) {
   return await api({ action: "order", body: input });
