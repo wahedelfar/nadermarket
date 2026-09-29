@@ -51,9 +51,17 @@ export default function Home() {
       setActiveSlide((current) => getNextSlideIndex(current, featuredProducts.length));
     }, SLIDER_INTERVAL_MS);
 
-    return (
+    return () => window.clearInterval(intervalId);
+  }, [featuredProducts.length, isSliderPaused]);
+
+  useEffect(() => {
+    if (categoriesData) {
+      setCategories(categoriesData);
+    }
+  }, [categoriesData]);
+
+  return (
     <div className="min-h-screen bg-[#f8faf9]" dir="rtl">
-      {/* Premium storefront header */}
       <header className="sticky top-0 z-50 border-b border-emerald-950/10 bg-white/95 shadow-[0_8px_30px_-20px_rgba(0,80,45,.45)] backdrop-blur-md">
         <div className="mx-auto flex max-w-7xl items-center gap-3 px-4 py-3 md:py-4">
           <Link href="/" className="shrink-0">
@@ -65,26 +73,17 @@ export default function Home() {
               </div>
             </div>
           </Link>
-
-          <form
-            className="mx-auto flex min-w-0 flex-1 max-w-2xl items-center overflow-hidden rounded-full border-2 border-slate-200 bg-[#f8fafb] shadow-inner transition focus-within:border-[#006b3c] focus-within:bg-white"
+          <form className="mx-auto flex min-w-0 flex-1 max-w-2xl items-center overflow-hidden rounded-full border-2 border-slate-200 bg-[#f8fafb] shadow-inner focus-within:border-[#006b3c] focus-within:bg-white"
             onSubmit={(event) => {
               event.preventDefault();
               navigate(searchQuery.trim() ? `/products?search=${encodeURIComponent(searchQuery.trim())}` : "/products");
-            }}
-          >
-            <input
-              value={searchQuery}
-              onChange={(event) => setSearchQuery(event.target.value)}
-              placeholder="ابحث عن المنتجات..."
-              aria-label="البحث عن المنتجات"
-              className="min-w-0 flex-1 bg-transparent px-5 py-3 text-sm font-semibold text-slate-800 outline-none md:text-base"
-            />
+            }}>
+            <input value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} placeholder="ابحث عن المنتجات..." aria-label="البحث عن المنتجات"
+              className="min-w-0 flex-1 bg-transparent px-5 py-3 text-sm font-semibold text-slate-800 outline-none md:text-base" />
             <button type="submit" aria-label="بحث" className="m-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#006b3c] text-white shadow-md transition hover:scale-105 hover:bg-[#005a32]">
               <Search className="h-5 w-5" />
             </button>
           </form>
-
           <Link href="/cart" aria-label="السلة" className="relative flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-[#006b3c] text-white shadow-lg transition hover:scale-105">
             <ShoppingCart className="h-5 w-5" />
             {items.reduce((sum, item) => sum + item.quantity, 0) > 0 && (
@@ -97,14 +96,12 @@ export default function Home() {
       </header>
 
       <main>
-        {/* Hero banner */}
         <section className="mx-auto max-w-7xl px-3 pt-4 md:px-5 md:pt-6">
           <div className="overflow-hidden rounded-[28px] bg-[#003d28] shadow-[0_25px_60px_-35px_rgba(0,80,45,.55)]">
             <img src="/nadermarket-banner.svg" alt="الوحيد ماركت" className="block h-auto w-full object-cover" loading="eager" fetchPriority="high" />
           </div>
         </section>
 
-        {/* Quick service strip */}
         <section className="mx-auto max-w-7xl px-4 py-5">
           <div className="grid grid-cols-3 overflow-hidden rounded-2xl border border-emerald-100 bg-white shadow-sm">
             {[
@@ -114,22 +111,15 @@ export default function Home() {
             ].map(({ icon: Icon, title, text }, index) => (
               <div key={title} className={`flex items-center justify-center gap-2 px-2 py-3 text-center ${index > 0 ? "border-r border-emerald-100" : ""}`}>
                 <Icon className="hidden h-5 w-5 text-[#006b3c] sm:block" />
-                <div>
-                  <div className="text-xs font-black text-slate-800 sm:text-sm">{title}</div>
-                  <div className="hidden text-[10px] text-slate-400 sm:block">{text}</div>
-                </div>
+                <div><div className="text-xs font-black text-slate-800 sm:text-sm">{title}</div><div className="hidden text-[10px] text-slate-400 sm:block">{text}</div></div>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Categories */}
         <section className="mx-auto max-w-7xl px-4 py-5" aria-labelledby="categories-title">
           <div className="mb-4 flex items-end justify-between">
-            <div>
-              <p className="text-xs font-bold text-[#006b3c]">اختار اللي محتاجه</p>
-              <h2 id="categories-title" className="text-2xl font-black text-slate-900 md:text-3xl">تسوّق حسب القسم</h2>
-            </div>
+            <div><p className="text-xs font-bold text-[#006b3c]">اختار اللي محتاجه</p><h2 id="categories-title" className="text-2xl font-black text-slate-900 md:text-3xl">تسوّق حسب القسم</h2></div>
             <Link href="/products" className="flex items-center gap-1 text-sm font-bold text-[#006b3c]">كل الأقسام <ArrowLeft className="h-4 w-4" /></Link>
           </div>
           {isLoading ? (
@@ -140,11 +130,7 @@ export default function Home() {
                 <Link key={category.id} href={`/products?category=${category.id}`} className="group">
                   <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition duration-300 group-hover:-translate-y-1 group-hover:border-emerald-200 group-hover:shadow-lg">
                     <div className="flex h-28 items-center justify-center bg-gradient-to-br from-emerald-50 to-slate-50 p-3">
-                      {category.image ? (
-                        <img src={category.image} alt={category.name} className="h-full w-full object-contain transition duration-300 group-hover:scale-105" />
-                      ) : (
-                        <ShoppingCart className="h-10 w-10 text-emerald-300" />
-                      )}
+                      {category.image ? <img src={category.image} alt={category.name} className="h-full w-full object-contain transition duration-300 group-hover:scale-105" /> : <ShoppingCart className="h-10 w-10 text-emerald-300" />}
                     </div>
                     <div className="px-3 py-3 text-center text-sm font-black text-slate-800">{category.name}</div>
                   </div>
@@ -154,13 +140,9 @@ export default function Home() {
           )}
         </section>
 
-        {/* Featured products */}
         <section className="mx-auto max-w-7xl px-4 py-6" aria-labelledby="featured-title">
           <div className="mb-4 flex items-end justify-between">
-            <div>
-              <p className="text-xs font-bold text-[#006b3c]">مختارات من الكتالوج</p>
-              <h2 id="featured-title" className="text-2xl font-black text-slate-900 md:text-3xl">اختيارات مميزة</h2>
-            </div>
+            <div><p className="text-xs font-bold text-[#006b3c]">مختارات من الكتالوج</p><h2 id="featured-title" className="text-2xl font-black text-slate-900 md:text-3xl">اختيارات مميزة</h2></div>
             <Link href="/products" className="text-sm font-bold text-[#006b3c]">عرض الكل ←</Link>
           </div>
           {productsLoading ? (
@@ -169,11 +151,7 @@ export default function Home() {
             <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
               {showcaseProducts.map((product) => (
                 <Card key={product.id} className="overflow-hidden rounded-2xl border-slate-200 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
-                  <Link href={`/product/${product.id}`}>
-                    <div className="h-40 bg-white p-3 md:h-48">
-                      <img src={product.image || "/icon.svg"} alt={product.name} className="h-full w-full object-contain" loading="lazy" />
-                    </div>
-                  </Link>
+                  <Link href={`/product/${product.id}`}><div className="h-40 bg-white p-3 md:h-48"><img src={product.image || "/icon.svg"} alt={product.name} className="h-full w-full object-contain" loading="lazy" /></div></Link>
                   <div className="p-3 text-right">
                     <h3 className="line-clamp-2 min-h-10 text-sm font-black text-slate-900">{product.name}</h3>
                     <div className="mt-2 text-lg font-black text-[#006b3c]">{Number(product.price).toFixed(2)} <span className="text-xs">ج.م</span></div>
@@ -185,28 +163,15 @@ export default function Home() {
           )}
         </section>
 
-        {/* Daily offers */}
         {dailyOfferProducts.length > 0 && (
           <section className="mx-auto max-w-7xl px-4 py-7" aria-labelledby="daily-offers-title">
             <div className="overflow-hidden rounded-[28px] bg-gradient-to-l from-[#003d28] via-[#006b3c] to-[#07945a] p-4 md:p-6">
-              <div className="mb-4 flex items-end justify-between text-white">
-                <div>
-                  <p className="text-xs font-bold text-emerald-200">لفترة محدودة</p>
-                  <h2 id="daily-offers-title" className="text-2xl font-black md:text-3xl">🔥 عروض اليوم</h2>
-                </div>
-                <span className="rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold">متاحة حسب المخزون</span>
-              </div>
+              <div className="mb-4 flex items-end justify-between text-white"><div><p className="text-xs font-bold text-emerald-200">لفترة محدودة</p><h2 id="daily-offers-title" className="text-2xl font-black md:text-3xl">🔥 عروض اليوم</h2></div><span className="rounded-full bg-white/15 px-3 py-1 text-[11px] font-bold">متاحة حسب المخزون</span></div>
               <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
                 {dailyOfferProducts.map((product) => (
                   <div key={product.id} className="overflow-hidden rounded-2xl bg-white p-2 text-right shadow-lg">
-                    <Link href={`/product/${product.id}`}>
-                      <div className="h-32 bg-white p-2 md:h-40"><img src={product.image || "/icon.svg"} alt={product.name} className="h-full w-full object-contain" loading="lazy" /></div>
-                    </Link>
-                    <div className="p-2">
-                      <div className="line-clamp-2 min-h-9 text-xs font-black text-slate-900">{product.name}</div>
-                      <div className="mt-1 text-lg font-black text-[#006b3c]">{Number(product.price).toFixed(2)} <span className="text-[10px]">ج.م</span></div>
-                      <button type="button" onClick={() => addToCart(product)} className="mt-2 w-full rounded-xl bg-[#006b3c] py-2 text-xs font-black text-white">أضف +</button>
-                    </div>
+                    <Link href={`/product/${product.id}`}><div className="h-32 bg-white p-2 md:h-40"><img src={product.image || "/icon.svg"} alt={product.name} className="h-full w-full object-contain" loading="lazy" /></div></Link>
+                    <div className="p-2"><div className="line-clamp-2 min-h-9 text-xs font-black text-slate-900">{product.name}</div><div className="mt-1 text-lg font-black text-[#006b3c]">{Number(product.price).toFixed(2)} <span className="text-[10px]">ج.م</span></div><button type="button" onClick={() => addToCart(product)} className="mt-2 w-full rounded-xl bg-[#006b3c] py-2 text-xs font-black text-white">أضف +</button></div>
                   </div>
                 ))}
               </div>
@@ -214,24 +179,17 @@ export default function Home() {
           </section>
         )}
 
-        {/* Lifestyle discovery */}
         <section className="mx-auto max-w-7xl px-4 py-7">
-          <div className="mb-4">
-            <p className="text-xs font-bold text-[#006b3c]">اكتشف بسهولة</p>
-            <h2 className="text-2xl font-black text-slate-900 md:text-3xl">كل احتياجات البيت في مكان واحد</h2>
-          </div>
+          <div className="mb-4"><p className="text-xs font-bold text-[#006b3c]">اكتشف بسهولة</p><h2 className="text-2xl font-black text-slate-900 md:text-3xl">كل احتياجات البيت في مكان واحد</h2></div>
           <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
             {[
-              ["فطار اليوم", "ابدأ يومك باختيارات من الألبان والمخبوزات.", "فطار"],
-              ["غداء اليوم", "لحوم ودواجن وبقالة وخضروات لوجبة كاملة.", "غداء"],
-              ["طازج يوميًا", "خضار وفاكهة حسب المنتجات المتاحة الآن.", "فواكه"],
-              ["مستلزمات البيت", "منظفات ومشروبات وسناكس واحتياجات يومية.", "منظفات"],
-            ].map(([title, text, keyword]) => (
-              <Link key={title} href={`/products`} className="group rounded-[24px] border border-emerald-100 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-                <div className="mb-10 text-3xl">✦</div>
-                <h3 className="text-lg font-black text-slate-900">{title}</h3>
-                <p className="mt-2 text-xs leading-6 text-slate-500">{text}</p>
-                <div className="mt-4 flex items-center gap-1 text-sm font-black text-[#006b3c]">استكشف <ArrowLeft className="h-4 w-4" /></div>
+              ["فطار اليوم", "ابدأ يومك باختيارات من الألبان والمخبوزات."],
+              ["غداء اليوم", "لحوم ودواجن وبقالة وخضروات لوجبة كاملة."],
+              ["طازج يوميًا", "خضار وفاكهة حسب المنتجات المتاحة الآن."],
+              ["مستلزمات البيت", "منظفات ومشروبات وسناكس واحتياجات يومية."],
+            ].map(([title, text]) => (
+              <Link key={title} href="/products" className="group rounded-[24px] border border-emerald-100 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                <div className="mb-10 text-3xl text-emerald-600">✦</div><h3 className="text-lg font-black text-slate-900">{title}</h3><p className="mt-2 text-xs leading-6 text-slate-500">{text}</p><div className="mt-4 flex items-center gap-1 text-sm font-black text-[#006b3c]">استكشف <ArrowLeft className="h-4 w-4" /></div>
               </Link>
             ))}
           </div>
