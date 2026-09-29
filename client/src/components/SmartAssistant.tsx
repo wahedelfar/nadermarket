@@ -168,7 +168,15 @@ export default function SmartAssistant({ products }: Props) {
       return;
     }
 
-    const r = askSmartAssistant(clean, available, messages.map((m) => m.text));
+    const r = askSmartAssistant(
+      clean,
+      available,
+      messages.flatMap((m) => [
+        m.text,
+        ...(m.products ?? []).map((p) => p.name),
+        ...(m.customRequests ?? []).map((request) => request.text),
+      ]),
+    );
     setMessages((current) => [
       ...current,
       { role: "user", text: clean },
