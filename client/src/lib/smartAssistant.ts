@@ -190,21 +190,6 @@ export function askSmartAssistant(q: string, products: SmartProduct[], history: 
     };
   }
 
-  const categoryMatch = Object.entries(categoryAliases).find(([, terms]) => terms.some((t) => x.includes(norm(t))));
-  if (categoryMatch) {
-    const [label, terms] = categoryMatch;
-    const out = categoryProducts(ps, label, terms);
-    return {
-      text: out.length
-        ? "أيوه، دي كل الاختيارات المتاحة حاليًا في " + label + ". ولو تقصد الأنواع تحديدًا، أقدر أفرّق لك بينها."
-        : fallback,
-      products: out,
-      customRequests,
-      suggestedQuestions: label === "لحوم" ? ["إيه أنواع اللحوم؟", "الأرخص؟", "ضيفهم للسلة"] : ["الأرخص؟", "عندكم أنواع تانية؟", "ضيف الكل للسلة"],
-      intent: "category",
-    };
-  }
-
   if (x.includes("انواع اللحوم") || x.includes("انواع اللحم") || x.includes("اللحوم ايه")) {
     const out = categoryProducts(ps, "لحوم", ["لحوم", "لحم", "فراخ", "دجاج"]);
     return {
@@ -212,6 +197,21 @@ export function askSmartAssistant(q: string, products: SmartProduct[], history: 
       products: out,
       customRequests,
       suggestedQuestions: ["الأرخص؟", "ضيف الدجاج", "ضيف اللحم البقري"],
+      intent: "category",
+    };
+  }
+
+  const categoryMatch = Object.entries(categoryAliases).find(([, terms]) => terms.some((t) => x.includes(norm(t))));
+  if (categoryMatch) {
+    const [label, terms] = categoryMatch;
+    const out = categoryProducts(ps, label, terms);
+    return {
+      text: out.length
+        ? "أيوه، دي كل الاختيارات المتاحة حاليًا في " + label + "."
+        : fallback,
+      products: out,
+      customRequests,
+      suggestedQuestions: label === "لحوم" ? ["إيه أنواع اللحوم؟", "الأرخص؟", "ضيفهم للسلة"] : ["الأرخص؟", "عندكم أنواع تانية؟", "ضيف الكل للسلة"],
       intent: "category",
     };
   }
