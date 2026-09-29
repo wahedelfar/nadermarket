@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import { CART_STORAGE_KEY, parseStoredCart, type CartItem } from "@/lib/cartStorage";
 import { addCustomRequest as saveCustomRequest, clearCustomRequests, getCustomRequests, removeCustomRequest as deleteCustomRequest, type CustomRequest } from "@/lib/customRequests";
+import { discountedPrice } from "@/lib/productPricing";
 
 export type { CartItem } from "@/lib/cartStorage";
 
@@ -61,7 +62,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
           id: Number(product.id),
           categoryId: Number(product.categoryId),
           name: String(product.name),
-          price: String(product.price),
+          price: String(discountedPrice(product)),
           image: product.image ? String(product.image) : undefined,
           quantity: 1,
         },

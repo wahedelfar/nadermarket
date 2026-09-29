@@ -1,14 +1,16 @@
 import type { SmartProduct } from "@/lib/smartAssistant";
+import { hasDiscount, normalizedDiscountPercent } from "@/lib/productPricing";
 
-export const DAILY_OFFER_MARKERS = ["[عرض اليوم]", "عرض اليوم", "[خصم اليوم]", "خصم اليوم"];
-
-export const isDailyOffer = (product: SmartProduct) => {
-  const description = String(product.description || "");
-  return DAILY_OFFER_MARKERS.some((marker) => description.includes(marker)) && product.isActive !== false && (product.stock === undefined || product.stock > 0);
-};
+export const isDailyOffer = (product: SmartProduct) =>
+  product.isActive !== false &&
+  (product.stock === undefined || product.stock > 0) &&
+  Boolean(product.dailyOfferEnabled) &&
+  normalizedDiscountPercent(product) > 0;
 
 export const dailyOffers = (products: SmartProduct[]) =>
-  products.filter(isDailyOffer).sort((a, b) => Number(a.price) - Number(b.price));
+  products.filter(isDailyOffer).sort((a, b) => normalizedDiscountPercent(b) - normalizedDiscountPercent(a) || Number(a.price) - Number(b.price));
 
 export const cleanOfferDescription = (description: string) =>
-  DAILY_OFFER_MARKERS.reduce((text, marker) => text.replaceAll(marker, "").replace(/\s{2,}/g, " ").trim(), description);
+  String(description || "").replace(/\[?(عرض|خصم) اليوم\]?/g, "").replace(/\s{2,}/g, " ").trim();
+
+export { hasDiscount };

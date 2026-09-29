@@ -51,6 +51,8 @@ function productFromDb(row: any) {
     image: row.image ?? null,
     stock: Number(row.stock ?? 0),
     isActive: Boolean(row.is_active),
+    dailyOfferEnabled: Boolean(row.daily_offer_enabled),
+    discountPercent: String(row.discount_percent ?? "0"),
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   } : row;
@@ -127,13 +129,13 @@ export async function uploadPaymentProof(input: { base64: string; contentType: s
 
 
 export async function createProduct(input: {
-  categoryId: number; name: string; description?: string; price: string; image?: string; stock?: number; isActive?: boolean;
+  categoryId: number; name: string; description?: string; price: string; image?: string; stock?: number; isActive?: boolean; dailyOfferEnabled?: boolean; discountPercent?: string;
 }) {
   return productFromDb(await api({ action: "admin.products.create", body: input, admin: true }));
 }
 
 export async function updateProduct(input: {
-  id: number; categoryId?: number; name?: string; description?: string; price?: string; image?: string; stock?: number; isActive?: boolean;
+  id: number; categoryId?: number; name?: string; description?: string; price?: string; image?: string; stock?: number; isActive?: boolean; dailyOfferEnabled?: boolean; discountPercent?: string;
 }) {
   return productFromDb(await api({ action: "admin.products.update", body: input, admin: true }));
 }

@@ -78,7 +78,7 @@ export default function Favorites() {
                   <Link href={`/product/${product.id}`}>
                     <h2 className="font-black text-slate-800 hover:text-blue-700">{product.name}</h2>
                   </Link>
-                  <p className="mt-2 text-xl font-black text-blue-800">{Number(product.price).toFixed(2)} ج.م</p>
+                  <p className="mt-2 text-xl font-black text-blue-800">{hasDiscount(product) ? discountedPrice(product).toFixed(2) : Number(product.price).toFixed(2)} ج.م {hasDiscount(product) && <><span className="mr-2 text-xs text-gray-400 line-through">{Number(product.price).toFixed(2)} ج.م</span><span className="mr-2 text-xs text-red-600">خصم {normalizedDiscountPercent(product)}%</span></>}</p>
                   {product.stock === 0 ? (
                     <p className="mt-2 text-sm font-bold text-rose-600">غير متوفر حاليًا</p>
                   ) : (

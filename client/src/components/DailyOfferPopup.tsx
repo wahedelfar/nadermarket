@@ -2,7 +2,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Check, ShoppingCart, Sparkles, X } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import type { SmartProduct } from "@/lib/smartAssistant";
-import { dailyOffers } from "@/lib/dailyOffers";
+import { dailyOffers, cleanOfferDescription } from "@/lib/dailyOffers";
+import { discountedPrice, normalizedDiscountPercent } from "@/lib/productPricing";
 
 type Props = { products: SmartProduct[] };
 
@@ -51,13 +52,13 @@ export default function DailyOfferPopup({ products }: Props) {
             </div>
             <div className="p-4">
               <h3 className="text-lg font-black text-slate-900">{offer.name}</h3>
-              <p className="mt-1 line-clamp-2 text-sm text-slate-500">{String(offer.description || "").replace(/\[?(عرض|خصم) اليوم\]?/g, "").trim() || "اختيار مميز متاح حاليًا."}</p>
+              <p className="mt-1 line-clamp-2 text-sm text-slate-500">{cleanOfferDescription(String(offer.description || "")) || "اختيار مميز متاح حاليًا."}</p>
               <div className="mt-3 flex items-end justify-between gap-3">
                 <div className="text-2xl font-black text-[#073b7a]">
-                  {Number(offer.price).toFixed(2)} <span className="text-sm">ج.م</span>
+                  <span className="block text-sm text-blue-300 line-through">{Number(offer.price).toFixed(2)} ج.م</span><span>{discountedPrice(offer).toFixed(2)} <span className="text-sm">ج.م</span></span>
                 </div>
                 <span className="inline-flex items-center gap-1 rounded-full bg-green-50 px-2.5 py-1 text-[10px] font-bold text-green-700">
-                  <Check className="h-3 w-3" /> متاح الآن
+                  <Check className="h-3 w-3" /> خصم {normalizedDiscountPercent(offer)}%
                 </span>
               </div>
             </div>

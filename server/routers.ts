@@ -125,6 +125,8 @@ export const appRouter = router({
         image: z.string().optional(),
         stock: z.number().default(0),
         isActive: z.boolean().optional(),
+        dailyOfferEnabled: z.boolean().optional(),
+        discountPercent: z.string().regex(/^\d{1,3}(\.\d{1,2})?$/).optional(),
       }))
       .mutation(({ input }) => createProduct(input)),
     update: adminProcedure

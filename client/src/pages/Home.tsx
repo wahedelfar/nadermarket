@@ -10,6 +10,7 @@ import { getLastOrder } from "@/lib/repeatOrder";
 import SmartAssistant from "@/components/SmartAssistant";
 import SmartShoppingLists from "@/components/SmartShoppingLists";
 import DailyOfferPopup from "@/components/DailyOfferPopup";
+import { discountedPrice, normalizedDiscountPercent, hasDiscount } from "@/lib/productPricing";
 
 export default function Home() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -166,7 +167,7 @@ export default function Home() {
                   {activeProduct.description || "جودة ممتازة وسعر مناسب من الوحيد ماركت"}
                 </p>
                 <div className="mb-5 text-2xl font-extrabold text-[#0756b8]">
-                  {Number(activeProduct.price).toFixed(2)} <span className="text-base font-medium">ج.م</span>
+                  {hasDiscount(activeProduct) ? discountedPrice(activeProduct).toFixed(2) : Number(activeProduct.price).toFixed(2)} <span className="text-base font-medium">ج.م</span>{hasDiscount(activeProduct) && <><span className="mr-2 text-sm text-gray-400 line-through">{Number(activeProduct.price).toFixed(2)}</span><span className="mr-2 rounded-full bg-red-50 px-2 py-1 text-xs font-black text-red-600">خصم {normalizedDiscountPercent(activeProduct)}%</span></>}
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                   <button

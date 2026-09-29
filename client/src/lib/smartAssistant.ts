@@ -8,6 +8,8 @@ export type SmartProduct = {
   image?: string | null;
   stock?: number;
   isActive?: boolean;
+  dailyOfferEnabled?: boolean;
+  discountPercent?: string;
 };
 
 export type CustomAssistantRequest = { text: string; quantity: number };
