@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Bot, Plus, Send, ShoppingCart, Sparkles, X } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
-import { askSmartAssistant, toCartItem, type SmartProduct } from "@/lib/smartAssistant";
+import { askSmartAssistant, toCartItem, type SmartProduct, type CustomAssistantRequest } from "@/lib/smartAssistant";
+import { addCustomRequest } from "@/lib/customRequests";
 import { getCustomerMemory, saveCustomerName, touchCustomerVisit, type CustomerMemory } from "@/lib/customerMemory";
 import { getLastOrder } from "@/lib/repeatOrder";
 import { getWeeklyShopping } from "@/lib/shoppingMemory";
@@ -22,6 +23,7 @@ type Message = {
   role: "user" | "assistant";
   text: string;
   products?: SmartProduct[];
+  customRequests?: CustomAssistantRequest[];
 };
 
 function welcomeFor(memory: CustomerMemory) {
@@ -136,7 +138,7 @@ export default function SmartAssistant({ products }: Props) {
     setMessages((current) => [
       ...current,
       { role: "user", text: clean },
-      { role: "assistant", text: r.text, products: r.products },
+      { role: "assistant", text: r.text, products: r.products, customRequests: r.customRequests },
     ]);
     setQuery("");
   };
@@ -221,6 +223,29 @@ export default function SmartAssistant({ products }: Props) {
                   }
                 >
                   {m.text}
+
+                  {m.customRequests && m.customRequests.length > 0 && (
+                    <div className="mt-3 space-y-2">
+                      {m.customRequests.map((request) => (
+                        <div key={request.text} className="rounded-2xl border border-amber-200 bg-amber-50 p-3">
+                          <div className="flex items-center justify-between gap-3">
+                            <div>
+                              <p className="text-xs font-black text-amber-950">طلب خاص خارج الكتالوج</p>
+                              <p className="mt-1 text-sm font-bold text-slate-800">{request.text}</p>
+                              <p className="mt-1 text-[10px] text-slate-500">سيظهر للإدارة مع طلبك لتجهيزه إن كان متوفرًا.</p>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => addCustomRequest(request.text, request.quantity)}
+                              className="shrink-0 rounded-xl bg-amber-600 px-3 py-2 text-xs font-black text-white hover:bg-amber-700"
+                            >
+                              أضف للطلب
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
 
                   {m.products && m.products.length > 0 && (
                     <div className="mt-3 space-y-2">
