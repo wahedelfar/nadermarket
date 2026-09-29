@@ -8,6 +8,7 @@ import { useCart } from "@/contexts/CartContext";
 import { getNextSlideIndex, getPreviousSlideIndex, selectFeaturedProducts, SLIDER_INTERVAL_MS } from "@/lib/featuredProducts";
 import { getLastOrder } from "@/lib/repeatOrder";
 import SmartAssistant from "@/components/SmartAssistant";
+import SmartShoppingLists from "@/components/SmartShoppingLists";
 
 export default function Home() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -300,6 +301,8 @@ export default function Home() {
           </div>
         )}
       </section>
+
+      <SmartShoppingLists products={assistantProducts} />
 
       <SmartAssistant products={assistantProducts} />
 
