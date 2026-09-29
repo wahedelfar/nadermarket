@@ -18,6 +18,10 @@ export default function Home() {
   const { data: categoriesData, isLoading } = trpc.categories.list.useQuery();
   const { data: productsData, isLoading: productsLoading } = trpc.products.list.useQuery();
 
+  const assistantProducts = (productsData ?? []).map((product) => ({
+    ...product,
+    categoryName: categoriesData?.find((category) => Number(category.id) === Number(product.categoryId))?.name ?? null,
+  }));
   const featuredProducts = selectFeaturedProducts(productsData ?? []);
   const repeatableOrder = lastOrder.filter((item) =>
     productsData?.some((product) => Number(product.id) === item.id),
@@ -297,7 +301,7 @@ export default function Home() {
         )}
       </section>
 
-      <SmartAssistant products={productsData ?? []} />
+      <SmartAssistant products={assistantProducts} />
 
       {/* Simple Footer */}
       <footer id="contact" className="mt-12 border-t border-blue-900/15 bg-gradient-to-l from-[#073b7a] via-[#0b4f9e] to-[#1266b8] text-white">
