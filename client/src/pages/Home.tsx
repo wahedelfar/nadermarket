@@ -236,7 +236,8 @@ export default function Home() {
               <Button
                 type="button"
                 className="rounded-xl bg-[#123f91] px-6 py-3 font-black text-white hover:bg-[#0d3275]"
-                onClick={() => lastOrder.filter((item) => (productsData ?? []).some((product: any) => Number(product.id) === Number(item.id))).forEach((item) => addToCart(item))}\n                disabled={!productsData}
+                onClick={() => lastOrder.filter((item) => (productsData ?? []).some((product: any) => Number(product.id) === Number(item.id))).forEach((item) => addToCart(item)}
+                disabled={!productsData}
               >
                 إعادة الطلب
               </Button>
