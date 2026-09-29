@@ -168,6 +168,27 @@ function customRequestsFromQuery(q: string, products: SmartProduct[]): CustomAss
 
 const fallback = "فضلاً أضف طلبك من الرئيسية، لا أستطيع الوصول إلى طلبك بهذه الصيغة حاليًا.";
 
+/* Product alternatives are only suggested when a real, cheaper product exists
+   in the same live catalog category as the product being discussed. */
+const cheaperAlternative = (ps: SmartProduct[], context: string) => {
+  const target = rank(ps, context)[0];
+  if (!target) return [];
+  const targetCategory = category(target);
+  const targetPrice = price(target.price);
+  if (!targetCategory || targetPrice <= 0) return [];
+
+  return ps
+    .filter((p) =>
+      available(p) &&
+      p.id !== target.id &&
+      price(p.price) > 0 &&
+      price(p.price) < targetPrice &&
+      category(p) === targetCategory
+    )
+    .sort((a, b) => price(b.price) - price(a.price))
+    .slice(0, 4);
+};
+
 export function askSmartAssistant(q: string, products: SmartProduct[], history: string[] = [], cartContext = ""): AssistantResult {
   const x = norm(q), ps = products.filter(available);
   const explicitCustom = customRequestsFromQuery(q, ps), genericCustom = explicitCustom.length ? null : genericCustomRequest(q, ps);
@@ -224,9 +245,40 @@ export function askSmartAssistant(q: string, products: SmartProduct[], history: 
   }
 
   const cheap = x.includes("ارخص") || x.includes("اقتصادي") || x.includes("اوفر") || x.includes("موفر");
-  if ((cheap || x.includes("بدل") || x.includes("بديل")) && context) {
-    const out = rank(ps,context).sort((a,b) => price(a.price)-price(b.price));
-    if (out.length) return { text: cheap ? "تمام، دي اختيارات أوفر من الموجود عندنا." : "أكيد، دي بدائل من نفس الكتالوج.", products: out, customRequests, suggestedQuestions: ["الأرخص؟","ضيف ده للسلة","زود اختيارات","اقترحلي حاجة تانية"], intent: "budget" };
+  const asksAlternative = x.includes("بدل") || x.includes("بديل");
+  if ((cheap || asksAlternative) && context) {
+    const alternatives = asksAlternative ? cheaperAlternative(ps, context) : [];
+    if (alternatives.length) {
+      const original = rank(ps, context)[0];
+      return {
+        text: `لو محتاج بديل أرخص لـ ${original?.name ?? "المنتج"}، عندي اختيار من نفس القسم: ${alternatives[0].name}. تحب أبدّله لك؟`,
+        products: alternatives,
+        customRequests,
+        suggestedQuestions: ["بدّل ده", "الأرخص؟", "وريني بدائل تانية"],
+        intent: "budget",
+      };
+    }
+
+    const out = rank(ps, context).sort((a,b) => price(a.price)-price(b.price));
+    if (cheap && out.length) {
+      return {
+        text: "تمام، دي الاختيارات الأرخص من المنتجات اللي كنا بنتكلم عنها.",
+        products: out,
+        customRequests,
+        suggestedQuestions: ["بدّل ده", "زود اختيارات", "ضيف ده للسلة"],
+        intent: "budget",
+      };
+    }
+
+    if (asksAlternative) {
+      return {
+        text: "دورت في الكتالوج الحالي، ومش لاقي بديل أرخص من نفس القسم للمنتج ده حاليًا.",
+        products: [],
+        customRequests,
+        suggestedQuestions: ["وريني المنتج الأصلي", "دور على الأرخص", "اقترحلي حاجة تانية"],
+        intent: "budget",
+      };
+    }
   }
 
   const group = Object.entries(groups).find(([,terms]) => terms.some((v) => x.includes(norm(v))));
