@@ -7,6 +7,7 @@ import { Link } from "wouter";
 import { useCart } from "@/contexts/CartContext";
 import { trpc } from "@/lib/trpc";
 import { toast } from "sonner";
+import { saveLastOrder } from "@/lib/repeatOrder";
 
 
 async function fileToBase64(file: File) {
@@ -194,7 +195,7 @@ export default function Checkout() {
       });
 
       toast.success(`تم استلام طلبك بنجاح! رقم الطلب: ${result.id}`);
-      setOrderId(result.id);
+      saveLastOrder(items);\n      setOrderId(result.id);
       setStatusMessage(null);
       setOrderCreated(true);
       clearCart();
