@@ -100,7 +100,10 @@ const price = (v: unknown) => Number.isFinite(Number(v)) ? Number(v) : 0;
 const has = (p: SmartProduct, terms: string[]) => terms.some((t) => name(p).includes(norm(t)) || category(p).includes(norm(t)));
 
 const budget = (q: string) => {
-  const m = norm(q).match(/(?:حدود|ميزانيه|بميزانيه|لحد|اقل من|تحت)\s*\D{0,6}(\d{2,5})/);
+  const x = norm(q);
+  const m =
+    x.match(/(?:حدود|ميزانيه|بميزانيه|لحد|اقل من|تحت|معايا|عندي)\s*\D{0,8}(\d{2,5})/) ||
+    x.match(/(\d{2,5})\s*(?:جنيه|ج|جنيهات)/);
   return m ? Number(m[1]) : null;
 };
 
@@ -110,20 +113,33 @@ const people = (q: string) => {
 };
 
 const rank = (ps: SmartProduct[], q: string) => {
-  const stop = ["عايز", "عاوزه", "عاوز", "عندي", "عندكم", "ممكن", "ايه", "من", "في", "لو", "طب", "حاجه", "حاجة", "طلب"];
-  const ts = norm(q).split(" ").filter((x) => x.length > 1 && !stop.includes(x));
+  const stop = new Set(["عايز", "عاوزه", "عاوز", "نفسي", "محتاج", "محتاجه", "عندي", "عندكم", "ممكن", "ايه", "من", "في", "لو", "طب", "حاجه", "حاجة", "طلب", "هات", "جيب", "وريني", "مناسب"]);
+  const tokens = norm(q).split(" ").filter((x) => x.length > 1 && !stop.has(x));
   return ps.filter(available)
-    .map((p) => ({ p, s: ts.reduce((n, t) => n + (name(p).includes(t) ? 7 : hay(p).includes(t) ? 3 : 0), 0) }))
-    .filter((x) => x.s > 0)
-    .sort((a, b) => b.s - a.s || price(a.p.price) - price(b.p.price))
-    .slice(0, 20)
+    .map((p) => {
+      const pn = name(p);
+      const ph = hay(p);
+      const pc = category(p);
+      let score = 0;
+      for (const token of tokens) {
+        if (pn === token) score += 18;
+        else if (pn.includes(token)) score += token.length >= 4 ? 10 : 6;
+        else if (pc.includes(token)) score += 8;
+        else if (ph.includes(token)) score += 3;
+      }
+      if (pn.length > 2 && norm(q).includes(pn)) score += 12;
+      return { p, score };
+    })
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score || price(a.p.price) - price(b.p.price))
+    .slice(0, 8)
     .map((x) => x.p);
 };
 
 const categoryProducts = (ps: SmartProduct[], label: string, terms: string[]) => {
   const direct = ps.filter((p) => available(p) && (terms.some((t) => category(p).includes(norm(t))) || has(p, terms)));
-  if (direct.length) return direct.sort((a, b) => price(a.price) - price(b.price)).slice(0, 20);
-  return ps.filter((p) => available(p) && hay(p).includes(norm(label))).sort((a, b) => price(a.price) - price(b.price)).slice(0, 20);
+  if (direct.length) return direct.sort((a, b) => price(a.price) - price(b.price)).slice(0, 8);
+  return ps.filter((p) => available(p) && hay(p).includes(norm(label))).sort((a, b) => price(a.price) - price(b.price)).slice(0, 8);
 };
 
 const catalogCategoryIndex = (ps: SmartProduct[]) => {
@@ -187,6 +203,21 @@ const meal = (ps: SmartProduct[], m: "فطار" | "غداء" | "عشاء", b: nu
   return { out, total, pool };
 };
 
+function genericCustomRequest(q: string, products: SmartProduct[]): CustomAssistantRequest | null {
+  const x = norm(q);
+  const quantityMatch = x.match(/(?:عايز|عاوزه|عاوز|محتاج|محتاجه|هات|جيب|ممكن)\s*(?:\d+\s+)?(.+)/);
+  if (!quantityMatch) return null;
+  const phrase = quantityMatch[1].trim();
+  const cleaned = phrase.replace(/^(من|في|عندكم|للغدا|للفطار|للعشا)\s+/, "").trim();
+  if (!cleaned || cleaned.split(" ").length > 6) return null;
+  const known = products.some((p) => available(p) && hay(p).includes(cleaned));
+  if (known) return null;
+  const semanticWords = ["فطار","غداء","غدا","عشاء","عشا","اقتصادي","ارخص","حلو","سناك","فواكه","لحوم","جبن","البان","منظفات","مشروبات"];
+  if (semanticWords.some((word) => cleaned.includes(norm(word)))) return null;
+  const quantity = Number(x.match(/(?:عايز|عاوزه|عاوز|محتاج|محتاجه|هات|جيب|ممكن)\s*(\d+)/)?.[1] || 1);
+  return { text: cleaned, quantity: Math.max(1, Math.min(20, quantity)) };
+}
+
 function customRequestsFromQuery(q: string, products: SmartProduct[]): CustomAssistantRequest[] {
   const x = norm(q);
   const results: CustomAssistantRequest[] = [];
@@ -204,7 +235,9 @@ const fallback = "فضلاً أضف طلبك من الرئيسية، لا أست
 export function askSmartAssistant(q: string, products: SmartProduct[], history: string[] = []): AssistantResult {
   const x = norm(q);
   const ps = products.filter(available);
-  const customRequests = customRequestsFromQuery(q, ps);
+  const explicitCustom = customRequestsFromQuery(q, ps);
+  const genericCustom = explicitCustom.length ? null : genericCustomRequest(q, ps);
+  const customRequests = explicitCustom.length ? explicitCustom : (genericCustom ? [genericCustom] : []);
 
   if (!x) {
     return {
@@ -220,6 +253,22 @@ export function askSmartAssistant(q: string, products: SmartProduct[], history: 
   const b = budget(x);
   const n = people(x);
   const m = x.includes("فطار") ? "فطار" : x.includes("غدا") || x.includes("غداء") ? "غداء" : x.includes("عشا") || x.includes("عشاء") ? "عشاء" : null;
+
+  const wantsMore = x.includes("زود") || x.includes("كمان") || x.includes("تاني") || x.includes("المزيد") || x.includes("غيرهم");
+  const wantsCheapest = x.includes("ارخص") || x.includes("اقتصادي") || x.includes("اوفر") || x.includes("موفر");
+  if ((wantsMore || wantsCheapest || x.includes("بدل")) && context) {
+    const contextual = rank(ps, context);
+    if (contextual.length) {
+      const out = wantsCheapest ? [...contextual].sort((a, b) => price(a.price) - price(b.price)).slice(0, 8) : contextual.slice(0, 8);
+      return {
+        text: wantsCheapest ? "تمام، دي الاختيارات الأرخص من اللي كنا بنتكلم عنه." : "أكيد، زودت لك اختيارات تانية من نفس الكتالوج.",
+        products: out,
+        customRequests,
+        suggestedQuestions: ["الأرخص؟", "بدّلهم", "ضيفهم للسلة", "اقترح حاجة تانية"],
+        intent: wantsCheapest ? "budget" : "search",
+      };
+    }
+  }
 
   if (m) {
     const { out, pool } = meal(ps, m, b, n);
