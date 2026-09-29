@@ -195,7 +195,8 @@ export default function Checkout() {
       });
 
       toast.success(`تم استلام طلبك بنجاح! رقم الطلب: ${result.id}`);
-      saveLastOrder(items);\n      setOrderId(result.id);
+      saveLastOrder(items);
+      setOrderId(result.id);
       setStatusMessage(null);
       setOrderCreated(true);
       clearCart();
