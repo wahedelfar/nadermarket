@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Bot, Plus, Send, ShoppingCart, Sparkles, X } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { askSmartAssistant, toCartItem, type SmartProduct, type CustomAssistantRequest } from "@/lib/smartAssistant";
-import { addCustomRequest } from "@/lib/customRequests";
 import { getCustomerMemory, saveCustomerName, touchCustomerVisit, type CustomerMemory } from "@/lib/customerMemory";
 import { getLastOrder } from "@/lib/repeatOrder";
 import { getWeeklyShopping } from "@/lib/shoppingMemory";
@@ -34,7 +33,7 @@ function welcomeFor(memory: CustomerMemory) {
 }
 
 export default function SmartAssistant({ products }: Props) {
-  const { addToCart } = useCart();
+  const { addToCart, addCustomRequest } = useCart();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [awaitingName, setAwaitingName] = useState(false);
