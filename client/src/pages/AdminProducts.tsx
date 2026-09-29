@@ -291,19 +291,36 @@ export default function AdminProducts() {
                 </div>
               </div>
 
-              <label className="flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 cursor-pointer">
-                <input
-                  type="checkbox"
-                  name="showDailyOffer"
-                  checked={Boolean(formData.showDailyOffer)}
-                  onChange={(e) => setFormData((prev) => ({ ...prev, showDailyOffer: e.target.checked }))}
-                  className="h-4 w-4 accent-amber-500"
-                />
-                <span>
-                  <span className="block font-bold text-amber-900">إظهار كـ «عرض اليوم»</span>
-                  <span className="block text-xs text-amber-700">سيظهر مرة واحدة للعميل عند دخوله الموقع في نافذة صغيرة أنيقة.</span>
-                </span>
-              </label>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+                <label className="flex items-center gap-3 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    name="showDailyOffer"
+                    checked={Boolean(formData.showDailyOffer)}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, showDailyOffer: e.target.checked, discountPercent: e.target.checked ? (prev.discountPercent || "0") : "0" }))}
+                    className="h-4 w-4 accent-amber-500"
+                  />
+                  <span>
+                    <span className="block font-bold text-amber-900">إظهار كـ «عرض اليوم»</span>
+                    <span className="block text-xs text-amber-700">يمكن تشغيله على عدة منتجات، وكل منتج له خصم مستقل.</span>
+                  </span>
+                </label>
+                <div>
+                  <label className="block text-gray-700 font-semibold mb-2">نسبة الخصم (%)</label>
+                  <Input
+                    type="number"
+                    min="0"
+                    max="100"
+                    step="0.01"
+                    name="discountPercent"
+                    value={formData.discountPercent}
+                    onChange={handleInputChange}
+                    disabled={!formData.showDailyOffer}
+                    placeholder="مثال: 20"
+                  />
+                  <p className="mt-1 text-xs text-gray-500">يُحسب السعر المخفض تلقائيًا من السعر الأصلي.</p>
+                </div>
+              </div>
 
               <div className="flex gap-2">
                 <Button
@@ -377,7 +394,8 @@ export default function AdminProducts() {
                                 price: product.price,
                                 image: product.image || "",
                                 stock: product.stock,
-                                showDailyOffer: String(product.description || "").includes("[عرض اليوم]") || String(product.description || "").includes("عرض اليوم"),
+                                showDailyOffer: Boolean(product.dailyOfferEnabled) || String(product.description || "").includes("[عرض اليوم]") || String(product.description || "").includes("عرض اليوم"),
+                                discountPercent: String(product.discountPercent ?? "0"),
                               });
                               setImageFile(null);
                               setEditingId(product.id);
