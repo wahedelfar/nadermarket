@@ -100,7 +100,10 @@ const price = (v: unknown) => Number.isFinite(Number(v)) ? Number(v) : 0;
 const has = (p: SmartProduct, terms: string[]) => terms.some((t) => name(p).includes(norm(t)) || category(p).includes(norm(t)));
 
 const budget = (q: string) => {
-  const m = norm(q).match(/(?:حدود|ميزانيه|بميزانيه|لحد|اقل من|تحت)\s*\D{0,6}(\d{2,5})/);
+  const x = norm(q);
+  const m =
+    x.match(/(?:حدود|ميزانيه|بميزانيه|لحد|اقل من|تحت|معايا|عندي)\s*\D{0,8}(\d{2,5})/) ||
+    x.match(/(\d{2,5})\s*(?:جنيه|ج|جنيهات)/);
   return m ? Number(m[1]) : null;
 };
 
