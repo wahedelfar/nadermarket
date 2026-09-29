@@ -44,7 +44,7 @@ async function prepareProof(file: File) {
 }
 
 export default function Checkout() {
-  const { items, total, clearCart } = useCart();
+  const { items, total, clearCart, customRequests } = useCart();
   const [loading, setLoading] = useState(false);
   const [orderCreated, setOrderCreated] = useState(false);
   const [orderId, setOrderId] = useState<number | null>(null);
@@ -138,7 +138,7 @@ export default function Checkout() {
     );
   }
 
-  if (items.length === 0) {
+  if (items.length === 0 && customRequests.length === 0) {
     return (
       <div className="min-h-screen bg-[#e8f6ff]">
         <header className="bg-white shadow-md">
@@ -192,6 +192,9 @@ export default function Checkout() {
         totalAmount: total.toFixed(2),
         paymentMethod,
         paymentProofUrl,
+        notes: customRequests.length
+          ? `طلبات خاصة من «إسألني»:\n${customRequests.map((request) => `- ${request.text} × ${request.quantity}`).join("\n")}`
+          : undefined,
         items: orderItems,
       });
 
@@ -301,6 +304,13 @@ export default function Checkout() {
                     </div>
                   );
                 })}
+                {customRequests.map((request) => (
+                  <div key={request.id} className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-right">
+                    <p className="text-xs font-black text-amber-900">طلب خاص من «إسألني»</p>
+                    <p className="mt-1 text-sm font-bold text-gray-800">{request.text} × {request.quantity}</p>
+                    <p className="mt-1 text-xs text-gray-500">السعر يحدده الماركت حسب التوفر.</p>
+                  </div>
+                ))}
               </div>
               <div className="border-t pt-4">
                 <div className="flex justify-between items-center">
