@@ -168,6 +168,23 @@ export async function getOrderItems(orderId: number) {
   })) : [];
 }
 
+async function saveOrderNotes(orderId: number, notes: string) {
+  const response = await fetch(`${ENV.supabaseUrl}/functions/v1/nader-order-notes`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      username: ENV.adminLoginUsername,
+      password: ENV.adminLoginPassword,
+      orderId,
+      notes,
+    }),
+  });
+  if (!response.ok) {
+    const data = await response.json().catch(() => null);
+    throw new Error(data?.error || `تعذر حفظ ملاحظات الطلب (${response.status})`);
+  }
+}
+
 export async function createOrder(input: {
   customerName: string;
   customerPhone: string;
@@ -179,7 +196,15 @@ export async function createOrder(input: {
   notes?: string;
   items: Array<{ productId: number; quantity: number; price: string }>;
 }) {
-  return await api({ action: "order", body: input });
+  const order = await api({ action: "order", body: input });
+  if (input.notes) {
+    try {
+      await saveOrderNotes(Number(order.id), input.notes);
+    } catch (error) {
+      console.error("Failed to persist assistant custom requests", error);
+    }
+  }
+  return order;
 }
 
 export async function updateOrderStatus(id: number, status: string) {
