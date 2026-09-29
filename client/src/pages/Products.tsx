@@ -1,17 +1,29 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ShoppingCart, MapPin } from "lucide-react";
+import { Heart, Search, ShoppingCart, MapPin } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { useCart } from "@/contexts/CartContext";
+import { getFavoriteIds, toggleFavorite } from "@/lib/favorites";
+import { askSmartAssistant, type SmartProduct } from "@/lib/smartAssistant";
 
 export default function Products() {
   const [location] = useLocation();
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [search, setSearch] = useState("");
+  const [favoriteIds, setFavoriteIds] = useState<number[]>([]);
   const { addToCart, items } = useCart();
+
+  useEffect(() => {
+    const sync = () => setFavoriteIds(getFavoriteIds());
+    sync();
+    const handler = () => sync();
+    window.addEventListener("nader-market:favorites-changed", handler);
+    const smartProducts = products.map((product) => ({\n    ...product,\n    categoryName: categories.find((category) => Number(category.id) === Number(product.categoryId))?.name ?? null,\n  })) as SmartProduct[];\n  const searchResults = search.trim() ? askSmartAssistant(search, smartProducts).products : smartProducts;\n\n  return () => window.removeEventListener("nader-market:favorites-changed", handler);
+  }, []);
 
   // Get category from URL
   useEffect(() => {
@@ -89,7 +101,7 @@ export default function Products() {
 
           {/* Main Content - Products Grid */}
           <div className="lg:col-span-3">
-            <h1 className="text-3xl font-bold mb-8 text-gray-800">
+            <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">\n              <h1 className="text-3xl font-bold text-gray-800">
               {selectedCategory
                 ? categories.find((c) => c.id === selectedCategory)?.name || "المنتجات"
                 : "جميع المنتجات"}
@@ -101,13 +113,13 @@ export default function Products() {
                   <div key={i} className="h-80 bg-blue-100 rounded-lg animate-pulse" />
                 ))}
               </div>
-            ) : products.length === 0 ? (
+            ) : searchResults.length === 0 ? (
               <div className="text-center py-12 rounded-2xl bg-white/70">
-                <p className="text-xl text-gray-600">لا توجد منتجات في هذا القسم</p>
+                <p className="text-xl text-gray-600">{search ? "لم أجد منتجات مطابقة حاليًا" : "لا توجد منتجات في هذا القسم"}</p>\n                {search && <p className="mt-2 text-sm text-slate-500">جرّب اسمًا مختلفًا أو اكتب طلبك بطريقة طبيعية.</p>}
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {products.map((product) => (
+                {searchResults.map((product) => (
                   <Card
                     key={product.id}
                     className="overflow-hidden hover:shadow-lg transition-shadow"
@@ -120,7 +132,7 @@ export default function Products() {
                           className="w-full h-48 object-cover"
                         />
                       )}
-                      {product.stock === 0 && (
+                      <button type="button" onClick={() => { toggleFavorite(product.id); setFavoriteIds(getFavoriteIds()); }} aria-label={favoriteIds.includes(Number(product.id)) ? "إزالة من المفضلة" : "إضافة للمفضلة"} className="absolute left-3 top-3 z-10 rounded-full bg-white/95 p-2 text-rose-500 shadow-md">\n                        <Heart className={favoriteIds.includes(Number(product.id)) ? "h-5 w-5 fill-current" : "h-5 w-5"} />\n                      </button>\n                      {product.stock === 0 && (
                         <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                           <span className="text-white font-bold">غير متوفر</span>
                         </div>
