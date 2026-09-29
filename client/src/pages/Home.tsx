@@ -7,6 +7,7 @@ import { trpc } from "@/lib/trpc";
 import { useCart } from "@/contexts/CartContext";
 import { getNextSlideIndex, getPreviousSlideIndex, selectFeaturedProducts, SLIDER_INTERVAL_MS } from "@/lib/featuredProducts";
 import { getLastOrder } from "@/lib/repeatOrder";
+import SmartAssistant from "@/components/SmartAssistant";
 
 export default function Home() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -295,6 +296,8 @@ export default function Home() {
           </div>
         )}
       </section>
+
+      <SmartAssistant products={productsData ?? []} />
 
       {/* Simple Footer */}
       <footer id="contact" className="mt-12 border-t border-blue-900/15 bg-gradient-to-l from-[#073b7a] via-[#0b4f9e] to-[#1266b8] text-white">
