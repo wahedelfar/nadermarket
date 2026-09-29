@@ -97,6 +97,27 @@ export default function SmartAssistant({ products }: Props) {
 
     const normalized = clean.replace(/[إأآ]/g, "ا").toLowerCase();
 
+    // Natural cart commands: "ضيف 2 لبن", "حط 3 شيبسي", etc.
+    const quantityMatch = normalized.match(/(?:ضيف|حط|اضيف|أضف)\\s*(\\d+)\\s+(.+)/);
+    if (quantityMatch) {
+      const quantity = Math.max(1, Math.min(20, Number(quantityMatch[1])));
+      const target = quantityMatch[2].trim();
+      const match = available.find((product) => {
+        const n = product.name.toLowerCase().replace(/[إأآ]/g, "ا");
+        return n.includes(target) || target.includes(n);
+      });
+      if (match) {
+        for (let i = 0; i < quantity; i += 1) addToCart(toCartItem(match));
+        setMessages((current) => [
+          ...current,
+          { role: "user", text: clean },
+          { role: "assistant", text: "تم 😄 ضفت " + quantity + " × " + match.name + " للسلة." },
+        ]);
+        setQuery("");
+        return;
+      }
+    }
+
     if (/^(ضيفهم|ضيفهم للسله|حطهم|تمام ضيف|ضيف ده|ضيف دي)/.test(normalized)) {
       const lastAssistant = [...messages].reverse().find((message) => message.role === "assistant" && ((message.products && message.products.length) || (message.customRequests && message.customRequests.length)));
       if (lastAssistant) {
