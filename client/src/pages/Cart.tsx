@@ -5,7 +5,7 @@ import { Link } from "wouter";
 import { useCart } from "@/contexts/CartContext";
 
 export default function Cart() {
-  const { items, removeFromCart, updateQuantity, clearCart, total } = useCart();
+  const { items, removeFromCart, updateQuantity, clearCart, total, customRequests, removeCustomRequest } = useCart();
 
   return (
     <div className="min-h-screen bg-[#e8f6ff]">
@@ -27,7 +27,7 @@ export default function Cart() {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8 text-gray-800">سلة المشتريات</h1>
 
-        {items.length === 0 ? (
+        {items.length === 0 && customRequests.length === 0 ? (
           <Card className="p-12 text-center">
             <p className="text-xl text-gray-600 mb-6">السلة فارغة</p>
             <Link href="/products">
@@ -91,6 +91,26 @@ export default function Cart() {
                   </Card>
                 ))}
               </div>
+
+              {customRequests.length > 0 && (
+                <div className="mt-6 space-y-3">
+                  <h2 className="text-lg font-black text-gray-800">طلبات خاصة للإدارة</h2>
+                  {customRequests.map((request) => (
+                    <Card key={request.id} className="border-amber-200 bg-amber-50 p-4">
+                      <div className="flex items-center justify-between gap-3" dir="rtl">
+                        <div>
+                          <p className="text-xs font-black text-amber-900">طلب خارج الكتالوج</p>
+                          <p className="mt-1 font-bold text-gray-800">{request.text} × {request.quantity}</p>
+                          <p className="mt-1 text-xs text-gray-600">سيُرسل للإدارة مع الطلب للتجهيز حسب التوفر.</p>
+                        </div>
+                        <Button onClick={() => removeCustomRequest(request.id)} variant="destructive" size="sm">
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    </Card>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Order Summary */}
@@ -101,7 +121,7 @@ export default function Cart() {
                 <div className="space-y-3 mb-6 pb-6 border-b border-gray-200">
                   <div className="flex justify-between">
                     <span className="text-gray-600">عدد المنتجات:</span>
-                    <span className="font-semibold">{items.length}</span>
+                    <span className="font-semibold">{items.length + customRequests.length}</span>
                   </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600">الإجمالي:</span>
