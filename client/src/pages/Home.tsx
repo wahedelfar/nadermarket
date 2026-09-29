@@ -19,6 +19,9 @@ export default function Home() {
   const { data: productsData, isLoading: productsLoading } = trpc.products.list.useQuery();
 
   const featuredProducts = selectFeaturedProducts(productsData ?? []);
+  const repeatableOrder = lastOrder.filter((item) =>
+    productsData?.some((product) => Number(product.id) === item.id),
+  );
 
   const activeProduct = featuredProducts[activeSlide];
 
@@ -224,7 +227,7 @@ export default function Home() {
         )}
       </section>
 
-      {lastOrder.length > 0 && (
+      {repeatableOrder.length > 0 && (
         <section className="mx-auto max-w-7xl px-4 pb-8" aria-labelledby="repeat-order-title">
           <Card className="overflow-hidden border-blue-100 bg-white shadow-md">
             <div className="flex flex-col gap-4 p-5 md:flex-row md:items-center md:justify-between md:p-6" dir="rtl">
@@ -233,14 +236,14 @@ export default function Home() {
                 <h2 id="repeat-order-title" className="mt-1 text-2xl font-black text-gray-800">مشترياتك المعتادة</h2>
                 <p className="mt-1 text-sm text-gray-600">عايز نفس طلبك السابق؟ رجّعه للسلة بضغطة واحدة.</p>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {lastOrder.slice(0, 6).map((item) => (
+                  {repeatableOrder.slice(0, 6).map((item) => (
                     <span key={item.id} className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-800">
                       {item.name}{item.quantity > 1 ? " × " + item.quantity : ""}
                     </span>
                   ))}
-                  {lastOrder.length > 6 && (
+                  {repeatableOrder.length > 6 && (
                     <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
-                      +{lastOrder.length - 6} منتجات
+                      +{repeatableOrder.length - 6} منتجات
                     </span>
                   )}
                 </div>
@@ -249,7 +252,7 @@ export default function Home() {
                 type="button"
                 className="shrink-0 rounded-xl bg-[#123f91] px-6 py-3 font-black text-white shadow-md hover:bg-[#0d3275]"
                 onClick={() => {
-                  lastOrder.forEach((item) => {
+                  repeatableOrder.forEach((item) => {
                     for (let index = 0; index < item.quantity; index += 1) {
                       addToCart(item);
                     }
