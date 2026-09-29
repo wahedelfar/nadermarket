@@ -14,6 +14,7 @@ export default function AdminProducts() {
   const [editingId, setEditingId] = useState<number | null>(null);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [isDailyOffer, setIsDailyOffer] = useState(false);
   const [formData, setFormData] = useState({
     categoryId: 0,
     name: "",
@@ -84,6 +85,8 @@ export default function AdminProducts() {
     e.preventDefault();
     try {
       let image = formData.image;
+      const cleanDescription = formData.description.replace(/\[\s*عرض اليوم\s*\]/g, "").trim();
+      const description = isDailyOffer ? `[عرض اليوم]${cleanDescription ? ` ${cleanDescription}` : ""}` : cleanDescription;
       if (imageFile) {
         setUploadingImage(true);
         const prepared = await prepareImage(imageFile);
@@ -96,10 +99,10 @@ export default function AdminProducts() {
       }
 
       if (editingId) {
-        await updateMutation.mutateAsync({ id: editingId, ...formData, image });
+        await updateMutation.mutateAsync({ id: editingId, ...formData, description, image });
         toast.success("تم تحديث المنتج بنجاح");
       } else {
-        await createMutation.mutateAsync({ ...formData, image });
+        await createMutation.mutateAsync({ ...formData, description, image });
         toast.success("تم إضافة المنتج بنجاح");
       }
       await utils.products.list.invalidate();
@@ -123,6 +126,7 @@ export default function AdminProducts() {
   };
 
   const resetForm = () => {
+    setIsDailyOffer(false);
     setFormData({
       categoryId: 0,
       name: "",
@@ -245,6 +249,11 @@ export default function AdminProducts() {
                   className="w-full border border-gray-300 rounded-lg px-3 py-2"
                 />
               </div>
+
+              <label className="flex cursor-pointer items-center gap-3 rounded-xl border border-orange-200 bg-orange-50 px-4 py-3 text-sm font-bold text-orange-900">
+                <input type="checkbox" checked={isDailyOffer} onChange={(e) => setIsDailyOffer(e.target.checked)} className="h-4 w-4 accent-orange-600" />
+                <span>🔥 إظهار المنتج في «العروض اليوم»</span>
+              </label>
 
               <div>
                 <label className="block text-gray-700 font-semibold mb-2">
