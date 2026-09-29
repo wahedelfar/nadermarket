@@ -7,6 +7,7 @@ import { trpc } from "@/lib/trpc";
 import { useCart } from "@/contexts/CartContext";
 import { getFavoriteIds, toggleFavorite } from "@/lib/favorites";
 import { askSmartAssistant, type SmartProduct } from "@/lib/smartAssistant";
+import { discountedPrice, normalizedDiscountPercent, hasDiscount } from "@/lib/productPricing";
 
 export default function Products() {
   const [location] = useLocation();
@@ -159,9 +160,9 @@ export default function Products() {
                         <Link href={`/product/${product.id}`}>
                           <h3 className="cursor-pointer text-lg font-bold text-gray-800 hover:text-blue-600">{product.name}</h3>
                         </Link>
-                        {product.description && <p className="mt-2 line-clamp-2 text-sm text-gray-600">{product.description}</p>}
+                        {product.description && <p className="mt-2 line-clamp-2 text-sm text-gray-600">{product.description.replace(/\[?(عرض|خصم) اليوم\]?/g, "").trim()}</p>}
                         <div className="mt-4 flex items-center justify-between">
-                          <span className="text-2xl font-black text-blue-800">{Number(product.price).toFixed(2)} ج.م</span>
+                          <div className="text-right">{hasDiscount(product) ? <><span className="block text-xs text-gray-400 line-through">{Number(product.price).toFixed(2)} ج.م</span><span className="text-2xl font-black text-blue-800">{discountedPrice(product).toFixed(2)} ج.م</span><span className="mr-2 inline-flex rounded-full bg-red-50 px-2 py-0.5 text-xs font-black text-red-600">خصم {normalizedDiscountPercent(product)}%</span></> : <span className="text-2xl font-black text-blue-800">{Number(product.price).toFixed(2)} ج.م</span>}</div>
                           <span className="text-sm text-gray-600">المتوفر: {product.stock}</span>
                         </div>
                         <Button onClick={() => addToCart(product)} disabled={product.stock === 0} className="mt-4 w-full bg-blue-600 hover:bg-blue-700">
