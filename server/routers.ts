@@ -162,6 +162,7 @@ export const appRouter = router({
         paymentMethod: z.enum(["cash_on_delivery", "vodafone_cash"]),
         vodafoneWalletNumber: z.string().optional(),
         paymentProofUrl: z.string().url().optional(),
+        notes: z.string().max(2000).optional(),
         items: z.array(z.object({ productId: z.number(), quantity: z.number(), price: z.string() })),
       }))
       .mutation(({ input }) => createOrder(input)),
