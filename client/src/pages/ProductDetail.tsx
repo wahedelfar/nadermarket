@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { ShoppingCart, ArrowRight, Minus, Plus } from "lucide-react";
 import { Link, useRoute } from "wouter";
 import { trpc } from "@/lib/trpc";
+import { discountedPrice, normalizedDiscountPercent, hasDiscount } from "@/lib/productPricing";
 import { useCart } from "@/contexts/CartContext";
 
 export default function ProductDetail() {
@@ -110,9 +111,7 @@ export default function ProductDetail() {
             )}
 
             <div className="mb-6">
-              <span className="text-4xl font-bold text-blue-600">
-                {parseFloat(product.price).toFixed(2)}
-              </span>
+              <span className="text-4xl font-bold text-blue-600">{hasDiscount(product) ? discountedPrice(product).toFixed(2) : parseFloat(product.price).toFixed(2)}</span>{hasDiscount(product) && <><span className="mr-3 text-lg text-gray-400 line-through">{parseFloat(product.price).toFixed(2)} ج.م</span><span className="mr-2 rounded-full bg-red-50 px-2 py-1 text-sm font-black text-red-600">خصم {normalizedDiscountPercent(product)}%</span></>}
               <span className="text-gray-600 mr-2">ج.م</span>
             </div>
 
