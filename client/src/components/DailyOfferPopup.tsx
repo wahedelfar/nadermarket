@@ -6,7 +6,15 @@ import { dailyOffers } from "@/lib/dailyOffers";
 
 type Props = { products: SmartProduct[] };
 
-const SEEN_PREFIX = "nader-market:daily-offer-seen-v1:";
+const SEEN_PREFIX = "nader-market:daily-offer-seen-v2:";
+
+const todayKey = () => {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, "0");
+  const day = String(now.getDate()).padStart(2, "0");
+  return `${SEEN_PREFIX}${year}-${month}-${day}`;
+};
 
 export default function DailyOfferPopup({ products }: Props) {
   const { addToCart } = useCart();
@@ -16,14 +24,14 @@ export default function DailyOfferPopup({ products }: Props) {
 
   useEffect(() => {
     if (!offer || typeof window === "undefined") return;
-    const key = SEEN_PREFIX + offer.id;
+    const key = todayKey();
     if (window.localStorage.getItem(key) === "1") return;
     const timer = window.setTimeout(() => setOpen(true), 900);
     return () => window.clearTimeout(timer);
   }, [offer]);
 
   const close = () => {
-    if (offer) window.localStorage.setItem(SEEN_PREFIX + offer.id, "1");
+    if (offer) window.localStorage.setItem(todayKey(), "1");
     setOpen(false);
   };
 
