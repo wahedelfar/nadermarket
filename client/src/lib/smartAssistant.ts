@@ -168,24 +168,36 @@ function customRequestsFromQuery(q: string, products: SmartProduct[]): CustomAss
 
 const fallback = "فضلاً أضف طلبك من الرئيسية، لا أستطيع الوصول إلى طلبك بهذه الصيغة حاليًا.";
 
-/* Product alternatives are only suggested when a real, cheaper product exists
-   in the same live catalog category as the product being discussed. */
+/* Product alternatives must stay within the same product type, not merely
+   the same broad store category. Example: cheese -> cheese, never milk/yogurt. */
+const semanticProductGroup = (p: SmartProduct) => {
+  const h = hay(p);
+  const priority = ["جبن", "ألبان", "لحوم", "فواكه", "خضروات", "مخبوزات", "مشروبات", "سناكس", "منظفات", "بقالة", "مجمدات"];
+  for (const label of priority) {
+    const terms = groups[label] ?? [];
+    if (terms.some((term) => h.includes(norm(term)))) return label;
+  }
+  return null;
+};
+
 const cheaperAlternative = (ps: SmartProduct[], context: string) => {
   const target = rank(ps, context)[0];
   if (!target) return [];
-  const targetCategory = category(target);
   const targetPrice = price(target.price);
-  if (!targetCategory || targetPrice <= 0) return [];
+  if (targetPrice <= 0) return [];
+
+  const targetGroup = semanticProductGroup(target);
+  const targetCategory = category(target);
 
   return ps
-    .filter((p) =>
-      available(p) &&
-      p.id !== target.id &&
-      price(p.price) > 0 &&
-      price(p.price) < targetPrice &&
-      category(p) === targetCategory
-    )
-    .sort((a, b) => price(b.price) - price(a.price))
+    .filter((p) => {
+      if (!available(p) || p.id === target.id || price(p.price) <= 0 || price(p.price) >= targetPrice) return false;
+      // If the product has a known semantic type, it is the hard boundary.
+      if (targetGroup) return semanticProductGroup(p) === targetGroup;
+      // Only fall back to exact catalog category when no semantic type is detectable.
+      return Boolean(targetCategory) && category(p) === targetCategory;
+    })
+    .sort((a, b) => price(a.price) - price(b.price))
     .slice(0, 4);
 };
 
