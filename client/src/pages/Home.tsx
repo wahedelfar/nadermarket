@@ -302,7 +302,9 @@ export default function Home() {
         )}
       </section>
 
-      <SmartShoppingLists products={assistantProducts} />\n\n      <SmartAssistant products={assistantProducts} />
+      <SmartShoppingLists products={assistantProducts} />
+
+      <SmartAssistant products={assistantProducts} />
 
       {/* Simple Footer */}
       <footer id="contact" className="mt-12 border-t border-blue-900/15 bg-gradient-to-l from-[#073b7a] via-[#0b4f9e] to-[#1266b8] text-white">
