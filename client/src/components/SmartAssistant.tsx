@@ -37,7 +37,7 @@ function welcomeFor(memory: CustomerMemory) {
 }
 
 export default function SmartAssistant({ products }: Props) {
-  const { addToCart, addCustomRequest } = useCart();
+  const { items, addToCart, addCustomRequest, removeFromCart } = useCart();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [awaitingName, setAwaitingName] = useState(false);
@@ -96,6 +96,37 @@ export default function SmartAssistant({ products }: Props) {
     }
 
     const normalized = clean.replace(/[إأآ]/g, "ا").toLowerCase();
+
+    if (/^(ضيفهم|ضيفهم للسله|حطهم|تمام ضيف|ضيف ده|ضيف دي)/.test(normalized)) {
+      const lastAssistant = [...messages].reverse().find((message) => message.role === "assistant" && ((message.products && message.products.length) || (message.customRequests && message.customRequests.length)));
+      if (lastAssistant) {
+        lastAssistant.products?.forEach((product) => addToCart(toCartItem(product)));
+        lastAssistant.customRequests?.forEach((request) => addCustomRequest(request.text, request.quantity));
+        setMessages((current) => [
+          ...current,
+          { role: "user", text: clean },
+          { role: "assistant", text: "تمام 😄 ضفت الاختيارات للسلة، والطلبات الخاصة اتسجلت مع الطلب للإدارة." },
+        ]);
+        setQuery("");
+        return;
+      }
+    }
+
+    if (/^(شيل|احذف|الغى|مش عايز)/.test(normalized)) {
+      const target = normalized.replace(/^(شيل|احذف|الغى|مش عايز)\s*/, "").trim();
+      const item = items.find((cartItem) => target && cartItem.name.toLowerCase().includes(target));
+      if (item) {
+        removeFromCart(item.id);
+        setMessages((current) => [
+          ...current,
+          { role: "user", text: clean },
+          { role: "assistant", text: "حاضر، شلت " + item.name + " من السلة." },
+        ]);
+        setQuery("");
+        return;
+      }
+    }
+
     const lastOrder = getLastOrder().filter((item) => available.some((p) => Number(p.id) === Number(item.id)));
     const weeklyShopping = getWeeklyShopping().filter((item) => available.some((p) => Number(p.id) === Number(item.id)));
 
