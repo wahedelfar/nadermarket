@@ -6,7 +6,7 @@ export type DiscountableProduct = {
 };
 
 function markerDiscount(product: DiscountableProduct) {
-  const match = String(product.description || "").match(/\[خصم\s*:\s*(\d{1,3}(?:\.\d{1,2})?)\]/);
+  const match = String(product.description || "").match(/(?:\[?خصم\s*[:：]?\s*)(\d{1,3}(?:\.\d{1,2})?)\s*%/);
   return match ? Number(match[1]) : 0;
 }
 
