@@ -9,6 +9,7 @@ import { getNextSlideIndex, getPreviousSlideIndex, selectFeaturedProducts, SLIDE
 import { getLastOrder } from "@/lib/repeatOrder";
 import SmartAssistant from "@/components/SmartAssistant";
 import SmartShoppingLists from "@/components/SmartShoppingLists";
+import DailyOffers from "@/components/DailyOffers";
 
 export default function Home() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -301,6 +302,8 @@ export default function Home() {
           </div>
         )}
       </section>
+
+      <DailyOffers products={assistantProducts} />
 
       <SmartShoppingLists products={assistantProducts} />
 
