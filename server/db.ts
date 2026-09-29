@@ -51,6 +51,8 @@ function productFromDb(row: any) {
     image: row.image ?? null,
     stock: Number(row.stock ?? 0),
     isActive: Boolean(row.is_active),
+    dailyOfferEnabled: Boolean(row.daily_offer_enabled),
+    discountPercent: String(row.discount_percent ?? "0"),
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   } : row;
