@@ -6,12 +6,14 @@ import { Link } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { useCart } from "@/contexts/CartContext";
 import { getNextSlideIndex, getPreviousSlideIndex, selectFeaturedProducts, SLIDER_INTERVAL_MS } from "@/lib/featuredProducts";
+import { getLastOrder } from "@/lib/repeatOrder";
 
 export default function Home() {
   const [categories, setCategories] = useState<any[]>([]);
   const [activeSlide, setActiveSlide] = useState(0);
   const [isSliderPaused, setIsSliderPaused] = useState(false);
   const { addToCart, items } = useCart();
+  const [lastOrder, setLastOrder] = useState<any[]>([]);
   const { data: categoriesData, isLoading } = trpc.categories.list.useQuery();
   const { data: productsData, isLoading: productsLoading } = trpc.products.list.useQuery();
 
@@ -22,6 +24,10 @@ export default function Home() {
   useEffect(() => {
     setActiveSlide((current) => featuredProducts.length ? current % featuredProducts.length : 0);
   }, [featuredProducts.length]);
+
+  useEffect(() => {
+    setLastOrder(getLastOrder());
+  }, []);
 
   useEffect(() => {
     if (featuredProducts.length < 2 || isSliderPaused) return;
@@ -217,7 +223,46 @@ export default function Home() {
         )}
       </section>
 
-      {/* Categories Section */}
+      {lastOrder.length > 0 && (
+        <section className="mx-auto max-w-7xl px-4 pb-8" aria-labelledby="repeat-order-title">
+          <Card className="overflow-hidden border-blue-100 bg-white shadow-md">
+            <div className="flex flex-col gap-4 p-5 md:flex-row md:items-center md:justify-between md:p-6" dir="rtl">
+              <div>
+                <p className="text-xs font-bold tracking-wide text-blue-600">توفير وقتك في كل مرة</p>
+                <h2 id="repeat-order-title" className="mt-1 text-2xl font-black text-gray-800">مشترياتك المعتادة</h2>
+                <p className="mt-1 text-sm text-gray-600">عايز نفس طلبك السابق؟ رجّعه للسلة بضغطة واحدة.</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {lastOrder.slice(0, 6).map((item) => (
+                    <span key={item.id} className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-800">
+                      {item.name}{item.quantity > 1 ? " × " + item.quantity : ""}
+                    </span>
+                  ))}
+                  {lastOrder.length > 6 && (
+                    <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
+                      +{lastOrder.length - 6} منتجات
+                    </span>
+                  )}
+                </div>
+              </div>
+              <Button
+                type="button"
+                className="shrink-0 rounded-xl bg-[#123f91] px-6 py-3 font-black text-white shadow-md hover:bg-[#0d3275]"
+                onClick={() => {
+                  lastOrder.forEach((item) => {
+                    for (let index = 0; index < item.quantity; index += 1) {
+                      addToCart(item);
+                    }
+                  });
+                }}
+              >
+                إعادة الطلب
+              </Button>
+            </div>
+          </Card>
+        </section>
+      )}
+
+      {/* Categories Section */
       <section className="max-w-7xl mx-auto px-4 py-12">
         <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">الأقسام</h2>
         {isLoading ? (
