@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { ChevronLeft, ChevronRight, MapPin, Phone, Search, ShoppingCart, Sparkles, Truck, ArrowLeft } from "lucide-react";
+import { MapPin, Phone, Search, ShoppingCart, Truck, ArrowLeft } from "lucide-react";
 import { Link, useLocation } from "wouter";
 import { trpc } from "@/lib/trpc";
 import { useCart } from "@/contexts/CartContext";
-import { getNextSlideIndex, getPreviousSlideIndex, selectFeaturedProducts, SLIDER_INTERVAL_MS } from "@/lib/featuredProducts";
 import { getLastOrder } from "@/lib/repeatOrder";
 import SmartAssistant from "@/components/SmartAssistant";
 import SmartShoppingLists from "@/components/SmartShoppingLists";
@@ -14,8 +13,6 @@ import { dailyOffers } from "@/lib/dailyOffers";
 
 export default function Home() {
   const [categories, setCategories] = useState<any[]>([]);
-  const [activeSlide, setActiveSlide] = useState(0);
-  const [isSliderPaused, setIsSliderPaused] = useState(false);
   const { addToCart, items } = useCart();
   const [, navigate] = useLocation();
   const [searchQuery, setSearchQuery] = useState("");
@@ -27,32 +24,16 @@ export default function Home() {
     ...product,
     categoryName: categoriesData?.find((category) => Number(category.id) === Number(product.categoryId))?.name ?? null,
   }));
-  const featuredProducts = selectFeaturedProducts(productsData ?? []);
   const repeatableOrder = lastOrder.filter((item) =>
     productsData?.some((product) => Number(product.id) === item.id),
   );
 
-  const activeProduct = featuredProducts[activeSlide];
   const dailyOfferProducts = dailyOffers(assistantProducts).slice(0, 4);
-  const showcaseProducts = (productsData ?? []).filter((product) => product.isActive !== false && (product.stock === undefined || product.stock > 0)).slice(0, 4);
-
-  useEffect(() => {
-    setActiveSlide((current) => featuredProducts.length ? current % featuredProducts.length : 0);
-  }, [featuredProducts.length]);
+  const showcaseProducts = assistantProducts.filter((product) => product.isActive !== false && (product.stock === undefined || product.stock > 0)).slice(0, 4);
 
   useEffect(() => {
     setLastOrder(getLastOrder());
   }, []);
-
-  useEffect(() => {
-    if (featuredProducts.length < 2 || isSliderPaused) return;
-
-    const intervalId = window.setInterval(() => {
-      setActiveSlide((current) => getNextSlideIndex(current, featuredProducts.length));
-    }, SLIDER_INTERVAL_MS);
-
-    return () => window.clearInterval(intervalId);
-  }, [featuredProducts.length, isSliderPaused]);
 
   useEffect(() => {
     if (categoriesData) {
