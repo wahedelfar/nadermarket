@@ -20,6 +20,7 @@ const starters = [
   ["جبن", "إيه أنواع الجبن؟"],
   ["منظفات", "عايز منظفات"],
   ["اقتصادي", "عايز حاجة اقتصادية"],
+  ["السلة", "السلة ناقصها إيه؟"],
 ];
 
 type Message = {
@@ -148,6 +149,17 @@ export default function SmartAssistant({ products }: Props) {
       }
     }
 
+    const cartTotal = items.reduce((sum, item) => sum + Number(item.price) * item.quantity, 0);
+    if (/السله|السلة/.test(normalized) && (/اجمالي|إجمالي|كام|بكام/.test(normalized))) {
+      setMessages((current) => [
+        ...current,
+        { role: "user", text: clean },
+        { role: "assistant", text: `إجمالي السلة حاليًا ${cartTotal.toFixed(2)} ج.م، وفيها ${items.reduce((sum, item) => sum + item.quantity, 0)} قطعة.` },
+      ]);
+      setQuery("");
+      return;
+    }
+
     const lastOrder = getLastOrder().filter((item) => available.some((p) => Number(p.id) === Number(item.id)));
     const weeklyShopping = getWeeklyShopping().filter((item) => available.some((p) => Number(p.id) === Number(item.id)));
 
@@ -197,6 +209,7 @@ export default function SmartAssistant({ products }: Props) {
         ...(m.products ?? []).map((p) => p.name),
         ...(m.customRequests ?? []).map((request) => request.text),
       ]),
+      `السلة الحالية: ${items.map((item) => `${item.name} × ${item.quantity}`).join("، ")}`,
     );
     setMessages((current) => [
       ...current,
