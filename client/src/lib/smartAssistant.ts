@@ -237,6 +237,22 @@ export function askSmartAssistant(q: string, products: SmartProduct[], history: 
   const n = people(x);
   const m = x.includes("فطار") ? "فطار" : x.includes("غدا") || x.includes("غداء") ? "غداء" : x.includes("عشا") || x.includes("عشاء") ? "عشاء" : null;
 
+  const wantsMore = x.includes("زود") || x.includes("كمان") || x.includes("تاني") || x.includes("المزيد") || x.includes("غيرهم");
+  const wantsCheapest = x.includes("ارخص") || x.includes("اقتصادي") || x.includes("اوفر") || x.includes("موفر");
+  if ((wantsMore || wantsCheapest || x.includes("بدل")) && context) {
+    const contextual = rank(ps, context);
+    if (contextual.length) {
+      const out = wantsCheapest ? [...contextual].sort((a, b) => price(a.price) - price(b.price)).slice(0, 20) : contextual.slice(0, 20);
+      return {
+        text: wantsCheapest ? "تمام، دي الاختيارات الأرخص من اللي كنا بنتكلم عنه." : "أكيد، زودت لك اختيارات تانية من نفس الكتالوج.",
+        products: out,
+        customRequests,
+        suggestedQuestions: ["الأرخص؟", "بدّلهم", "ضيفهم للسلة", "اقترح حاجة تانية"],
+        intent: wantsCheapest ? "budget" : "search",
+      };
+    }
+  }
+
   if (m) {
     const { out, pool } = meal(ps, m, b, n);
     return {
