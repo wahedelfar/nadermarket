@@ -56,34 +56,34 @@ export default function Home() {
   }, [categoriesData]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#c7e9ff] via-[#e8f6ff] to-[#f8fcff]">
+    <div className="min-h-screen bg-[#eaf8ff]">
       {/* Premium storefront header */}
-      <section className="relative overflow-hidden bg-white shadow-[0_10px_35px_-20px_rgba(15,70,130,0.45)]">
-        <div className="mx-auto max-w-7xl border-x border-blue-100" dir="rtl">
+      <section className="relative overflow-hidden bg-white shadow-[0_10px_35px_-20px_rgba(8,92,180,0.28)]">
+        <div className="mx-auto max-w-7xl border-x border-sky-100" dir="rtl">
           <div className="flex flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6 md:py-5">
             <div className="flex items-center gap-3">
               <img src="/icon.svg" alt="الوحيد ماركت" className="h-14 w-14 object-contain md:h-16 md:w-16" />
               <div className="text-right">
-                <h1 className="text-2xl font-black tracking-tight text-[#123f91] md:text-3xl">الوحيد ماركت</h1>
+                <h1 className="text-2xl font-black tracking-tight text-[#0756b8] md:text-3xl">الوحيد ماركت</h1>
                 <p className="mt-1 flex items-center gap-1 text-sm font-semibold text-slate-600">
-                  <MapPin className="h-4 w-4 text-[#123f91]" aria-hidden="true" />
+                  <MapPin className="h-4 w-4 text-[#0756b8]" aria-hidden="true" />
                   رأس البر - سوق 89
                 </p>
               </div>
             </div>
             <div className="flex w-full gap-2 sm:w-auto">
               <Link href="/products" className="flex-1 sm:flex-none">
-                <Button className="w-full rounded-xl bg-[#123f91] px-5 py-2.5 font-black text-white shadow-md hover:bg-[#0d3275]">تصفح المنتجات</Button>
+                <Button className="w-full rounded-xl bg-gradient-to-l from-[#0756b8] to-[#35bde8] px-5 py-2.5 font-black text-white shadow-md hover:from-[#064a9d] hover:to-[#20acd8]">تصفح المنتجات</Button>
               </Link>
               <a href="#contact" className="flex-1 sm:flex-none">
-                <Button variant="outline" className="w-full rounded-xl border-2 border-[#123f91] bg-white px-5 py-2.5 font-black text-[#123f91] hover:bg-blue-50">
+                <Button variant="outline" className="w-full rounded-xl border-2 border-[#4bbfe9] bg-white px-5 py-2.5 font-black text-[#0756b8] hover:bg-sky-50">
                   <Phone className="ml-2 h-4 w-4" aria-hidden="true" />اتصل بنا
                 </Button>
               </a>
             </div>
           </div>
-          <div className="relative overflow-hidden bg-[#073b7a] p-1 shadow-[0_18px_45px_-28px_rgba(3,59,120,0.9)] sm:p-2">
-            <div className="relative overflow-hidden rounded-xl border border-white/20 bg-[#063b78] shadow-[0_16px_40px_-22px_rgba(0,0,0,0.55)] sm:rounded-2xl">
+          <div className="relative overflow-hidden bg-gradient-to-l from-[#063b82] via-[#0b67bd] to-[#55c9ee] p-1 shadow-[0_18px_45px_-28px_rgba(8,82,160,0.55)] sm:p-2">
+            <div className="relative overflow-hidden rounded-[22px] border border-white/20 bg-gradient-to-l from-[#063b82] via-[#0b67bd] to-[#55c9ee] shadow-[0_16px_40px_-22px_rgba(0,40,100,0.35)] sm:rounded-2xl">
               <img
                 src="/nadermarket-banner.svg"
                 alt="الوحيد ماركت — كل ما تطلبه أكبر متوفر أكتر"
@@ -100,11 +100,11 @@ export default function Home() {
       <Link
         href="/cart"
         aria-label="سلة المشتريات"
-        className="fixed right-4 top-4 z-[70] flex h-14 w-14 items-center justify-center rounded-full border-2 border-white/80 bg-[#063b78] text-white shadow-[0_12px_30px_-8px_rgba(3,37,78,0.75)] backdrop-blur-md transition duration-200 hover:scale-105 hover:bg-[#084b96] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-300 md:right-6 md:top-6"
+        className="fixed right-4 top-4 z-[70] flex h-14 w-14 items-center justify-center rounded-full border-2 border-white/80 bg-gradient-to-l from-[#0756b8] to-[#35bde8] text-white shadow-[0_12px_30px_-8px_rgba(3,37,78,0.75)] backdrop-blur-md transition duration-200 hover:scale-105 hover:bg-[#084b96] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-blue-300 md:right-6 md:top-6"
       >
         <ShoppingCart className="h-6 w-6" />
         {items.reduce((sum, item) => sum + item.quantity, 0) > 0 && (
-          <span className="absolute -left-1 -top-1 inline-flex min-h-6 min-w-6 items-center justify-center rounded-full border-2 border-white bg-[#4aa8ef] px-1.5 text-[11px] font-black text-[#063b78] shadow-md">
+          <span className="absolute -left-1 -top-1 inline-flex min-h-6 min-w-6 items-center justify-center rounded-full border-2 border-white bg-sky-200 px-1.5 text-[11px] font-black text-blue-950 shadow-md">
             {items.reduce((sum, item) => sum + item.quantity, 0)}
           </span>
         )}
@@ -113,19 +113,19 @@ export default function Home() {
       {/* Hero Section */}
       
       {/* Features Section - Compact */}
-      <section className="max-w-7xl mx-auto px-4 py-4">
-        <Card className="p-4 bg-white/90 border border-blue-100 shadow-sm">
+      <section className="mx-auto max-w-7xl px-4 py-5">
+        <Card className="rounded-2xl border-sky-100 bg-white p-4 shadow-sm">
           <div className="grid grid-cols-3 gap-4 text-center">
             <div className="flex flex-col items-center">
-              <Truck className="w-6 h-6 text-blue-600 mb-1" />
-              <p className="text-xs font-semibold text-gray-800">توصيل سريع</p>
+              <Truck className="w-6 h-6 text-[#0756b8] mb-1" />
+              <p className="text-xs font-semibold text-slate-800">توصيل سريع</p>
             </div>
-            <div className="flex flex-col items-center border-l border-r border-blue-300">
-              <ShoppingCart className="w-6 h-6 text-blue-600 mb-1" />
+            <div className="flex flex-col items-center border-l border-r border-sky-100">
+              <ShoppingCart className="w-6 h-6 text-[#0876c9] mb-1" />
               <p className="text-xs font-semibold text-gray-800">منتجات متنوعة</p>
             </div>
             <div className="flex flex-col items-center">
-              <Phone className="w-6 h-6 text-blue-600 mb-1" />
+              <Phone className="w-6 h-6 text-[#0876c9] mb-1" />
               <p className="text-xs font-semibold text-gray-800">خدمة العملاء</p>
             </div>
           </div>
@@ -136,19 +136,19 @@ export default function Home() {
       <section className="max-w-7xl mx-auto px-4 pb-8" aria-labelledby="latest-products-title">
         <div className="mb-3 flex items-center justify-between gap-3">
           <div>
-            <p className="text-xs font-bold tracking-wide text-blue-600">اختيارات الوحيد ماركت</p>
+            <p className="text-xs font-bold tracking-wide text-[#0876c9]">اختيارات الوحيد ماركت</p>
             <h2 id="latest-products-title" className="text-2xl font-bold text-gray-800">أحدث المنتجات الطازة</h2>
           </div>
-          <Link href="/products" className="text-sm font-semibold text-blue-600 hover:text-blue-800">
+          <Link href="/products" className="text-sm font-semibold text-[#0876c9] hover:text-[#0756b8]">
             عرض الكل
           </Link>
         </div>
 
         {productsLoading ? (
-          <div className="h-56 animate-pulse rounded-2xl bg-blue-100" aria-label="جاري تحميل المنتجات" />
+          <div className="h-56 animate-pulse rounded-2xl bg-sky-100" aria-label="جاري تحميل المنتجات" />
         ) : activeProduct ? (
           <Card
-              className="group relative overflow-hidden border-blue-100 bg-white text-gray-800 shadow-lg motion-safe:transition-[transform,box-shadow] motion-safe:duration-300 motion-safe:ease-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-blue-900/25"
+              className="group relative overflow-hidden border-sky-100 bg-white text-gray-800 shadow-lg motion-safe:transition-[transform,box-shadow] motion-safe:duration-300 motion-safe:ease-out hover:-translate-y-1 hover:shadow-2xl hover:shadow-blue-900/15"
               onMouseEnter={() => setIsSliderPaused(true)}
               onMouseLeave={() => setIsSliderPaused(false)}
               onFocus={() => setIsSliderPaused(true)}
@@ -157,7 +157,7 @@ export default function Home() {
             >
             <div className="grid min-h-56 md:grid-cols-[0.9fr_1.1fr]">
               <div className="order-2 flex flex-col justify-center p-5 text-right md:order-1 md:p-7">
-                <div className="mb-3 flex items-center gap-2 text-blue-600">
+                <div className="mb-3 flex items-center gap-2 text-[#0876c9]">
                   <Sparkles className="h-4 w-4" aria-hidden="true" />
                   <span className="text-sm font-semibold">طازة ومختارة بعناية</span>
                 </div>
@@ -165,25 +165,25 @@ export default function Home() {
                 <p className="mb-4 line-clamp-2 min-h-10 text-sm text-gray-600">
                   {activeProduct.description || "جودة ممتازة وسعر مناسب من الوحيد ماركت"}
                 </p>
-                <div className="mb-5 text-2xl font-extrabold text-blue-700">
+                <div className="mb-5 text-2xl font-extrabold text-[#0756b8]">
                   {Number(activeProduct.price).toFixed(2)} <span className="text-base font-medium">ج.م</span>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                   <button
                     type="button"
                     onClick={() => addToCart(activeProduct)}
-                    className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-bold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:bg-blue-700 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 active:scale-[0.97]"
+                    className="rounded-lg bg-gradient-to-l from-[#0756b8] to-[#35bde8] px-4 py-2 text-sm font-bold text-white shadow-sm transition duration-200 hover:-translate-y-0.5 hover:from-[#064a9d] hover:to-[#20acd8] hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-300 active:scale-[0.97]"
                   >
                     أضف للسلة
                   </button>
                   <Link href={`/product/${activeProduct.id}`}>
-                    <Button variant="outline" className="border-blue-200 bg-white text-blue-700 transition duration-200 hover:-translate-y-0.5 hover:bg-blue-50 hover:text-blue-800 hover:shadow-md focus-visible:ring-2 focus-visible:ring-blue-200 active:scale-[0.97]">
+                    <Button variant="outline" className="border-sky-200 bg-white text-[#0756b8] transition duration-200 hover:-translate-y-0.5 hover:bg-sky-50 hover:text-[#0756b8] hover:shadow-md focus-visible:ring-2 focus-visible:ring-sky-200 active:scale-[0.97]">
                       عرض المنتج
                     </Button>
                   </Link>
                 </div>
               </div>
-              <div className="order-1 min-h-48 overflow-hidden bg-blue-50 md:order-2">
+              <div className="order-1 min-h-48 overflow-hidden bg-sky-50 md:order-2">
                 <div className="relative h-full min-h-48 md:min-h-56">
                   <img
                     src={activeProduct.image || "/icon.svg"}
@@ -235,15 +235,15 @@ export default function Home() {
 
       {repeatableOrder.length > 0 && (
         <section className="mx-auto max-w-7xl px-4 pb-8" aria-labelledby="repeat-order-title">
-          <Card className="overflow-hidden border-blue-100 bg-white shadow-md">
+          <Card className="overflow-hidden border-sky-100 bg-white shadow-md">
             <div className="flex flex-col gap-4 p-5 md:flex-row md:items-center md:justify-between md:p-6" dir="rtl">
               <div>
-                <p className="text-xs font-bold tracking-wide text-blue-600">توفير وقتك في كل مرة</p>
+                <p className="text-xs font-bold tracking-wide text-[#0876c9]">توفير وقتك في كل مرة</p>
                 <h2 id="repeat-order-title" className="mt-1 text-2xl font-black text-gray-800">مشترياتك المعتادة</h2>
                 <p className="mt-1 text-sm text-gray-600">عايز نفس طلبك السابق؟ رجّعه للسلة بضغطة واحدة.</p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {repeatableOrder.slice(0, 6).map((item) => (
-                    <span key={item.id} className="rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-800">
+                    <span key={item.id} className="rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold text-[#0756b8]">
                       {item.name}{item.quantity > 1 ? " × " + item.quantity : ""}
                     </span>
                   ))}
@@ -273,7 +273,7 @@ export default function Home() {
       )}
 
       {/* Categories Section */}
-      <section className="max-w-7xl mx-auto px-4 py-12">
+      <section className="mx-auto max-w-7xl px-4 py-10">
         <h2 className="text-3xl font-bold mb-8 text-center text-gray-800">الأقسام</h2>
         {isLoading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -285,15 +285,15 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {categories.map((category) => (
               <Link key={category.id} href={`/products?category=${category.id}`}>
-                <Card className="cursor-pointer hover:shadow-lg transition-shadow overflow-hidden">
+                <Card className="cursor-pointer overflow-hidden rounded-2xl border-slate-200 shadow-sm transition duration-300 hover:-translate-y-1 hover:shadow-xl">
                   {category.image && (
                     <img
                       src={category.image}
                       alt={category.name}
-                      className="w-full h-32 object-cover"
+                      className="h-32 w-full object-contain bg-sky-50/70 p-3"
                     />
                   )}
-                  <div className="p-4">
+                  <div className="p-4 text-center">
                     <h3 className="font-bold text-lg text-gray-800">{category.name}</h3>
                   </div>
                 </Card>
@@ -309,19 +309,19 @@ export default function Home() {
       <DailyOfferPopup products={assistantProducts} />
 
       {/* Simple Footer */}
-      <footer id="contact" className="mt-12 border-t border-blue-900/15 bg-gradient-to-l from-[#073b7a] via-[#0b4f9e] to-[#1266b8] text-white">
+      <footer id="contact" className="mt-12 border-t border-blue-900/15 bg-gradient-to-l from-[#063b82] via-[#0b67bd] to-[#55c9ee] text-white">
         <div className="mx-auto max-w-7xl px-4 py-7">
           <div className="flex flex-col items-center justify-between gap-5 text-center md:flex-row md:text-right">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/20 bg-[#0a478f] p-2 shadow-md">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-white/20 bg-[#0756b8] p-2 shadow-md">
                 <img src="/icon.svg" alt="" className="h-full w-full object-contain" />
               </div>
               <div>
                 <h3 className="font-black">الوحيد ماركت</h3>
-                <p className="text-xs text-blue-100">كل احتياجاتك في مكان واحد</p>
+                <p className="text-xs text-sky-100">كل احتياجاتك في مكان واحد</p>
               </div>
             </div>
-            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-semibold text-blue-100">
+            <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-semibold text-sky-100">
               <Link href="/" className="transition hover:text-white">الرئيسية</Link>
               <Link href="/products" className="transition hover:text-white">المنتجات</Link>
               <Link href="/cart" className="transition hover:text-white">السلة</Link>
@@ -330,7 +330,7 @@ export default function Home() {
               <span className="inline-flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" /> رأس البر - سوق 89</span>
             </div>
           </div>
-          <div className="mt-5 border-t border-white/15 pt-4 text-center text-[11px] text-blue-200">
+          <div className="mt-5 border-t border-white/15 pt-4 text-center text-[11px] text-sky-200">
             © <Link href="/admin" aria-label="الدخول إلى لوحة الإدارة" data-admin-entry="footer-year" className="font-bold text-white">2026</Link> الوحيد ماركت · جميع الحقوق محفوظة
           </div>
         </div>
