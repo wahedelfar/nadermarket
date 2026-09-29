@@ -113,12 +113,25 @@ const people = (q: string) => {
 };
 
 const rank = (ps: SmartProduct[], q: string) => {
-  const stop = ["عايز", "عاوزه", "عاوز", "عندي", "عندكم", "ممكن", "ايه", "من", "في", "لو", "طب", "حاجه", "حاجة", "طلب"];
-  const ts = norm(q).split(" ").filter((x) => x.length > 1 && !stop.includes(x));
+  const stop = new Set(["عايز", "عاوزه", "عاوز", "نفسي", "محتاج", "محتاجه", "عندي", "عندكم", "ممكن", "ايه", "من", "في", "لو", "طب", "حاجه", "حاجة", "طلب", "هات", "جيب", "وريني", "مناسب"]);
+  const tokens = norm(q).split(" ").filter((x) => x.length > 1 && !stop.has(x));
   return ps.filter(available)
-    .map((p) => ({ p, s: ts.reduce((n, t) => n + (name(p).includes(t) ? 7 : hay(p).includes(t) ? 3 : 0), 0) }))
-    .filter((x) => x.s > 0)
-    .sort((a, b) => b.s - a.s || price(a.p.price) - price(b.p.price))
+    .map((p) => {
+      const pn = name(p);
+      const ph = hay(p);
+      const pc = category(p);
+      let score = 0;
+      for (const token of tokens) {
+        if (pn === token) score += 18;
+        else if (pn.includes(token)) score += token.length >= 4 ? 10 : 6;
+        else if (pc.includes(token)) score += 8;
+        else if (ph.includes(token)) score += 3;
+      }
+      if (pn.length > 2 && norm(q).includes(pn)) score += 12;
+      return { p, score };
+    })
+    .filter((x) => x.score > 0)
+    .sort((a, b) => b.score - a.score || price(a.p.price) - price(b.p.price))
     .slice(0, 20)
     .map((x) => x.p);
 };
