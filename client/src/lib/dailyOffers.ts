@@ -1,6 +1,6 @@
 import type { SmartProduct } from "@/lib/smartAssistant";
 
-const OFFER_MARKERS = ["عرض اليوم", "عروض اليوم", "عرض", "خصم", "تخفيض"];
+const OFFER_MARKERS = ["[عرض اليوم]", "عرض اليوم", "[خصم اليوم]", "خصم اليوم"];
 
 export function getDailyOffers(products: SmartProduct[]) {
   return products
