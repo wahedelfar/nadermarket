@@ -3,9 +3,22 @@ import { Card } from "@/components/ui/card";
 import { Trash2, ArrowRight, Plus, Minus } from "lucide-react";
 import { Link } from "wouter";
 import { useCart } from "@/contexts/CartContext";
+import { trpc } from "@/lib/trpc";
+import SmartCartInsights from "@/components/SmartCartInsights";
+import type { SmartProduct } from "@/lib/smartAssistant";
+import { useMemo } from "react";
 
 export default function Cart() {
   const { items, removeFromCart, updateQuantity, clearCart, total, customRequests, removeCustomRequest } = useCart();
+  const { data: productsData } = trpc.products.list.useQuery();
+  const { data: categoriesData } = trpc.categories.list.useQuery();
+  const smartProducts = useMemo(
+    () => (productsData ?? []).map((product) => ({
+      ...product,
+      categoryName: categoriesData?.find((category) => Number(category.id) === Number(product.categoryId))?.name ?? null,
+    })) as SmartProduct[],
+    [productsData, categoriesData],
+  );
 
   return (
     <div className="min-h-screen bg-[#e8f6ff]">
@@ -26,6 +39,10 @@ export default function Cart() {
 
       <div className="max-w-7xl mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8 text-gray-800">سلة المشتريات</h1>
+
+        <div className="mb-8">
+          <SmartCartInsights items={items} products={smartProducts} />
+        </div>
 
         {items.length === 0 && customRequests.length === 0 ? (
           <Card className="p-12 text-center">
