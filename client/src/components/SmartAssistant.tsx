@@ -3,10 +3,14 @@ import { Bot, Plus, Send, ShoppingCart, Sparkles, X } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { askSmartAssistant, toCartItem, type SmartProduct } from "@/lib/smartAssistant";
 import { getCustomerMemory, saveCustomerName, touchCustomerVisit, type CustomerMemory } from "@/lib/customerMemory";
+import { getLastOrder } from "@/lib/repeatOrder";
+import { getWeeklyShopping } from "@/lib/shoppingMemory";
 
 type Props = { products: SmartProduct[] };
 
 const starters = [
+  ["نفس الطلب", "نفس طلبك المعتاد"],
+  ["قائمة الأسبوع", "وريني قائمة الأسبوع"],
   ["فطار", "اقترحلي فطار"],
   ["ألبان", "إيه منتجات الألبان؟"],
   ["جبن", "إيه أنواع الجبن؟"],
@@ -81,6 +85,48 @@ export default function SmartAssistant({ products }: Props) {
           role: "assistant",
           text: `تشرفت بيك يا ${saved.name} 😄 نبدأ بإيه؟ فطار، غدا، ولا هنطلب حاجة جديدة النهارده؟`,
         },
+      ]);
+      setQuery("");
+      return;
+    }
+
+    const normalized = clean.replace(/[إأآ]/g, "ا").toLowerCase();
+    const lastOrder = getLastOrder().filter((item) => available.some((p) => Number(p.id) === Number(item.id)));
+    const weeklyShopping = getWeeklyShopping().filter((item) => available.some((p) => Number(p.id) === Number(item.id)));
+
+    if (/نفس.*(طلب|الطلب)|الطلب.*المعتاد/.test(normalized) && lastOrder.length > 0) {
+      setMessages((current) => [
+        ...current,
+        { role: "user", text: clean },
+        {
+          role: "assistant",
+          text: `تمام يا ${memory?.name ?? ""} 😄 لقيت آخر طلب ليك. تحب أرجّعه للسلة؟`,
+          products: lastOrder.map((item) => available.find((p) => Number(p.id) === Number(item.id))!).filter(Boolean),
+        },
+      ]);
+      setQuery("");
+      return;
+    }
+
+    if (/قائمة.*(الأسبوع|البيت)|طلبات.*الأسبوع/.test(normalized) && weeklyShopping.length > 0) {
+      setMessages((current) => [
+        ...current,
+        { role: "user", text: clean },
+        {
+          role: "assistant",
+          text: `حاضر يا ${memory?.name ?? ""} 😄 دي الحاجات اللي طلبتها خلال الأسبوع. نضيفهم للسلة؟`,
+          products: weeklyShopping.map((item) => available.find((p) => Number(p.id) === Number(item.id))!).filter(Boolean),
+        },
+      ]);
+      setQuery("");
+      return;
+    }
+
+    if ((/نفس.*(طلب|الطلب)|الطلب.*المعتاد/.test(normalized) || /قائمة.*(الأسبوع|البيت)|طلبات.*الأسبوع/.test(normalized)) && !lastOrder.length && !weeklyShopping.length) {
+      setMessages((current) => [
+        ...current,
+        { role: "user", text: clean },
+        { role: "assistant", text: "لسه مفيش قائمة محفوظة عندي. لما تطلب من الوحيد ماركت هقدر أرجعلك مشترياتك بعد كده." },
       ]);
       setQuery("");
       return;
