@@ -36,6 +36,11 @@ export default function Home() {
   }, [featuredProducts.length, isSliderPaused]);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    setLastOrder(getLastOrder());
+  }, []);
+
+  useEffect(() => {
     if (categoriesData) {
       setCategories(categoriesData);
     }
