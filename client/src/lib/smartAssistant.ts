@@ -126,10 +126,54 @@ const categoryProducts = (ps: SmartProduct[], label: string, terms: string[]) =>
   return ps.filter((p) => available(p) && hay(p).includes(norm(label))).sort((a, b) => price(a.price) - price(b.price)).slice(0, 20);
 };
 
+const catalogCategoryIndex = (ps: SmartProduct[]) => {
+  const seen = new Set<string>();
+  return ps
+    .filter(available)
+    .map((p) => category(p))
+    .filter((value) => {
+      if (!value || seen.has(value)) return false;
+      seen.add(value);
+      return true;
+    });
+};
+
+const productsForCatalogCategory = (ps: SmartProduct[], categoryName: string) => {
+  const target = norm(categoryName);
+  return ps
+    .filter((p) => available(p) && category(p) === target)
+    .sort((a, b) => price(a.price) - price(b.price))
+    .slice(0, 30);
+};
+
+const findCatalogCategory = (ps: SmartProduct[], query: string) => {
+  const x = norm(query);
+  return catalogCategoryIndex(ps)
+    .filter((categoryName) => {
+      const words = categoryName.split(" ").filter((word) => word.length > 1);
+      return x.includes(categoryName) || words.some((word) => x.includes(word));
+    })
+    .sort((a, b) => b.length - a.length)[0] ?? null;
+};
+
 const meal = (ps: SmartProduct[], m: "فطار" | "غداء" | "عشاء", b: number | null, n: number | null) => {
   const excluded = exclusions[m];
   const mult = n && n > 2 ? Math.min(2, n / 2) : 1;
-  const pool = ps.filter((p) => available(p) && has(p, meals[m]) && !excluded.some((t) => name(p).includes(norm(t)))).sort((a, b) => price(a.price) - price(b.price));
+  const categoryHints =
+    m === "فطار" ? ["مخبوز", "ألبان", "جبن", "بقاله"] :
+    m === "غداء" ? ["لحوم", "دواجن", "بقاله", "خضروات", "مجمدات"] :
+    ["مخبوز", "ألبان", "جبن", "سناكس", "بقاله"];
+  const pool = ps
+    .filter((p) =>
+      available(p) &&
+      !excluded.some((t) => name(p).includes(norm(t))) &&
+      (has(p, meals[m]) || categoryHints.some((hint) => category(p).includes(norm(hint))))
+    )
+    .sort((a, b) => {
+      const aScore = (has(a, meals[m]) ? 4 : 0) + categoryHints.filter((hint) => category(a).includes(norm(hint))).length;
+      const bScore = (has(b, meals[m]) ? 4 : 0) + categoryHints.filter((hint) => category(b).includes(norm(hint))).length;
+      return bScore - aScore || price(a.price) - price(b.price);
+    });
   const out: SmartProduct[] = [];
   let total = 0;
   for (const p of pool) {
@@ -187,6 +231,20 @@ export function askSmartAssistant(q: string, products: SmartProduct[], history: 
       customRequests,
       suggestedQuestions: ["إيه الأرخص؟", "بدّل الاختيارات", "زود اختيارات", "إضافة الكل للسلة"],
       intent: b ? "budget" : "meal",
+    };
+  }
+
+  const catalogCategory = findCatalogCategory(ps, x);
+  if (catalogCategory && !m) {
+    const out = productsForCatalogCategory(ps, catalogCategory);
+    return {
+      text: out.length
+        ? "أيوه، دي المنتجات المتاحة حاليًا في قسم " + catalogCategory + "."
+        : fallback,
+      products: out,
+      customRequests,
+      suggestedQuestions: ["الأرخص؟", "ضيف الكل للسلة", "عندكم أنواع تانية؟"],
+      intent: "category",
     };
   }
 
