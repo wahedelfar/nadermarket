@@ -226,12 +226,12 @@ export default function Home() {
               <div className="text-right" dir="rtl">
                 <p className="text-xs font-bold tracking-wide text-blue-600">مشترياتك المعتادة</p>
                 <h2 id="repeat-order-title" className="mt-1 text-2xl font-black text-gray-800">عايز نفس طلبك السابق؟</h2>
-                <p className="mt-1 text-sm text-gray-600">رجّع المنتجات المتاحة للسلة بضغطة واحدة.</p>
+                <p className="mt-1 text-sm text-gray-600">رجّع المنتجات المتاحة حاليًا للسلة بضغطة واحدة.</p>
               </div>
               <Button
                 type="button"
                 className="rounded-xl bg-[#123f91] px-6 py-3 font-black text-white hover:bg-[#0d3275]"
-                onClick={() => lastOrder.forEach((item) => addToCart(item))}
+                onClick={() => lastOrder.filter((item) => (productsData ?? []).some((product: any) => Number(product.id) === Number(item.id))).forEach((item) => addToCart(item))}\n                disabled={!productsData}
               >
                 إعادة الطلب
               </Button>
