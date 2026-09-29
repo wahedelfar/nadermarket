@@ -395,7 +395,7 @@ export default function AdminProducts() {
                                 image: product.image || "",
                                 stock: product.stock,
                                 showDailyOffer: Boolean(product.dailyOfferEnabled) || String(product.description || "").includes("[عرض اليوم]") || String(product.description || "").includes("عرض اليوم"),
-                                discountPercent: String(product.discountPercent ?? "0"),
+                                discountPercent: String(product.discountPercent && Number(product.discountPercent) > 0 ? product.discountPercent : (String(product.description || "").match(/(?:\[?خصم\s*[:：]?\s*)(\d{1,3}(?:\.\d{1,2})?)\s*%/)?.[1] ?? "0")),
                               });
                               setImageFile(null);
                               setEditingId(product.id);
