@@ -44,7 +44,8 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/products" component={Products} />\n      <Route path="/favorites" component={Favorites} />
+      <Route path="/products" component={Products} />
+      <Route path="/favorites" component={Favorites} />
       <Route path="/product/:id" component={ProductDetail} />
       <Route path="/cart" component={Cart} />
       <Route path="/checkout" component={Checkout} />
