@@ -3,7 +3,7 @@ import { ListPlus, ShoppingCart } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { Button } from "@/components/ui/button";
 import type { SmartProduct } from "@/lib/smartAssistant";
-import { availableForShoppingList, buildShoppingList } from "@/lib/shoppingLists";
+import { buildShoppingList } from "@/lib/shoppingLists";
 
 type Props = { products: SmartProduct[] };
 
