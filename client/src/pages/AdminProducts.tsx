@@ -124,7 +124,11 @@ export default function AdminProducts() {
       await utils.products.list.invalidate();
       toast.success("تم حذف المنتج بنجاح");
     } catch (error: any) {
-      toast.error(error.message || "حدث خطأ");
+      const message =
+        error?.message && error.message !== "[object Object]"
+          ? error.message
+          : "لا يمكن حذف المنتج لأنه مرتبط بطلبات سابقة. يمكنك إيقاف ظهوره من المتجر بدلًا من حذفه.";
+      toast.error(message);
     }
   };
 
