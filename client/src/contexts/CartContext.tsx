@@ -3,10 +3,6 @@ import { CART_STORAGE_KEY, parseStoredCart, type CartItem } from "@/lib/cartStor
 import { addCustomRequest as saveCustomRequest, clearCustomRequests, getCustomRequests, removeCustomRequest as deleteCustomRequest, type CustomRequest } from "@/lib/customRequests";
 import { discountedPrice } from "@/lib/productPricing";
 
-const DELIVERY_FEE = 30;
-const FREE_SHIPPING_THRESHOLD = 500;
-const getShippingFee = (subtotal: number) => subtotal > FREE_SHIPPING_THRESHOLD ? 0 : DELIVERY_FEE;
-
 export type { CartItem } from "@/lib/cartStorage";
 
 interface CartContextType {
@@ -16,8 +12,6 @@ interface CartContextType {
   updateQuantity: (productId: number, quantity: number) => void;
   clearCart: () => void;
   total: number;
-  shipping: number;
-  grandTotal: number;
   customRequests: CustomRequest[];
   addCustomRequest: (text: string, quantity?: number) => void;
   removeCustomRequest: (id: string) => void;
@@ -110,12 +104,10 @@ export function CartProvider({ children }: { children: ReactNode }) {
     (sum, item) => sum + parseFloat(item.price) * item.quantity,
     0,
   );
-  const shipping = getShippingFee(total);
-  const grandTotal = total + shipping;
 
   return (
     <CartContext.Provider
-      value={{ items, addToCart, removeFromCart, updateQuantity, clearCart, total, shipping, grandTotal, customRequests, addCustomRequest, removeCustomRequest }}
+      value={{ items, addToCart, removeFromCart, updateQuantity, clearCart, total, customRequests, addCustomRequest, removeCustomRequest }}
     >
       {children}
     </CartContext.Provider>
