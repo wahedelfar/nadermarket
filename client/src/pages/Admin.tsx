@@ -18,6 +18,8 @@ export default function Admin() {
   const loginMutation = trpc.admin.login.useMutation();
   const logoutMutation = trpc.admin.logout.useMutation();
   const utils = trpc.useUtils();
+  const isAuthenticated = localAuthenticated || adminSession.data?.authenticated === true;
+
   const { data: ordersData = [] } = trpc.orders.list.useQuery(undefined, {
     enabled: isAuthenticated,
     refetchInterval: 10000,
@@ -28,7 +30,6 @@ export default function Admin() {
   const todaySales = todayOrders.reduce((sum, order) => sum + Number(order.totalAmount || 0), 0);
   const todayDelivered = todayOrders.filter((order) => order.status === "delivered").length;
   const todayNotDelivered = todayOrders.filter((order) => order.status !== "delivered").length;
-  const isAuthenticated = localAuthenticated || adminSession.data?.authenticated === true;
 
   const handleLoginSubmit = (e: React.FormEvent) => {
     e.preventDefault();
