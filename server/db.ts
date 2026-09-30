@@ -79,7 +79,7 @@ function orderFromDb(row: any) {
 export async function getStoreSettings() {
   const rows = await api({ action: "store.settings" });
   const row = Array.isArray(rows) ? rows[0] : rows;
-  return { storeName: row?.store_name ?? "الوحيد ماركت", vodafoneCashNumber: row?.vodafone_cash_number ?? "01012345678" };
+  return { storeName: row?.store_name ?? "الوحيد ماركت", vodafoneCashNumber: row?.vodafone_cash_number ?? "01063537686" };
 }
 
 export async function updateStoreSettings(input: { vodafoneCashNumber: string }) {
