@@ -25,7 +25,12 @@ async function api({ action, body = {}, admin = false }: ApiOptions) {
 
   const data = await response.json().catch(() => null);
   if (!response.ok) {
-    throw new Error(data?.error || `Supabase API error (${response.status})`);
+    const apiError = data?.error;
+    const message =
+      typeof apiError === "string"
+        ? apiError
+        : apiError?.message || apiError?.details || apiError?.hint ||`Supabase API error (${response.status})`;
+    throw new Error(String(message));
   }
   return data;
 }
