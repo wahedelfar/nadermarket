@@ -29,33 +29,42 @@ const groups: Record<string, string[]> = {
   جبن: ["جبنه", "جبن", "شيدر", "رومي", "فيتا", "موتزاريلا", "قريش", "مثلثات"],
   منظفات: ["منظف", "منظفات", "مسحوق", "غسيل", "كلور", "مطهر", "صابون", "معطر", "ملمع"],
   مشروبات: ["عصير", "مياه", "ماء", "مشروب", "بيبسي", "كوكا", "شاي", "قهوه", "نسكافيه"],
-  سناكس: ["شيبسي", "بسكويت", "ويفر", "شوكولاته", "سناك", "مقرمشات"],
+  سناكس: ["شيبسي", "بسكويت", "ويفر", "سناك", "مقرمشات"],
+  شيكولاته: ["شوكولاته", "شيكولاتة", "شوكولاتة", "كاكاو", "بونبون"],
   فواكه: ["فواكه", "فاكهه", "تفاح", "موز", "برتقال", "مانجا", "عنب"],
-  لحوم: ["لحوم", "لحمه", "لحم", "فراخ", "دجاج", "صدور", "ضأن", "بقري", "كفته", "سجق", "كبدة"],
   خضروات: ["خضار", "خضروات", "طماطم", "خيار", "بطاطس", "بصل", "ثوم"],
-  بقالة: ["ارز", "سكر", "مكرونه", "زيت", "دقيق", "صلصه", "تونه", "فول", "عدس", "فاصوليا", "لوبيا"],
+  حبوب: ["حبوب", "ارز", "أرز", "شوفان", "ذرة", "ذره", "قمح", "عدس"],
+  معلبات: ["معلبات", "تونه", "تونة", "فول", "صلصه", "صلصة"],
+  بقالة: ["سكر", "مكرونه", "زيت", "دقيق"],
   مخبوزات: ["عيش", "خبز", "توست", "فينو", "مخبوزات", "مخبوز"],
   مجمدات: ["مجمد", "مجمدات", "فروزن", "خضار مجمد", "فراخ مجمده"],
+  "منظفات ومبيدات": ["منظفات", "منظف", "مبيدات", "مبيد", "حشرات", "حشره", "كلور", "مطهر", "صابون", "مسحوق", "معطر", "ملمع"],
 };
 
 const categoryAliases: Record<string, string[]> = {
-  فواكه: ["فواكه", "فاكهه"], لحوم: ["لحوم", "لحمه", "لحم"], خضروات: ["خضروات", "خضار"],
-  ألبان: ["ألبان", "لبان", "البان"], بقالة: ["بقاله", "بقالة"], مجمدات: ["مجمدات", "مجمد"], مخبوزات: ["مخبوزات", "مخبوز"],
+  فواكه: ["فواكه", "فاكهه"],
+  خضروات: ["خضروات", "خضار"],
+  "الألبان والجبن": ["ألبان", "البان", "لبن", "جبن", "جبنة", "جبنه"],
+  معلبات: ["معلبات", "معلب"],
+  حبوب: ["حبوب", "أرز", "ارز"],
+  مجمدات: ["مجمدات", "مجمد", "فروزن"],
+  "شيكولاته بأنواعها": ["شيكولاته", "شيكولاتة", "شوكولاته", "شوكولاتة", "كاكاو"],
+  "منظفات ومبيدات": ["منظفات", "منظف", "مبيدات", "مبيد", "حشرات", "مبيد حشري"],
 };
 
 const meals: Record<"فطار" | "غداء" | "عشاء", string[]> = {
-  فطار: ["عيش", "خبز", "توست", "مربى", "مربي", "حلاوه", "جبنه", "جبن", "لبن", "حليب", "بيض", "فول", "عسل", "زعتر", "شاي", "قهوه", "زبادي"],
-  غداء: ["ارز", "عدس", "عيش", "خبز", "تونه", "فاصوليا", "لوبيا", "فراخ", "دجاج", "صدور", "لحمه", "لحم", "رنجه", "بطاطس", "مكرونه"],
-  عشاء: ["عيش", "خبز", "توست", "مربى", "مربي", "حلاوه", "جبنه", "جبن", "لبن", "حليب", "بيض", "فول", "تونه", "رنجه", "زبادي", "عسل", "شاي"],
+  فطار: ["عيش", "خبز", "توست", "مربى", "مربي", "حلاوه", "جبنه", "جبن", "لبن", "حليب", "بيض", "عسل", "زعتر", "شاي", "قهوه", "زبادي", "شوكولاته"],
+  غداء: ["ارز", "عدس", "عيش", "خبز", "تونه", "فول", "رنجه", "بطاطس", "مكرونه", "خضار", "مجمد"],
+  عشاء: ["عيش", "خبز", "توست", "مربى", "مربي", "حلاوه", "جبنه", "جبن", "لبن", "حليب", "بيض", "تونه", "رنجه", "زبادي", "عسل", "شاي", "شوكولاته"],
 };
 
 const exclusions: Record<"فطار" | "غداء" | "عشاء", string[]> = {
-  فطار: ["مسحوق", "منظف", "كلور", "صابون", "ارز", "مكرونه", "زيت", "صلصه", "دقيق", "فاصوليا", "لوبيا"],
-  غداء: ["مسحوق", "منظف", "كلور", "صابون", "معطر"],
-  عشاء: ["مسحوق", "منظف", "كلور", "صابون", "ارز", "مكرونه", "زيت", "صلصه", "دقيق"],
+  فطار: ["مسحوق", "منظف", "كلور", "صابون", "مبيد", "مبيدات", "منظفات", "ارز", "مكرونه", "زيت", "صلصه", "دقيق"],
+  غداء: ["مسحوق", "منظف", "كلور", "صابون", "معطر", "مبيد", "مبيدات", "منظفات"],
+  عشاء: ["مسحوق", "منظف", "كلور", "صابون", "مبيد", "مبيدات", "منظفات", "ارز", "مكرونه", "زيت", "صلصه", "دقيق"],
 };
 
-const customOnlyTerms = ["عيش فينو", "عيش بلدي", "شيبسي", "سجق", "كبدة", "لحمه مفرومه", "لحمه مفرومة", "كفته", "بيض", "تونه", "مكرونه", "بطاطس", "بصل", "ثوم", "كاتشب", "مايونيز", "مناديل", "مياه معدنيه", "سمك", "جمبري"];
+const customOnlyTerms = ["عيش فينو", "عيش بلدي", "شيبسي", "بيض", "تونه", "مكرونه", "بطاطس", "بصل", "ثوم", "كاتشب", "مايونيز", "مناديل", "مياه معدنيه", "سمك", "جمبري"];
 const available = (p: SmartProduct) => p.isActive !== false && (p.stock === undefined || p.stock > 0);
 const name = (p: SmartProduct) => norm(p.name);
 const category = (p: SmartProduct) => norm(p.categoryName || "");
@@ -114,7 +123,7 @@ const findCatalogCategory = (ps: SmartProduct[], query: string) => {
 
 const meal = (ps: SmartProduct[], m: "فطار" | "غداء" | "عشاء", b: number | null, n: number | null) => {
   const excluded = exclusions[m], mult = n && n > 2 ? Math.min(2, n / 2) : 1;
-  const categoryHints = m === "فطار" ? ["مخبوز","ألبان","جبن","بقاله"] : m === "غداء" ? ["لحوم","دواجن","بقاله","خضروات","مجمدات"] : ["مخبوز","ألبان","جبن","سناكس","بقاله"];
+  const categoryHints = m === "فطار" ? ["مخبوز","ألبان","جبن","حبوب","معلبات"] : m === "غداء" ? ["حبوب","معلبات","خضروات","مجمدات","زيوت"] : ["مخبوز","ألبان","جبن","سناكس","معلبات","شيكولاته"];
   const pool = ps.filter((p) => available(p) && !excluded.some((t) => name(p).includes(norm(t))) && (has(p, meals[m]) || categoryHints.some((h) => category(p).includes(norm(h))))).sort((a,b) => {
     const as = (has(a, meals[m]) ? 4 : 0) + categoryHints.filter((h) => category(a).includes(norm(h))).length;
     const bs = (has(b, meals[m]) ? 4 : 0) + categoryHints.filter((h) => category(b).includes(norm(h))).length;
@@ -131,7 +140,7 @@ const shoppingPlan = (ps: SmartProduct[], q: string, b: number | null, n: number
   const weekly = /مقاضي|مشتريات|قائمة|البيت|الاسبوع|اسبوع|احتياجات البيت|تموين/.test(norm(q));
   if (!weekly) return null;
   const targetBudget = b ?? Math.max(120, (n ?? 2) * Math.max(1, d ?? 3) * 35);
-  const categories = ["بقاله", "لحوم", "خضروات", "فواكه", "ألبان", "جبن", "مخبوزات", "مشروبات", "سناكس"];
+  const categories = ["حبوب", "معلبات", "خضروات", "فواكه", "ألبان", "جبن", "مجمدات", "مشروبات", "شيكولاته"];
   const selected: SmartProduct[] = [];
   let total = 0;
   for (const cat of categories) {
@@ -174,7 +183,7 @@ const fallback = "فضلاً أضف طلبك من الرئيسية، لا أست
    the same broad store category. Example: cheese -> cheese, never milk/yogurt. */
 const semanticProductGroup = (p: SmartProduct) => {
   const h = hay(p);
-  const priority = ["جبن", "ألبان", "لحوم", "فواكه", "خضروات", "مخبوزات", "مشروبات", "سناكس", "منظفات", "بقالة", "مجمدات"];
+  const priority = ["جبن", "ألبان", "شيكولاته", "فواكه", "خضروات", "مخبوزات", "مشروبات", "سناكس", "منظفات", "مجمدات", "حبوب", "معلبات"];
   for (const label of priority) {
     const terms = groups[label] ?? [];
     if (terms.some((term) => h.includes(norm(term)))) return label;
@@ -207,7 +216,7 @@ export function askSmartAssistant(q: string, products: SmartProduct[], history: 
   const x = norm(q), ps = products.filter(available);
   const explicitCustom = customRequestsFromQuery(q, ps), genericCustom = explicitCustom.length ? null : genericCustomRequest(q, ps);
   const customRequests = explicitCustom.length ? explicitCustom : (genericCustom ? [genericCustom] : []);
-  if (!x) return { text: "أنا جاهز. قولّي عايز تشتري إيه، وأنا أساعدك من منتجات الوحيد ماركت الموجودة حاليًا.", products: [], customRequests: [], suggestedQuestions: ["اقترحلي فطار","اقترحلي غدا","اقترحلي عشا","إيه أنواع اللحوم؟"], intent: "help" };
+  if (!x) return { text: "أنا جاهز. قولّي عايز تشتري إيه، وأنا أساعدك من منتجات الوحيد ماركت الموجودة حاليًا.", products: [], customRequests: [], suggestedQuestions: ["اقترحلي فطار","اقترحلي غدا","اقترحلي عشا","إيه أنواع المجمدات؟"], intent: "help" };
 
   const context = norm(history.slice(-8).join(" ")), b = budget(x), n = people(x), d = days(x);
   const m = x.includes("فطار") ? "فطار" : x.includes("غدا") || x.includes("غداء") ? "غداء" : x.includes("عشا") || x.includes("عشاء") ? "عشاء" : null;
@@ -265,15 +274,10 @@ export function askSmartAssistant(q: string, products: SmartProduct[], history: 
     return { text: out.length ? "أيوه، دي المنتجات المتاحة حاليًا في قسم " + catalogCategory + "." : fallback, products: out, customRequests, suggestedQuestions: ["الأرخص؟","ضيف الكل للسلة","عندكم أنواع تانية؟"], intent: "category" };
   }
 
-  if (x.includes("انواع اللحوم") || x.includes("انواع اللحم") || x.includes("اللحوم ايه")) {
-    const out = categoryProducts(ps,"لحوم",["لحوم","لحم","فراخ","دجاج"]);
-    return { text: out.length ? "عندنا حاليًا: " + out.map((p) => p.name).join("، ") + ". ولو عايز أضيف نوع معين للسلة، قولّي اسمه." : fallback, products: out, customRequests, suggestedQuestions: ["الأرخص؟","ضيف الدجاج","ضيف اللحم البقري"], intent: "category" };
-  }
-
   const categoryMatch = Object.entries(categoryAliases).find(([,terms]) => terms.some((t) => x.includes(norm(t))));
   if (categoryMatch) {
     const [label,terms] = categoryMatch, out = categoryProducts(ps,label,terms);
-    return { text: out.length ? "أيوه، دي كل الاختيارات المتاحة حاليًا في " + label + "." : fallback, products: out, customRequests, suggestedQuestions: label === "لحوم" ? ["إيه أنواع اللحوم؟","الأرخص؟","ضيفهم للسلة"] : ["الأرخص؟","عندكم أنواع تانية؟","ضيف الكل للسلة"], intent: "category" };
+    return { text: out.length ? "أيوه، دي كل الاختيارات المتاحة حاليًا في " + label + "." : fallback, products: out, customRequests, suggestedQuestions: ["الأرخص؟","عندكم أنواع تانية؟","ضيف الكل للسلة"], intent: "category" };
   }
 
   const cheap = x.includes("ارخص") || x.includes("اقتصادي") || x.includes("اوفر") || x.includes("موفر");
@@ -321,7 +325,7 @@ export function askSmartAssistant(q: string, products: SmartProduct[], history: 
 
   const out = rank(ps,x);
   if (out.length || customRequests.length) return { text: customRequests.length ? (out.length ? "لقيت المنتجات الموجودة عندنا، وكمان لقيت طلبًا غير موجود في الكتالوج. تقدر تضيفه كطلب خاص للإدارة مع طلبك." : "الطلب ده مش موجود في الكتالوج، لكن أقدر أضيفه كطلب خاص للإدارة مع طلبك.") : "لقيت لك اختيارات من الكتالوج الحالي. اختار اللي يعجبك بعلامة +، ولو عايزني أغيّرها أو أدوّر على الأرخص قولّي.", products: out, customRequests, suggestedQuestions: ["الأرخص؟","عندك بدائل؟","اقترحلي غدا","إضافة الكل للسلة"], intent: customRequests.length ? "custom" : cheap ? "budget" : "search" };
-  return { text: fallback, products: [], customRequests: [], suggestedQuestions: ["اقترحلي فطار","اقترحلي غدا","اقترحلي عشا","إيه أنواع اللحوم؟"], intent: "help" };
+  return { text: fallback, products: [], customRequests: [], suggestedQuestions: ["اقترحلي فطار","اقترحلي غدا","اقترحلي عشا","إيه أنواع المجمدات؟"], intent: "help" };
 }
 
 export const toCartItem = (p: SmartProduct) => ({ id: Number(p.id), categoryId: Number(p.categoryId), name: String(p.name), price: String(p.price), image: p.image ? String(p.image) : undefined, quantity: 1 });
