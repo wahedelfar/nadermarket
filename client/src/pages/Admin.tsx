@@ -184,7 +184,7 @@ export default function Admin() {
             </div>
             <div className="bg-green-50 p-4 rounded-lg">
               <p className="text-gray-600">رقم واتساب</p>
-              <p className="text-2xl font-bold text-green-600">01002934519</p>
+              <p className="text-2xl font-bold text-green-600">01063537686</p>
             </div>
             <div className="bg-purple-50 p-4 rounded-lg">
               <p className="text-gray-600">طريقة الدفع</p>
