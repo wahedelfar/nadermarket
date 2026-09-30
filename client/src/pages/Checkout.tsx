@@ -44,7 +44,7 @@ async function prepareProof(file: File) {
 }
 
 export default function Checkout() {
-  const { items, total, clearCart, customRequests } = useCart();
+  const { items, total, shipping, grandTotal, clearCart, customRequests } = useCart();
   const [loading, setLoading] = useState(false);
   const [orderCreated, setOrderCreated] = useState(false);
   const [orderId, setOrderId] = useState<number | null>(null);
@@ -189,7 +189,7 @@ export default function Checkout() {
         customerName: formData.customerName.trim(),
         customerPhone: formData.customerPhone.trim(),
         customerAddress: formData.customerAddress.trim(),
-        totalAmount: total.toFixed(2),
+        totalAmount: grandTotal.toFixed(2),
         paymentMethod,
         paymentProofUrl,
         notes: customRequests.length
@@ -312,10 +312,20 @@ export default function Checkout() {
                   </div>
                 ))}
               </div>
-              <div className="border-t pt-4">
+              <div className="border-t pt-4 space-y-2">
                 <div className="flex justify-between items-center">
-                  <span className="text-gray-600">الإجمالي:</span>
-                  <span className="text-2xl font-black text-blue-800">{total.toFixed(2)} ج.م</span>
+                  <span className="text-gray-600">قيمة المنتجات:</span>
+                  <span className="font-semibold">{total.toFixed(2)} ج.م</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">الشحن:</span>
+                  <span className={shipping === 0 ? "font-bold text-green-600" : "font-semibold"}>
+                    {shipping === 0 ? "مجاني" : `${shipping.toFixed(2)} ج.م`}
+                  </span>
+                </div>
+                <div className="flex justify-between items-center border-t pt-3">
+                  <span className="font-bold text-gray-800">الإجمالي النهائي:</span>
+                  <span className="text-2xl font-black text-blue-800">{grandTotal.toFixed(2)} ج.م</span>
                 </div>
               </div>
             </Card>
