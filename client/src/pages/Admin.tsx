@@ -18,6 +18,16 @@ export default function Admin() {
   const loginMutation = trpc.admin.login.useMutation();
   const logoutMutation = trpc.admin.logout.useMutation();
   const utils = trpc.useUtils();
+  const { data: ordersData = [] } = trpc.orders.list.useQuery(undefined, {
+    enabled: isAuthenticated,
+    refetchInterval: 10000,
+    refetchOnWindowFocus: true,
+  });
+  const todayKey = new Date().toDateString();
+  const todayOrders = (ordersData as any[]).filter((order) => new Date(order.createdAt).toDateString() === todayKey);
+  const todaySales = todayOrders.reduce((sum, order) => sum + Number(order.totalAmount || 0), 0);
+  const todayDelivered = todayOrders.filter((order) => order.status === "delivered").length;
+  const todayNotDelivered = todayOrders.filter((order) => order.status !== "delivered").length;
   const isAuthenticated = localAuthenticated || adminSession.data?.authenticated === true;
 
   const handleLoginSubmit = (e: React.FormEvent) => {
@@ -169,6 +179,31 @@ export default function Admin() {
             </Card>
           </Link>
         </div>
+
+        <Card className="mb-6 overflow-hidden border-blue-100 shadow-sm">
+          <div className="flex items-center justify-between border-b border-blue-50 bg-gradient-to-l from-blue-50 to-sky-50 px-4 py-3">
+            <h2 className="text-base font-black text-blue-900">إحصائيات اليوم</h2>
+            <span className="text-xs font-semibold text-blue-600">اليوم</span>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4" dir="rtl">
+            <div className="border-b border-l border-blue-50 px-3 py-3 text-center md:border-b-0">
+              <p className="text-[11px] font-semibold text-gray-500">مبيعات اليوم</p>
+              <p className="mt-1 text-lg font-black text-blue-700">{todaySales.toFixed(2)} <span className="text-[11px]">ج.م</span></p>
+            </div>
+            <div className="border-b border-blue-50 px-3 py-3 text-center md:border-b-0 md:border-l">
+              <p className="text-[11px] font-semibold text-gray-500">عدد الأوردرات</p>
+              <p className="mt-1 text-lg font-black text-gray-800">{todayOrders.length}</p>
+            </div>
+            <div className="border-l border-blue-50 px-3 py-3 text-center">
+              <p className="text-[11px] font-semibold text-gray-500">تم التوصيل</p>
+              <p className="mt-1 text-lg font-black text-green-600">{todayDelivered}</p>
+            </div>
+            <div className="px-3 py-3 text-center">
+              <p className="text-[11px] font-semibold text-gray-500">لسه</p>
+              <p className="mt-1 text-lg font-black text-orange-600">{todayNotDelivered}</p>
+            </div>
+          </div>
+        </Card>
 
         {/* Quick Stats */}
         <Card className="p-6">
