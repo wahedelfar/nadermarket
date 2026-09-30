@@ -92,7 +92,7 @@ describe("Orders Router", () => {
     try {
       await caller.orders.create({
         customerName: "Test Customer",
-        customerPhone: "01002934519",
+        customerPhone: "01063537686",
         customerAddress: "Test Address",
         totalAmount: "100.00",
         items: [
