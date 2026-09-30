@@ -327,7 +327,7 @@ export default function Home() {
               <Link href="/products" className="transition hover:text-white">المنتجات</Link>
               <Link href="/cart" className="transition hover:text-white">السلة</Link>
               <span className="hidden sm:inline text-white/25">|</span>
-              <span className="inline-flex items-center gap-1.5"><Phone className="h-3.5 w-3.5" /> 01002934519</span>
+              <span className="inline-flex items-center gap-1.5"><Phone className="h-3.5 w-3.5" /> 01063537686</span>
               <span className="inline-flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" /> رأس البر - سوق 89</span>
             </div>
           </div>
