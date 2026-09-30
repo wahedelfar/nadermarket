@@ -75,6 +75,7 @@ function orderFromDb(row: any) {
     paymentMethod: row.payment_method ?? null,
     vodafoneWalletNumber: row.vodafone_wallet_number ?? null,
     paymentProofUrl: row.payment_proof_url ?? null,
+    shippingAmount: String(row.shipping_amount ?? "0"),
     notes: row.notes ?? null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
