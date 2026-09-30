@@ -110,6 +110,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
     (sum, item) => sum + parseFloat(item.price) * item.quantity,
     0,
   );
+  const shipping = getShippingFee(total);
+  const grandTotal = total + shipping;
 
   return (
     <CartContext.Provider
