@@ -163,7 +163,7 @@ function genericCustomRequest(q: string, products: SmartProduct[]): CustomAssist
   const cleaned = match[1].trim().replace(/^(من|في|عندكم|للغدا|للفطار|للعشا)\s+/,"").trim();
   if (!cleaned || cleaned.split(" ").length > 6) return null;
   if (products.some((p) => available(p) && hay(p).includes(cleaned))) return null;
-  if (["فطار","غداء","غدا","عشاء","عشا","اقتصادي","ارخص","حلو","سناك","فواكه","لحوم","جبن","البان","منظفات","مشروبات","مقاضي","مشتريات","قائمة"].some((w) => cleaned.includes(norm(w)))) return null;
+  if (["فطار","غداء","غدا","عشاء","عشا","اقتصادي","ارخص","حلو","سناك","فواكه","جبن","البان","منظفات","مشروبات","مقاضي","مشتريات","قائمة"].some((w) => cleaned.includes(norm(w)))) return null;
   const quantity = Number(x.match(/(?:عايز|عاوزه|عاوز|محتاج|محتاجه|هات|جيب|ممكن)\s*(\d+)/)?.[1] || 1);
   return { text: cleaned, quantity: Math.max(1, Math.min(20, quantity)) };
 }
@@ -230,7 +230,7 @@ export function askSmartAssistant(q: string, products: SmartProduct[], history: 
       text: `تمام. فهمت إنك عايز خطة مشتريات${duration}${persons}${budgetText}. رتبت لك سلة متنوعة من الكتالوج الحالي، وبدأت بالأساسيات ثم التنويع. الإجمالي التقريبي للاختيارات دي ${plan.total.toFixed(2)} جنيه.`,
       products: plan.selected,
       customRequests,
-      suggestedQuestions: ["قلل الميزانية", "زود فواكه", "بدّل اللحوم", "ضيفهم للسلة"],
+      suggestedQuestions: ["قلل الميزانية", "زود فواكه", "بدّل المجمدات", "ضيفهم للسلة"],
       intent: b ? "budget" : "search",
     };
   }
