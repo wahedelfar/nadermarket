@@ -57,7 +57,7 @@ export default function AdminSettings() {
               maxLength={11}
               value={vodafoneCashNumber}
               onChange={(e) => setVodafoneCashNumber(normalizeDigits(e.target.value).replace(/[^0-9]/g, "").slice(0, 11))}
-              placeholder="01012345678"
+              placeholder="01063537686"
             />
           </div>
           <Button onClick={save} disabled={isLoading || updateMutation.isPending} className="mt-5 w-full bg-blue-600 hover:bg-blue-700">
