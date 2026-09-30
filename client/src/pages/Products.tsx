@@ -59,6 +59,14 @@ export default function Products() {
     [search, smartProducts],
   );
 
+  useEffect(() => {
+    if (!location.includes("category=")) return;
+    const timer = window.setTimeout(() => {
+      productsSectionRef.current?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 80);
+    return () => window.clearTimeout(timer);
+  }, [location]);
+
   return (
     <div className="min-h-screen bg-[#e8f6ff]" dir="rtl">
       <header className="sticky top-0 z-50 bg-gradient-to-l from-[#9fd8ff] via-[#bfe7ff] to-[#dff3ff] shadow-md">
