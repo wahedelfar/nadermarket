@@ -5,7 +5,7 @@ import { Link } from "wouter";
 import { useCart } from "@/contexts/CartContext";
 
 export default function Cart() {
-  const { items, removeFromCart, updateQuantity, clearCart, total, customRequests, removeCustomRequest } = useCart();
+  const { items, removeFromCart, updateQuantity, clearCart, total, shipping, grandTotal, customRequests, removeCustomRequest } = useCart();
 
   return (
     <div className="min-h-screen bg-[#e8f6ff]">
@@ -124,10 +124,18 @@ export default function Cart() {
                     <span className="font-semibold">{items.length + customRequests.length}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">الإجمالي:</span>
-                    <span className="text-2xl font-black text-blue-800">
-                      {total.toFixed(2)} ج.م
+                    <span className="text-gray-600">قيمة المنتجات:</span>
+                    <span className="font-semibold">{total.toFixed(2)} ج.م</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">الشحن:</span>
+                    <span className={shipping === 0 ? "font-bold text-green-600" : "font-semibold"}>
+                      {shipping === 0 ? "مجاني" : `${shipping.toFixed(2)} ج.م`}
                     </span>
+                  </div>
+                  <div className="flex justify-between items-center border-t pt-3">
+                    <span className="font-bold text-gray-800">الإجمالي النهائي:</span>
+                    <span className="text-2xl font-black text-blue-800">{grandTotal.toFixed(2)} ج.م</span>
                   </div>
                 </div>
 
