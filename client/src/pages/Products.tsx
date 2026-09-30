@@ -10,7 +10,7 @@ import { askSmartAssistant, type SmartProduct } from "@/lib/smartAssistant";
 import { discountedPrice, normalizedDiscountPercent, hasDiscount } from "@/lib/productPricing";
 
 export default function Products() {
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
   const [products, setProducts] = useState<any[]>([]);
   const [categories, setCategories] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
@@ -95,11 +95,17 @@ export default function Products() {
                   جميع المنتجات
                 </Button>
                 {categories.map((category) => (
-                  <Link key={category.id} href={`/products?category=${category.id}`}>
-                    <Button variant={selectedCategory === category.id ? "default" : "outline"} className="w-full justify-start">
-                      {category.name}
-                    </Button>
-                  </Link>
+                  <Button
+                    key={category.id}
+                    onClick={() => {
+                      setSelectedCategory(Number(category.id));
+                      navigate(`/products?category=${category.id}`);
+                    }}
+                    variant={selectedCategory === category.id ? "default" : "outline"}
+                    className="w-full justify-start"
+                  >
+                    {category.name}
+                  </Button>
                 ))}
               </div>
             </div>
