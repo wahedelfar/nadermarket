@@ -18,6 +18,27 @@ import AdminCategories from "./pages/AdminCategories";
 import AdminSetup from "./pages/AdminSetup";
 import AdminSettings from "./pages/AdminSettings";
 import PwaInstallPrompt from "./components/PwaInstallPrompt";
+import { useEffect, useState } from "react";
+import { ArrowUp } from "lucide-react";
+import { Button } from "@/components/ui/button";
+
+function ScrollToTopButton() {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setVisible(window.scrollY > 500);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+  if (!visible) return null;
+  return (
+    <Button type="button" aria-label="العودة لأعلى الصفحة" title="العودة لأعلى الصفحة"
+      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      className="fixed bottom-6 left-5 z-[70] h-11 w-11 rounded-full bg-blue-600 p-0 shadow-lg hover:bg-blue-700">
+      <ArrowUp className="h-5 w-5" />
+    </Button>
+  );
+}
 import AdminRouteGuard from "./components/AdminRouteGuard";
 
 function AdminProductsRoute() {
@@ -70,6 +91,7 @@ function App() {
             <Toaster />
             <Router />
             <PwaInstallPrompt />
+            <ScrollToTopButton />
           </TooltipProvider>
         </CartProvider>
       </ThemeProvider>
