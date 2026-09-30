@@ -52,7 +52,7 @@ export default function Checkout() {
   const [paymentMethod, setPaymentMethod] = useState<"cash_on_delivery" | "vodafone_cash">("cash_on_delivery");
   const [proofFile, setProofFile] = useState<File | null>(null);
   const { data: storeSettings } = trpc.store.settings.useQuery();
-  const vodafoneCashNumber = storeSettings?.vodafoneCashNumber || "01012345678";
+  const vodafoneCashNumber = storeSettings?.vodafoneCashNumber || "01063537686";
   const [formData, setFormData] = useState({
     customerName: "",
     customerPhone: "",
@@ -236,7 +236,7 @@ export default function Checkout() {
                   </div>
                   <div>
                     <label className="block text-gray-700 font-semibold mb-2">رقم الموبايل *</label>
-                    <Input type="tel" name="customerPhone" value={formData.customerPhone} onChange={handleInputChange} placeholder="مثال: 01012345678" inputMode="numeric" maxLength={11} minLength={11} pattern="01[0125][0-9]{8}" required />
+                    <Input type="tel" name="customerPhone" value={formData.customerPhone} onChange={handleInputChange} placeholder="مثال: 01063537686" inputMode="numeric" maxLength={11} minLength={11} pattern="01[0125][0-9]{8}" required />
                   </div>
                   <div>
                     <label className="block text-gray-700 font-semibold mb-2">العنوان بالتفصيل *</label>
@@ -266,7 +266,7 @@ export default function Checkout() {
                     <div>
                       <p className="font-bold text-red-900">رقم فودافون كاش</p>
                       <p className="mt-1 text-2xl font-black tracking-wider text-red-700">{vodafoneCashNumber}</p>
-                      <p className="mt-2 text-sm text-red-800">تنبيه: هذا رقم تجريبي مؤقت للواجهة، ويجب استبداله برقم المحفظة الحقيقي قبل تشغيل المتجر فعليًا.</p>
+                      <p className="mt-2 text-sm text-red-800">فضلاً تأكد أن الاسم المسجل ( وحيد )</p>
                     </div>
                     <div className="rounded-xl bg-white p-4">
                       <p className="font-semibold text-gray-800">بعد التحويل</p>
