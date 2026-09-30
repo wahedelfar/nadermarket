@@ -209,7 +209,7 @@ pnpm db:studio    # فتح واجهة إدارة قاعدة البيانات
 ## 📞 التواصل والدعم
 
 - 📧 **البريد الإلكتروني:** support@nadermarket.com
-- 💬 **واتساب:** [+20 100 293 4519](https://wa.me/201002934519)
+- 💬 **واتساب:** [+20 100 293 4519](https://wa.me/201063537686)
 - 🌐 **الموقع:** [https://nader-market.vercel.app](https://nader-market.vercel.app)
 
 ---
