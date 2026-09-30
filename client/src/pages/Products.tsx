@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Heart, Search, ShoppingCart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
@@ -16,6 +16,7 @@ export default function Products() {
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
   const [search, setSearch] = useState("");
   const [favoriteIds, setFavoriteIds] = useState<number[]>([]);
+  const productsSectionRef = useRef<HTMLElement | null>(null);
   const { addToCart, items } = useCart();
 
   useEffect(() => {
@@ -86,12 +87,25 @@ export default function Products() {
       </header>
 
       <div className="mx-auto max-w-7xl px-4 py-8">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-4">
-          <aside className="lg:col-span-1">
-            <div className="sticky top-24 rounded-2xl bg-white p-6 shadow-md">
-              <h2 className="mb-4 text-xl font-black text-gray-800">الأقسام</h2>
-              <div className="space-y-2">
-                <Button onClick={() => setSelectedCategory(null)} variant={selectedCategory === null ? "default" : "outline"} className="w-full justify-start">
+        <div className="grid grid-cols-1 gap-8">
+          <main className="lg:col-span-4">
+            <div className="mb-6 rounded-3xl border border-blue-100 bg-white/95 p-4 shadow-md sm:p-5">
+              <div className="mb-4 flex items-center justify-between gap-3">
+                <div>
+                  <h2 className="text-xl font-black text-gray-800">تصفح الأقسام</h2>
+                  <p className="mt-1 text-xs font-semibold text-slate-400">اختر القسم وسيظهر منتجه مباشرة</p>
+                </div>
+                <span className="rounded-full bg-blue-50 px-3 py-1 text-xs font-black text-blue-700">{categories.length} قسم</span>
+              </div>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 md:grid-cols-5">
+                <Button
+                  onClick={() => {
+                    setSelectedCategory(null);
+                    navigate("/products");
+                  }}
+                  variant={selectedCategory === null ? "default" : "outline"}
+                  className="h-11 rounded-xl border-blue-100 bg-white px-2 text-xs font-black text-blue-800 shadow-sm hover:bg-blue-50 sm:text-sm"
+                >
                   جميع المنتجات
                 </Button>
                 {categories.map((category) => (
@@ -101,17 +115,16 @@ export default function Products() {
                       setSelectedCategory(Number(category.id));
                       navigate(`/products?category=${category.id}`);
                     }}
-                    variant={selectedCategory === category.id ? "default" : "outline"}
-                    className="w-full justify-start"
+                    variant={selectedCategory === Number(category.id) ? "default" : "outline"}
+                    className="h-11 rounded-xl border-blue-100 bg-white px-2 text-xs font-black text-blue-800 shadow-sm hover:bg-blue-50 sm:text-sm"
                   >
-                    {category.name}
+                    <span className="truncate">{category.name}</span>
                   </Button>
                 ))}
               </div>
             </div>
-          </aside>
 
-          <main className="lg:col-span-3">
+            <section ref={productsSectionRef} className="scroll-mt-28">
             <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <h1 className="text-3xl font-black text-gray-800">
@@ -182,6 +195,7 @@ export default function Products() {
                 })}
               </div>
             )}
+            </section>
           </main>
         </div>
       </div>
