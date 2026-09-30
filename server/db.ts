@@ -146,7 +146,14 @@ export async function updateProduct(input: {
 }
 
 export async function deleteProduct(id: number) {
-  return api({ action: "admin.products.delete", body: { id }, admin: true });
+  try {
+    return await api({ action: "admin.products.delete", body: { id }, admin: true });
+  } catch (error: any) {
+    if (error?.message === "[object Object]") {
+      throw new Error("لا يمكن حذف المنتج لأنه مرتبط بطلبات سابقة. يمكنك إيقاف ظهوره من المتجر بدلًا من حذفه.");
+    }
+    throw error;
+  }
 }
 
 export async function getOrders() {
