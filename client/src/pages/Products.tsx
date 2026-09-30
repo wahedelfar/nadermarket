@@ -95,9 +95,11 @@ export default function Products() {
                   جميع المنتجات
                 </Button>
                 {categories.map((category) => (
-                  <Button key={category.id} onClick={() => setSelectedCategory(category.id)} variant={selectedCategory === category.id ? "default" : "outline"} className="w-full justify-start">
-                    {category.name}
-                  </Button>
+                  <Link key={category.id} href={`/products?category=${category.id}`}>
+                    <Button variant={selectedCategory === category.id ? "default" : "outline"} className="w-full justify-start">
+                      {category.name}
+                    </Button>
+                  </Link>
                 ))}
               </div>
             </div>
